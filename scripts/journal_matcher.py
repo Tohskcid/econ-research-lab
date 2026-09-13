@@ -1,231 +1,199 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-經濟學門學術期刊評比 (2019年林明仁等更新版) 檢索工具
-Journal Matcher CLI: Quickly verify if a journal belongs to Top 5, A+, A, or TSSCI Core.
-"""
+"""Query the optional 2019 Taiwan NSTC economics journal metadata."""
 
-import sys
 import argparse
 import difflib
 import json
-from typing import Dict, Optional, Tuple, List
+import re
+import unicodedata
 
-# 2019 年科技部/國科會經濟學門學術期刊評比核心資料庫
+
+TIERS = {
+    "Excellent": [
+        ("american economic review", "AER"),
+        ("econometrica", "ECMA"),
+        ("journal of finance", "JF"),
+        ("journal of political economy", "JPE"),
+        ("quarterly journal of economics", "QJE"),
+        ("review of economic studies", "REStud"),
+    ],
+    "A+": [
+        ("american economic journal: applied economics", "AEJ: Applied"),
+        ("american economic journal: economic policy", "AEJ: Policy"),
+        ("american economic journal: macroeconomics", "AEJ: Macro"),
+        ("american economic journal: microeconomics", "AEJ: Micro"),
+        ("economic journal", "EJ"),
+        ("economic theory", "ET"),
+        ("european economic review", "EER"),
+        ("experimental economics", "Exp Econ"),
+        ("games and economic behavior", "GEB"),
+        ("international economic review", "IER"),
+        ("journal of accounting and economics", "JAE"),
+        ("journal of business and economic statistics", "JBES"),
+        ("journal of development economics", "JDE"),
+        ("journal of econometrics", "JoE"),
+        ("journal of economic growth", "JEG"),
+        ("journal of economic history", "JEH"),
+        ("journal of economic literature", "JEL"),
+        ("journal of economic perspectives", "JEP"),
+        ("journal of economic theory", "JET"),
+        ("journal of financial and quantitative analysis", "JFQA"),
+        ("journal of financial economics", "JFE"),
+        ("journal of human resources", "JHR"),
+        ("journal of international economics", "JIE"),
+        ("journal of labor economics", "JoLE"),
+        ("journal of law and economics", "JLE"),
+        ("journal of monetary economics", "JME"),
+        ("journal of public economics", "JPubE"),
+        ("journal of the european economic association", "JEEA"),
+        ("journal of urban economics", "JUE"),
+        ("quantitative economics", "QE"),
+        ("rand journal of economics", "RAND"),
+        ("review of economic dynamics", "RED"),
+        ("review of economics and statistics", "REStat"),
+        ("review of finance", "RF"),
+        ("review of financial studies", "RFS"),
+        ("theoretical economics", "TE"),
+    ],
+    "A": [
+        ("american journal of agricultural economics", "AJAE"),
+        ("brookings papers on economic activity", "BPEA"),
+        ("canadian journal of economics", "CJE"),
+        ("econometric theory", "EcT"),
+        ("economic development and cultural change", "EDCC"),
+        ("economic inquiry", "EI"),
+        ("economic policy", "EP"),
+        ("economica", "Economica"),
+        ("health economics", "HE"),
+        ("international journal of industrial organization", "IJIO"),
+        ("journal of applied econometrics", "JApE"),
+        ("journal of banking and finance", "JBF"),
+        ("journal of comparative economics", "JCE"),
+        ("journal of economic behavior and organization", "JEBO"),
+        ("journal of economic dynamics and control", "JEDC"),
+        ("journal of economics and management strategy", "JEMS"),
+        ("journal of environmental economics and management", "JEEM"),
+        ("journal of health economics", "JHE"),
+        ("journal of industrial economics", "JIEc"),
+        ("journal of international money and finance", "JIMF"),
+        ("journal of law economics and organization", "JLEO"),
+        ("journal of mathematical economics", "JMathE"),
+        ("journal of money credit and banking", "JMCB"),
+        ("journal of population economics", "JPopE"),
+        ("journal of risk and uncertainty", "JRU"),
+        ("macroeconomic dynamics", "MD"),
+        ("oxford economic papers", "OEP"),
+        ("scandinavian journal of economics", "SJE"),
+        ("social choice and welfare", "SCW"),
+    ],
+    "TSSCI Core": [
+        ("經濟論文叢刊", "TER"),
+        ("經濟論文", "AEP"),
+        ("經濟研究", "ER"),
+        ("人文及社會科學集刊", "JSSP"),
+        ("經濟預測與政策", "EFP"),
+    ],
+}
+
 JOURNAL_DB = {
-    # 1. 綜合頂尖 (The Top 5)
-    "american economic review": {"tier": "Top 5", "short": "AER", "subfield": "General", "rank_zh": "綜合頂尖"},
-    "econometrica": {"tier": "Top 5", "short": "ECMA", "subfield": "General / Theory / Econometrics", "rank_zh": "綜合頂尖"},
-    "journal of political economy": {"tier": "Top 5", "short": "JPE", "subfield": "General / Price Theory / Macro", "rank_zh": "綜合頂尖"},
-    "quarterly journal of economics": {"tier": "Top 5", "short": "QJE", "subfield": "General Applied", "rank_zh": "綜合頂尖"},
-    "review of economic studies": {"tier": "Top 5", "short": "REStud", "subfield": "General Theory / Applied", "rank_zh": "綜合頂尖"},
-
-    # 2. 頂尖評論與綜述 (Leading Survey & Review)
-    "journal of economic literature": {"tier": "Leading Survey", "short": "JEL", "subfield": "Review & Survey", "rank_zh": "頂尖評論"},
-    "journal of economic perspectives": {"tier": "Leading Survey", "short": "JEP", "subfield": "Policy & Perspectives", "rank_zh": "頂尖觀點"},
-
-    # 3. A+ 級期刊 (Top Field & High General)
-    "review of economics and statistics": {"tier": "A+", "short": "REStat", "subfield": "Applied / Empirical", "rank_zh": "A+ 級"},
-    "journal of the european economic association": {"tier": "A+", "short": "JEEA", "subfield": "General", "rank_zh": "A+ 級"},
-    "economic journal": {"tier": "A+", "short": "EJ", "subfield": "General", "rank_zh": "A+ 級"},
-    "international economic review": {"tier": "A+", "short": "IER", "subfield": "General / Theory", "rank_zh": "A+ 級"},
-    "quantitative economics": {"tier": "A+", "short": "QE", "subfield": "Econometrics / Empirical", "rank_zh": "A+ 級"},
-    "american economic journal: applied economics": {"tier": "A+", "short": "AEJ: Applied", "subfield": "Applied Micro", "rank_zh": "A+ 級"},
-    "american economic journal: economic policy": {"tier": "A+", "short": "AEJ: Policy", "subfield": "Public Policy", "rank_zh": "A+ 級"},
-    "american economic journal: macroeconomics": {"tier": "A+", "short": "AEJ: Macro", "subfield": "Macroeconomics", "rank_zh": "A+ 級"},
-    "american economic journal: microeconomics": {"tier": "A+", "short": "AEJ: Micro", "subfield": "Microeconomics", "rank_zh": "A+ 級"},
-    
-    # 計量經濟學 A+
-    "journal of econometrics": {"tier": "A+", "short": "JoE", "subfield": "Econometrics", "rank_zh": "A+ 級 (計量第一刊)"},
-    "econometric theory": {"tier": "A+", "short": "ET", "subfield": "Econometric Theory", "rank_zh": "A+ 級"},
-    "journal of business & economic statistics": {"tier": "A+", "short": "JBES", "subfield": "Time Series / Applied Econometrics", "rank_zh": "A+ 級"},
-    "journal of applied econometrics": {"tier": "A+", "short": "JAE", "subfield": "Applied Econometrics", "rank_zh": "A+ 級"},
-
-    # 個體理論 A+
-    "journal of economic theory": {"tier": "A+", "short": "JET", "subfield": "Micro Theory", "rank_zh": "A+ 級 (個體理論第一刊)"},
-    "theoretical economics": {"tier": "A+", "short": "TE", "subfield": "Economic Theory", "rank_zh": "A+ 級"},
-    "games and economic behavior": {"tier": "A+", "short": "GEB", "subfield": "Game Theory", "rank_zh": "A+ 級 (賽局理論第一刊)"},
-
-    # 總體、貨幣與金融 A+
-    "journal of monetary economics": {"tier": "A+", "short": "JME", "subfield": "Macro / Monetary", "rank_zh": "A+ 級 (總體第一刊)"},
-    "journal of finance": {"tier": "A+", "short": "JF", "subfield": "Finance", "rank_zh": "A+ 級 (財務金融頂尖)"},
-    "journal of financial economics": {"tier": "A+", "short": "JFE", "subfield": "Finance", "rank_zh": "A+ 級 (財務金融頂尖)"},
-    "review of financial studies": {"tier": "A+", "short": "RFS", "subfield": "Finance", "rank_zh": "A+ 級 (財務金融頂尖)"},
-
-    # 各應用領域旗艦 A+
-    "journal of labor economics": {"tier": "A+", "short": "JoLE", "subfield": "Labor", "rank_zh": "A+ 級 (勞動第一刊)"},
-    "journal of public economics": {"tier": "A+", "short": "JPubE", "subfield": "Public", "rank_zh": "A+ 級 (公共經濟第一刊)"},
-    "rand journal of economics": {"tier": "A+", "short": "RAND", "subfield": "Industrial Organization", "rank_zh": "A+ 級 (產經第一刊)"},
-    "journal of development economics": {"tier": "A+", "short": "JDE", "subfield": "Development", "rank_zh": "A+ 級 (發展第一刊)"},
-    "journal of international economics": {"tier": "A+", "short": "JIE", "subfield": "International Trade / Finance", "rank_zh": "A+ 級 (國貿第一刊)"},
-    "journal of health economics": {"tier": "A+", "short": "JHE", "subfield": "Health", "rank_zh": "A+ 級 (健康經濟第一刊)"},
-    "journal of environmental economics and management": {"tier": "A+", "short": "JEEM", "subfield": "Environmental", "rank_zh": "A+ 級 (環境第一刊)"},
-
-    # 4. A 級期刊 (Second-Tier Field & Good General)
-    "european economic review": {"tier": "A", "short": "EER", "subfield": "General", "rank_zh": "A 級"},
-    "journal of economic behavior & organization": {"tier": "A", "short": "JEBO", "subfield": "Behavioral / Org", "rank_zh": "A 級"},
-    "journal of human resources": {"tier": "A", "short": "JHR", "subfield": "Labor / Education", "rank_zh": "A 級"},
-    "journal of economic dynamics and control": {"tier": "A", "short": "JEDC", "subfield": "Macro Dynamics / Computation", "rank_zh": "A 級"},
-    "journal of urban economics": {"tier": "A", "short": "JUE", "subfield": "Urban", "rank_zh": "A 級"},
-    "regional science and urban economics": {"tier": "A", "short": "RSUE", "subfield": "Regional / Urban", "rank_zh": "A 級"},
-    "journal of industrial economics": {"tier": "A", "short": "JIEc", "subfield": "Industrial Organization", "rank_zh": "A 級"},
-    "international journal of industrial organization": {"tier": "A", "short": "IJIO", "subfield": "Industrial Organization", "rank_zh": "A 級"},
-    "energy economics": {"tier": "A", "short": "Energy Econ", "subfield": "Energy", "rank_zh": "A 級"},
-    "resource and energy economics": {"tier": "A", "short": "REE", "subfield": "Resource / Energy", "rank_zh": "A 級"},
-    "journal of money, credit and banking": {"tier": "A", "short": "JMCB", "subfield": "Money & Banking", "rank_zh": "A 級"},
-    "journal of international money and finance": {"tier": "A", "short": "JIMF", "subfield": "Intl Finance", "rank_zh": "A 級"},
-    "journal of banking & finance": {"tier": "A", "short": "JBF", "subfield": "Banking / Finance", "rank_zh": "A 級"},
-    "labour economics": {"tier": "A", "short": "Labour Econ", "subfield": "Labor", "rank_zh": "A 級"},
-    "economics letters": {"tier": "A", "short": "Econ Lett", "subfield": "Letters / General", "rank_zh": "A 級"},
-    "economic theory": {"tier": "A", "short": "Econ Theory", "subfield": "Theory", "rank_zh": "A 級"},
-    "social choice and welfare": {"tier": "A", "short": "SCW", "subfield": "Welfare Theory", "rank_zh": "A 級"},
-    "journal of mathematical economics": {"tier": "A", "short": "JMEc", "subfield": "Math Econ", "rank_zh": "A 級"},
-    "macroeconomic dynamics": {"tier": "A", "short": "Macro Dyn", "subfield": "Macro", "rank_zh": "A 級"},
-    "world bank economic review": {"tier": "A", "short": "WBER", "subfield": "Development / Policy", "rank_zh": "A 級"},
-    "oxford bulletin of economics and statistics": {"tier": "A", "short": "OBES", "subfield": "Applied Econometrics", "rank_zh": "A 級"},
-    "scandinavian journal of economics": {"tier": "A", "short": "SJE", "subfield": "General", "rank_zh": "A 級"},
-    "canadian journal of economics": {"tier": "A", "short": "CJE", "subfield": "General", "rank_zh": "A 級"},
-    "public choice": {"tier": "A", "short": "Pub Choice", "subfield": "Political Economy", "rank_zh": "A 級"},
-    "health economics": {"tier": "A", "short": "Health Econ", "subfield": "Health", "rank_zh": "A 級"},
-    "economic inquiry": {"tier": "A", "short": "Econ Inq", "subfield": "General", "rank_zh": "A 級"},
-    "southern economic journal": {"tier": "A", "short": "SEJ", "subfield": "General", "rank_zh": "A 級"},
-
-    # 5. 臺灣國內 TSSCI 經濟學門第一級 / 核心期刊
-    "經濟論文叢刊": {"tier": "TSSCI Core", "short": "TER", "subfield": "綜合 (台大經濟)", "rank_zh": "TSSCI 第一級核心"},
-    "taiwan economic review": {"tier": "TSSCI Core", "short": "TER", "subfield": "綜合 (台大經濟)", "rank_zh": "TSSCI 第一級核心"},
-    "經濟論文": {"tier": "TSSCI Core", "short": "AEP", "subfield": "實證 / 綜合 (中研院經濟所)", "rank_zh": "TSSCI 第一級核心"},
-    "academia economic papers": {"tier": "TSSCI Core", "short": "AEP", "subfield": "實證 / 綜合 (中研院經濟所)", "rank_zh": "TSSCI 第一級核心"},
-    "經濟研究": {"tier": "TSSCI Core", "short": "Econ Res", "subfield": "綜合 (台北大學經濟)", "rank_zh": "TSSCI 第一級核心"},
-    "economic research": {"tier": "TSSCI Core", "short": "Econ Res", "subfield": "綜合 (台北大學經濟)", "rank_zh": "TSSCI 第一級核心"},
-    "人文及社會科學集刊": {"tier": "TSSCI Core", "short": "JSSP", "subfield": "人社跨領域 (中研院人社中心)", "rank_zh": "TSSCI 第一級核心"},
-    "journal of social sciences and philosophy": {"tier": "TSSCI Core", "short": "JSSP", "subfield": "人社跨領域 (中研院人社中心)", "rank_zh": "TSSCI 第一級核心"},
-    "經濟預測與政策": {"tier": "TSSCI Core", "short": "EFP", "subfield": "總體預測與政策 (中研院經濟所)", "rank_zh": "TSSCI 第一級核心"},
-    "economic forecasts and policy": {"tier": "TSSCI Core", "short": "EFP", "subfield": "總體預測與政策 (中研院經濟所)", "rank_zh": "TSSCI 第一級核心"}
+    name: {"tier": tier, "short": short}
+    for tier, journals in TIERS.items()
+    for name, short in journals
 }
 
-# 建立別名查找表 (Aliases & Acronyms)
-ALIAS_MAP = {
-    "aer": "american economic review",
-    "ecma": "econometrica",
-    "jpe": "journal of political economy",
-    "qje": "quarterly journal of economics",
-    "restud": "review of economic studies",
-    "jel": "journal of economic literature",
-    "jep": "journal of economic perspectives",
-    "restat": "review of economics and statistics",
-    "jeea": "journal of the european economic association",
-    "ej": "economic journal",
-    "ier": "international economic review",
-    "qe": "quantitative economics",
-    "joe": "journal of econometrics",
-    "et": "econometric theory",
-    "jbes": "journal of business & economic statistics",
-    "jae": "journal of applied econometrics",
-    "jet": "journal of economic theory",
-    "te": "theoretical economics",
-    "geb": "games and economic behavior",
-    "jme": "journal of monetary economics",
-    "jf": "journal of finance",
-    "jfe": "journal of financial economics",
-    "rfs": "review of financial studies",
-    "jole": "journal of labor economics",
-    "jpube": "journal of public economics",
-    "rand": "rand journal of economics",
-    "jde": "journal of development economics",
-    "jie": "journal of international economics",
-    "jhe": "journal of health economics",
-    "jeem": "journal of environmental economics and management",
-    "eer": "european economic review",
-    "jebo": "journal of economic behavior & organization",
-    "jhr": "journal of human resources",
-    "jedc": "journal of economic dynamics and control",
-    "jue": "journal of urban economics",
-    "rsue": "regional science and urban economics",
-    "jiec": "journal of industrial economics",
-    "ijio": "international journal of industrial organization",
-    "jmcb": "journal of money, credit and banking",
-    "jimf": "journal of international money and finance",
-    "jbf": "journal of banking & finance",
-    "ter": "經濟論文叢刊",
-    "叢刊": "經濟論文叢刊",
-    "中研院經濟論文": "經濟論文"
+ALIASES = {
+    "aer": "american economic review", "ecma": "econometrica", "jf": "journal of finance",
+    "jpe": "journal of political economy", "qje": "quarterly journal of economics",
+    "restud": "review of economic studies", "jbes": "journal of business and economic statistics",
+    "joe": "journal of econometrics", "jfe": "journal of financial economics",
+    "rfs": "review of financial studies", "ter": "經濟論文叢刊",
+    "taiwan economic review": "經濟論文叢刊", "academia economic papers": "經濟論文",
+    "journal of social sciences and philosophy": "人文及社會科學集刊",
 }
 
-def lookup_journal(query: str) -> Tuple[Optional[str], Optional[dict], float]:
-    """
-    Search for a journal by exact name, alias, or fuzzy string match.
-    Returns: (canonical_name, details_dict, confidence_score)
-    """
-    q = query.strip().lower()
-    
-    # 1. Alias match
-    if q in ALIAS_MAP:
-        canonical = ALIAS_MAP[q]
-        return canonical, JOURNAL_DB.get(canonical), 1.0
-    
-    # 2. Exact match in DB
-    if q in JOURNAL_DB:
-        return q, JOURNAL_DB[q], 1.0
-    
-    # 3. Substring match
-    for key, val in JOURNAL_DB.items():
-        if q == key or q in key:
-            return key, val, 0.95
-        if val["short"].lower() == q:
-            return key, val, 0.95
-    
-    # 4. Fuzzy match using difflib
-    all_keys = list(JOURNAL_DB.keys())
-    matches = difflib.get_close_matches(q, all_keys, n=1, cutoff=0.55)
-    if matches:
-        best_match = matches[0]
-        ratio = difflib.SequenceMatcher(None, q, best_match).ratio()
-        return best_match, JOURNAL_DB[best_match], ratio
-    
-    return None, None, 0.0
+
+def normalize_name(value: str) -> str:
+    value = unicodedata.normalize("NFKC", value).casefold().strip().replace("&", " and ")
+    value = re.sub(r"[\u2010-\u2015\-:,.]", " ", value)
+    return " ".join(value.split())
+
+
+NORMALIZED_DB = {normalize_name(name): name for name in JOURNAL_DB}
+NORMALIZED_ALIASES = {normalize_name(alias): target for alias, target in ALIASES.items()}
+
+
+def lookup_candidates(query: str, limit: int = 3, cutoff: float = 0.55):
+    q = normalize_name(query)
+    if not q:
+        return []
+    if q in NORMALIZED_ALIASES:
+        name = NORMALIZED_ALIASES[q]
+        return [(name, JOURNAL_DB[name], 1.0)]
+    if q in NORMALIZED_DB:
+        name = NORMALIZED_DB[q]
+        return [(name, JOURNAL_DB[name], 1.0)]
+
+    partial = []
+    for normalized, name in NORMALIZED_DB.items():
+        if q == normalize_name(JOURNAL_DB[name]["short"]):
+            return [(name, JOURNAL_DB[name], 1.0)]
+        if q in normalized:
+            partial.append((name, JOURNAL_DB[name], difflib.SequenceMatcher(None, q, normalized).ratio()))
+    if partial:
+        return sorted(partial, key=lambda item: item[2], reverse=True)[:limit]
+
+    matches = difflib.get_close_matches(q, NORMALIZED_DB, n=limit, cutoff=cutoff)
+    return [
+        (NORMALIZED_DB[match], JOURNAL_DB[NORMALIZED_DB[match]], difflib.SequenceMatcher(None, q, match).ratio())
+        for match in matches
+    ]
+
+
+def lookup_journal(query: str):
+    candidates = lookup_candidates(query, limit=1)
+    return candidates[0] if candidates else (None, None, 0.0)
+
 
 def main():
-    parser = argparse.ArgumentParser(description="2019 Taiwan NSTC Economics Journal Ranking Lookup")
-    parser.add_argument("--check", "-c", type=str, help="Journal name or acronym to check (e.g., AER, QJE, TER, JoE)")
-    parser.add_argument("--list-tier", "-l", choices=["Top 5", "Leading Survey", "A+", "A", "TSSCI Core", "All"], help="List journals by tier")
-    parser.add_argument("--json", action="store_true", help="Output results in JSON format")
-
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--check", "-c", help="Journal name or acronym")
+    parser.add_argument("--list-tier", "-l", choices=[*TIERS, "Top 5", "All"])
+    parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
 
     if args.list_tier:
-        target_tier = args.list_tier
-        results = {}
-        for name, data in JOURNAL_DB.items():
-            if target_tier == "All" or data["tier"] == target_tier:
-                results[name] = data
+        tier = "Excellent" if args.list_tier == "Top 5" else args.list_tier
+        results = {name: data for name, data in JOURNAL_DB.items() if tier == "All" or data["tier"] == tier}
         if args.json:
             print(json.dumps(results, ensure_ascii=False, indent=2))
         else:
-            print(f"\n=== 2019 評比等級: {target_tier} 期刊清單 (共 {len(results)} 本) ===")
+            print(f"\n=== {tier} ({len(results)} journals) ===")
             for name, data in results.items():
-                print(f"- [{data['tier']}] {data['short']}: {name.title()} ({data['subfield']})")
+                print(f"- {data['short']}: {name.title()}")
         return
 
     if args.check:
-        name, info, score = lookup_journal(args.check)
+        candidates = lookup_candidates(args.check)
+        name, info, score = candidates[0] if candidates else (None, None, 0.0)
         if args.json:
-            res = {"query": args.check, "matched": name, "score": round(score, 3), "info": info}
-            print(json.dumps(res, ensure_ascii=False, indent=2))
+            print(json.dumps({
+                "query": args.check, "matched": name, "score": round(score, 3), "info": info,
+                "candidates": [
+                    {"name": candidate, "score": round(candidate_score, 3), "info": candidate_info}
+                    for candidate, candidate_info, candidate_score in candidates
+                ],
+            }, ensure_ascii=False, indent=2))
+        elif info:
+            print(f"\nQuery: {args.check}\nMatch: {name.title()} ({info['short']})\nTier: {info['tier']}\nConfidence: {score:.1%}")
+            if score < 0.8 and len(candidates) > 1:
+                print("Other candidates: " + ", ".join(candidate for candidate, _, _ in candidates[1:]))
         else:
-            if info:
-                print("\n========================================================")
-                print(f"查詢關鍵詞: {args.check}")
-                print(f"匹配期刊:   {name.title()} (簡稱: {info['short']})")
-                print(f"2019 評比:  【{info['tier']}】 ({info['rank_zh']})")
-                print(f"所屬領域:   {info['subfield']}")
-                print(f"匹配信心度: {round(score * 100, 1)}%")
-                print("========================================================\n")
-            else:
-                print(f"\n[!] 未在 2019 國科會評比 (林明仁等) A 級以上或 TSSCI 核心中找到: '{args.check}'")
-                print("提示: 該期刊可能屬於 B+/B 級，或非純經濟學門評比之期刊。\n")
+            print(f"\nNot found in this optional 2019 ranking dataset: {args.check}")
+            print("No match indicates database coverage or name-matching limits, not a journal tier.")
         return
 
     parser.print_help()
+
 
 if __name__ == "__main__":
     main()

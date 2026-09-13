@@ -2,18 +2,31 @@
 # -*- coding: utf-8 -*-
 """
 經濟學實證資料自動分析與敘述統計生成工具 (Econ Data Profiler)
-Generates publication-quality Table 1 (Markdown & LaTeX), checks panel structure,
-and produces binned scatterplot & stylized facts visualizations (ASCII + SVG).
-Zero external visualization/tabulate dependencies required.
+Generates Table 1 (Markdown & LaTeX), checks panel structure, and produces
+descriptive binned means visualizations (ASCII + SVG).
 """
 
 import os
 import sys
 import argparse
-import math
-from typing import List, Optional, Tuple, Dict
+import difflib
+import re
+from html import escape as xml_escape
+from typing import Any, Dict, List, Optional
 import pandas as pd
 import numpy as np
+
+
+def validate_columns(df: pd.DataFrame, requested: Dict[str, Optional[str]]) -> None:
+    """Fail fast when a user-supplied column name does not exist."""
+    missing = []
+    for role, column in requested.items():
+        if column and column not in df.columns:
+            suggestions = difflib.get_close_matches(column, df.columns.tolist(), n=3, cutoff=0.4)
+            hint = f"; closest: {', '.join(suggestions)}" if suggestions else ""
+            missing.append(f"{role}='{column}'{hint}")
+    if missing:
+        raise ValueError("Unknown column(s): " + "; ".join(missing))
 
 def dataframe_to_markdown(df: pd.DataFrame) -> str:
     """
@@ -78,7 +91,7 @@ def compute_summary_table(df: pd.DataFrame, vars_subset: Optional[List[str]] = N
 
     return pd.DataFrame(records)
 
-def check_panel_structure(df: pd.DataFrame, id_col: Optional[str] = None, time_col: Optional[str] = None) -> Dict[str, any]:
+def check_panel_structure(df: pd.DataFrame, id_col: Optional[str] = None, time_col: Optional[str] = None) -> Dict[str, Any]:
     """
     Audits panel balance and structure.
     """
@@ -90,29 +103,52 @@ def check_panel_structure(df: pd.DataFrame, id_col: Optional[str] = None, time_c
         "num_units": None,
         "num_periods": None,
         "is_balanced": False,
+        "duplicate_key_rows": 0,
+        "missing_key_rows": 0,
+        "min_periods_per_unit": None,
+        "max_periods_per_unit": None,
         "notes": ""
     }
 
     if not id_col or not time_col:
         # Heuristic detection
-        candidates_id = [c for c in df.columns if any(k in c.lower() for k in ["id", "fips", "county", "state", "firm", "unit"])]
-        candidates_time = [c for c in df.columns if any(k in c.lower() for k in ["year", "time", "date", "month", "quarter", "t"])]
-        if candidates_id and candidates_time:
-            id_col = candidates_id[0]
-            time_col = candidates_time[0]
+        def matches(column: str, keywords: set[str]) -> bool:
+            tokens = set(re.split(r"[^a-z0-9]+", str(column).casefold()))
+            return bool(tokens & keywords)
+
+        candidates_id = [c for c in df.columns if matches(c, {"id", "fips", "county", "state", "firm", "unit"})]
+        candidates_time = [c for c in df.columns if matches(c, {"year", "time", "date", "month", "quarter", "period"})]
+        if (id_col or candidates_id) and (time_col or candidates_time):
+            id_col = id_col or candidates_id[0]
+            time_col = time_col or candidates_time[0]
             res["id_col"] = id_col
             res["time_col"] = time_col
             res["notes"] = f"Heuristically detected panel: ID={id_col}, Time={time_col}"
 
     if id_col and time_col and id_col in df.columns and time_col in df.columns:
         res["is_panel"] = True
-        units = df[id_col].nunique()
-        periods = df[time_col].nunique()
+        keys = df[[id_col, time_col]]
+        missing_key_rows = int(keys.isna().any(axis=1).sum())
+        valid = df.loc[~keys.isna().any(axis=1)]
+        duplicate_key_rows = int(valid.duplicated([id_col, time_col], keep=False).sum())
+        units = valid[id_col].nunique()
+        periods = valid[time_col].nunique()
         res["num_units"] = units
         res["num_periods"] = periods
+        res["duplicate_key_rows"] = duplicate_key_rows
+        res["missing_key_rows"] = missing_key_rows
         
-        counts = df.groupby(id_col)[time_col].nunique()
-        is_balanced = (counts == periods).all() and (len(df) == units * periods)
+        counts = valid.groupby(id_col)[time_col].nunique()
+        if len(counts):
+            res["min_periods_per_unit"] = int(counts.min())
+            res["max_periods_per_unit"] = int(counts.max())
+        is_balanced = (
+            missing_key_rows == 0
+            and duplicate_key_rows == 0
+            and len(counts) > 0
+            and (counts == periods).all()
+            and len(valid) == units * periods
+        )
         res["is_balanced"] = bool(is_balanced)
 
     return res
@@ -150,8 +186,13 @@ def generate_ascii_binscatter(x_bins: List[float], y_bins: List[float], x_label:
 
 def generate_svg_binscatter(x_bins: List[float], y_bins: List[float], x_label: str, y_label: str, filepath: str):
     """
-    Generates a publication-grade standalone SVG scatter chart (100% dependency-free).
+    Generates a standalone SVG of descriptive binned means.
     """
+    if not x_bins or not y_bins or len(x_bins) != len(y_bins):
+        raise ValueError("At least one paired bin is required")
+
+    x_label_xml = xml_escape(str(x_label))
+    y_label_xml = xml_escape(str(y_label))
     width, height = 700, 450
     margin_l, margin_r, margin_t, margin_b = 80, 40, 50, 60
     plot_w = width - margin_l - margin_r
@@ -181,7 +222,7 @@ def generate_svg_binscatter(x_bins: List[float], y_bins: List[float], x_label: s
     svg_parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" width="{width}" height="{height}" style="background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;">',
         f'<rect width="{width}" height="{height}" fill="#ffffff"/>',
-        f'<text x="{width//2}" y="30" font-size="16" font-weight="bold" text-anchor="middle" fill="#1e293b">Stylized Fact: Binned Scatterplot ({y_label} vs. {x_label})</text>',
+        f'<text x="{width//2}" y="30" font-size="16" font-weight="bold" text-anchor="middle" fill="#1e293b">Descriptive Binned Means ({y_label_xml} vs. {x_label_xml})</text>',
         
         # Grid lines
         f'<line x1="{margin_l}" y1="{margin_t}" x2="{margin_l}" y2="{margin_t+plot_h}" stroke="#cbd5e1" stroke-width="1.5"/>',
@@ -202,8 +243,8 @@ def generate_svg_binscatter(x_bins: List[float], y_bins: List[float], x_label: s
         )
 
     # Axis Labels
-    svg_parts.append(f'<text x="{margin_l + plot_w//2}" y="{height - 15}" font-size="13" font-weight="600" text-anchor="middle" fill="#334155">{x_label}</text>')
-    svg_parts.append(f'<text x="25" y="{margin_t + plot_h//2}" font-size="13" font-weight="600" text-anchor="middle" transform="rotate(-90 25 {margin_t + plot_h//2})" fill="#334155">{y_label}</text>')
+    svg_parts.append(f'<text x="{margin_l + plot_w//2}" y="{height - 15}" font-size="13" font-weight="600" text-anchor="middle" fill="#334155">{x_label_xml}</text>')
+    svg_parts.append(f'<text x="25" y="{margin_t + plot_h//2}" font-size="13" font-weight="600" text-anchor="middle" transform="rotate(-90 25 {margin_t + plot_h//2})" fill="#334155">{y_label_xml}</text>')
     
     # Legend
     svg_parts.append(
@@ -218,27 +259,32 @@ def generate_svg_binscatter(x_bins: List[float], y_bins: List[float], x_label: s
 
 def generate_latex_table(summary_df: pd.DataFrame) -> str:
     """
-    Exports summary stats to publication-ready LaTeX tabular syntax.
+    Exports summary stats to LaTeX tabular syntax.
     """
     lines = [
         r"\begin{table}[htbp]",
         r"\centering",
         r"\caption{Descriptive Summary Statistics}",
         r"\label{tab:summary_stats}",
-        r"\begin{tabular}{lrrrrrrrr}",
+        r"\begin{tabular}{lrrrrrrr}",
         r"\hline\hline",
         r"Variable & Obs & Mean & Std. Dev. & Min & Median & Max & Missing \\",
         r"\hline"
     ]
     for _, row in summary_df.iterrows():
-        var_name = str(row["Variable"]).replace("_", r"\_")
+        replacements = {
+            "\\": r"\textbackslash{}", "&": r"\&", "%": r"\%", "$": r"\$",
+            "#": r"\#", "_": r"\_", "{": r"\{", "}": r"\}",
+            "~": r"\textasciitilde{}", "^": r"\textasciicircum{}",
+        }
+        var_name = "".join(replacements.get(char, char) for char in str(row["Variable"]))
         obs = f"{row['Obs']:,}"
         mean = f"{row['Mean']:.3f}" if not pd.isna(row['Mean']) else "-"
         sd = f"{row['Std. Dev.']:.3f}" if not pd.isna(row['Std. Dev.']) else "-"
         min_v = f"{row['Min']:.3f}" if not pd.isna(row['Min']) else "-"
         med = f"{row['Median']:.3f}" if not pd.isna(row['Median']) else "-"
         max_v = f"{row['Max']:.3f}" if not pd.isna(row['Max']) else "-"
-        miss = str(row["Missing %"])
+        miss = str(row["Missing %"]).replace("%", r"\%")
         lines.append(f"{var_name} & {obs} & {mean} & {sd} & {min_v} & {med} & {max_v} & {miss} \\\\")
     lines.extend([
         r"\hline\hline",
@@ -248,8 +294,18 @@ def generate_latex_table(summary_df: pd.DataFrame) -> str:
     ])
     return "\n".join(lines)
 
+
+def compute_binned_means(df: pd.DataFrame, x: str, y: str, bins: int) -> pd.DataFrame:
+    """Return quantile-binned means or an empty frame when X has no variation."""
+    sub = df[[x, y]].dropna().copy()
+    if len(sub) < 5 or sub[x].nunique() < 2 or bins < 2:
+        return pd.DataFrame(columns=[x, y])
+    nbins = min(bins, max(2, len(sub) // 2), sub[x].nunique())
+    sub["bin"] = pd.qcut(sub[x], q=nbins, duplicates="drop")
+    return sub.groupby("bin", observed=True).agg({x: "mean", y: "mean"}).reset_index(drop=True)
+
 def main():
-    parser = argparse.ArgumentParser(description="Econ Data Profiler: Summary Statistics & Stylized Facts")
+    parser = argparse.ArgumentParser(description="Econ Data Profiler: panel checks, summary statistics, and descriptive binned means")
     parser.add_argument("--data", "-d", required=True, help="Path to input data file (.csv, .dta, .parquet, .xlsx)")
     parser.add_argument("--vars", "-v", nargs="+", help="Specific variables to profile (default: all numeric)")
     parser.add_argument("--id", type=str, help="Panel individual/unit ID column name")
@@ -283,6 +339,15 @@ def main():
         print(f"[Error] Failed to load {data_path}: {e}")
         sys.exit(1)
 
+    requested = {"id": args.id, "time": args.time, "x": args.x, "y": args.y}
+    for index, column in enumerate(args.vars or []):
+        requested[f"vars[{index}]"] = column
+    try:
+        validate_columns(df, requested)
+    except ValueError as exc:
+        print(f"[Error] {exc}")
+        sys.exit(2)
+
     os.makedirs(args.out_dir, exist_ok=True)
 
     # 1. Check Panel Structure
@@ -299,6 +364,9 @@ def main():
         print(f"Unique Time Periods (T):      {panel_info['num_periods']:,}")
         print(f"Theoretical Obs (N x T):      {panel_info['num_units'] * panel_info['num_periods']:,}")
         print(f"Panel Balance Status:         {balance_str}")
+        print(f"Duplicate ID-Time Rows:       {panel_info['duplicate_key_rows']:,}")
+        print(f"Rows Missing Panel Keys:      {panel_info['missing_key_rows']:,}")
+        print(f"Periods per Unit (Min/Max):   {panel_info['min_periods_per_unit']} / {panel_info['max_periods_per_unit']}")
     else:
         print("Panel Structure:              Cross-sectional or unidentified time/unit keys.")
 
@@ -323,33 +391,23 @@ def main():
             f.write(latex_code + "\n")
         print(f"\n[+] Saved LaTeX table to: {tex_path}")
 
-    # 3. Binned Scatterplot Visualization
+    # 3. Descriptive binned means visualization
     if args.x and args.y:
-        if args.x not in df.columns or args.y not in df.columns:
-            print(f"[Warning] Specified x ('{args.x}') or y ('{args.y}') not in columns. Skipping binned scatterplot.")
+        binned = compute_binned_means(df, args.x, args.y, args.bins)
+        if binned.empty:
+            print("[Warning] Binned means require at least five observations, two bins, and variation in X.")
         else:
-            sub = df[[args.x, args.y]].dropna()
-            if len(sub) < 5:
-                print("[Warning] Insufficient non-missing observations for binned scatterplot.")
-            else:
-                nbins = min(args.bins, len(sub) // 2)
-                sub["bin"] = pd.qcut(sub[args.x], q=nbins, duplicates="drop")
-                binned = sub.groupby("bin", observed=True).agg({args.x: "mean", args.y: "mean"}).reset_index()
-                
-                x_vals = binned[args.x].tolist()
-                y_vals = binned[args.y].tolist()
+            x_vals = binned[args.x].tolist()
+            y_vals = binned[args.y].tolist()
+            ascii_plot = generate_ascii_binscatter(x_vals, y_vals, args.x, args.y)
+            print("\n" + "=" * 60)
+            print(f"📈 DESCRIPTIVE BINNED MEANS ({args.y} vs. {args.x})")
+            print("=" * 60)
+            print(ascii_plot)
 
-                # ASCII Plot in Terminal
-                ascii_plot = generate_ascii_binscatter(x_vals, y_vals, args.x, args.y)
-                print("\n" + "=" * 60)
-                print(f"📈 STYLIZED FACT: BINNED SCATTERPLOT ({args.y} vs. {args.x})")
-                print("=" * 60)
-                print(ascii_plot)
-
-                # Standalone SVG Plot
-                svg_path = os.path.join(args.out_dir, f"binscatter_{args.y}_vs_{args.x}.svg")
-                generate_svg_binscatter(x_vals, y_vals, args.x, args.y, svg_path)
-                print(f"\n[+] Publication-grade SVG vector plot saved to: {svg_path}")
+            svg_path = os.path.join(args.out_dir, f"descriptive_binned_means_{args.y}_vs_{args.x}.svg")
+            generate_svg_binscatter(x_vals, y_vals, args.x, args.y, svg_path)
+            print(f"\n[+] Descriptive SVG saved to: {svg_path}")
 
     print("\n" + "=" * 60)
     print(f"✅ Profiling complete. Artifacts saved in directory: '{args.out_dir}'")

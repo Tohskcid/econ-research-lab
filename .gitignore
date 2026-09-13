@@ -12,6 +12,7 @@ venv/
 output/
 test_output/
 *.csv
+!tests/fixtures/*.csv
 *.dta
 *.parquet
 *.xlsx
