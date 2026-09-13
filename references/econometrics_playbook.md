@@ -6,13 +6,12 @@
 
 ## 一、 內生性四大來源與防禦矩陣 (Endogeneity Taxonomy)
 
-任何迴歸模型若未妥善處理內生性（$Cov(X, arepsilon) 
-eq 0$），估計量將不具因果推論力：
+任何迴歸模型若未妥善處理內生性（$Cov(X,  arepsilon) \eq 0$），估計量將不具因果推論力：
 
 | 內生性來源 | 典型情境 | 數學偏差方向 | 防禦與解決方案 |
 | :--- | :--- | :--- | :--- |
-| **遺漏變數偏差 (OVB)** | 能力未控制、地區文化、非觀測衝擊 | $	ext{plim} \hat{eta}_{OLS} - eta = \gamma rac{	ext{Cov}(X, W)}{	ext{Var}(X)}$ | 高維度固定效應 (Two-way FE)、Oster (2019) 係數穩定性檢定、工具變數 |
-| **逆向因果 / 聯立性 (Reverse Causality)** | 治安支出與犯罪率、資料中心進駐與電價雙向影響 | 係數符號反轉或大幅高估 | 政策衝擊 (DiD)、外生天災衝擊、歷史沉沒成本/地理稟賦作為工具變數 |
+| **遺漏變數偏差 (OVB)** | 能力未控制、地區文化、非觀測衝擊 | $\text{plim} \hat{ eta}_{OLS} -  eta = \gamma \frac{\text{Cov}(X, W)}{\text{Var}(X)}$ | 高維度固定效應 (Two-way FE)、Oster (2019) 係數穩定性檢定、工具變數 |
+| **逆向因果 / 聯立性 (Reverse Causality)** | 警力治安支出與犯罪率、政府研發補貼與企業生產力、貨幣政策利率與通膨預期雙向反饋 | 係數符號反轉或嚴重偏誤 | 政策衝擊 (DiD)、外生天災/政策斷點衝擊、歷史沉沒成本/地理稟賦作為工具變數 |
 | **選擇性偏差與分流 (Selection & Sorting)** | 企業自願申請補貼、高技能人口遷徙至特定城市 | 樣本自選擇導致殘差條件期望值非零 | Heckman 兩階段修正、邊界斷點 (Spatial RDD)、傾向評分配對 (PSM/CEM) |
 | **衡量誤差 (Measurement Error)** | 調查收入低報、代理變數失真 | 古典誤差導致向零收縮衰減偏差 (Attenuation Bias) | 多指標整合、結構估計、高品質行政登記資料 (Administrative Data) |
 

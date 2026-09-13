@@ -25,6 +25,20 @@ However, existing LLM workflows suffer from two major pain points:
 
 ---
 
+## 🌐 General-Purpose Across All Economics Subfields
+
+`econ-research-lab` is designed from the ground up as a general-purpose academic workbench, equally powerful whether you study micro, macro, finance, or theoretical mechanisms:
+
+- **Applied Microeconomics**: Labor, Public Finance, Health, Education, Urban/Regional, Environmental & Energy Economics.
+- **Macroeconomics & Monetary Economics**: Monetary Policy Shocks, Fiscal Multipliers, Business Cycles, Inflation Dynamics, Open-Economy DSGE.
+- **Industrial Organization (IO)**: Market Structure, Demand Estimation (BLP), Merger Simulations, Digital Platform Competition.
+- **International Trade & Spatial Economics**: Gravity Models, Tariff Impacts, Global Value Chains (GVC), Trade Shocks & Bartik Local Exposures.
+- **Corporate Finance & Banking**: Capital Structure, Financial Intermediation, Credit Allocation, FinTech, Corporate Governance.
+- **Development Economics & Political Economy**: Randomized Controlled Trials (RCTs), Institutional Persistence, Governance & Public Choice.
+- **Microeconomic Theory & Mechanism Design**: Information Economics, Contract Theory, Matching & Auction Design, Behavioral Game Theory.
+
+---
+
 ## 👥 Simulated Research Team (Multi-Agent Architecture)
 
 | Agent Role | Title | Core Responsibilities |
@@ -161,11 +175,11 @@ python3 scripts/journal_matcher.py --list-tier "A+"
 ```bash
 # Run panel audit, compute Table 1 (Markdown + LaTeX), and plot binned scatterplot
 python3 scripts/econ_data_profiler.py \
-  --data "data/county_panel.csv" \
-  --id "fips_county" \
+  --data "data/panel_data.csv" \
+  --id "unit_id" \
   --time "year" \
-  --x "datacenter_active" \
-  --y "elec_price_cents_kwh" \
+  --x "treatment_exposure" \
+  --y "outcome_variable" \
   --latex \
   --out-dir "output"
 ```

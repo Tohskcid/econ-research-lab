@@ -40,6 +40,8 @@ tags:
 4. **具備自動回退機制的閉環驗證 (Closed-Loop Feedback)**：
    - 資料真正缺失時先尋求頂刊認可的代理變數，若無則自動回退 Stage 1。
    - 實證結果若違背經濟直覺且無法提出合理機制解釋，自動回退 Stage 1 重新擬定方向。
+5. **涵蓋經濟學所有領域之通用架構 (General-Purpose Academic Workbench)**：
+   - 不限於單一專題，全面通用於：個體應用（勞動、公共財政、健康、教育、環境、區域都市）、總體與貨幣經濟（貨幣衝擊、景氣循環、財政乘數）、產業組織（需求估計、市場結構、反托拉斯）、國際貿易與空間經濟（重力模型、關稅衝擊、GVC）、金融經濟學（資產定價、公司金融、銀行）、發展與政治經濟學（RCT、制度演進）、以及微觀經濟理論與機制設計。
 
 ---
 
@@ -95,12 +97,12 @@ flowchart TD
 1. **實證研究（Empirical）審查**：
    - 該研究方向是否已被學界完全做透？
    - 若已被研究過，是否存在邊際創新（Margin of Contribution）：
-     - **新地理/制度環境**：例如美國已有研究，但在亞洲、臺灣特有電網管制制度下是否具有異質性？
-     - **新時間跨度 / 新外生衝擊**：例如納入生成式 AI 爆發期（2022 年後）的資料中心電力衝擊。
-     - **方法論突破**：前人僅用 OLS 或傳統 TWFE，本研究能否採用最新交錯 DiD 或新工具變數？
+     - **新地理/制度環境**：例如某項政策或現象在歐美已有研究，但在新興市場、亞洲或特定法規管制體制下是否具有顯著異質性？
+     - **新時間跨度 / 新外生衝擊**：例如納入總體經濟結構轉變、重大政策變革、新科技革命或外生天災危機等新時間窗口。
+     - **方法論突破**：前人僅用 OLS 或傳統 TWFE，本研究能否採用最新交錯 DiD、雙重穩健估計量或新工具變數克服內生性？
 2. **理論研究（Theoretical）審查**：
-   - 核心賽局機制、合約結構或總體市場摩擦是否已被經典文獻求解？
-   - 本研究提出的新摩擦（Information Asymmetry, Externalities, Network Effects）能否推導出不同於傳統文獻的特異性命題（Novel Predictions）？
+   - 核心賽局機制、合約結構、行為偏誤或總體市場摩擦是否已被經典文獻求解？
+   - 本研究提出的新摩擦（Information Asymmetry, Search Frictions, Externalities, Network Effects）能否推導出不同於傳統文獻的特異性命題（Novel Predictions）？
 3. **輸出交付物**：
    - 建立並填寫 `templates/research_canvas.md` 第 1 與第 2 節（字數控制於 300 Tokens 內）。
 
@@ -201,9 +203,9 @@ flowchart TD
    - 估計係數的**符號 (Sign)** 與 **經濟彈性幅度 (Magnitude)** 是否合乎經濟常理？
    - 是否存在混淆管道（Confounding Mechanisms）？
 3. **異象與矛盾處理解析 (Handling Empirical Puzzles)**：
-   - 若實證結果出現與傳統常理相悖之現象（例如：資料中心進駐後當地用電量大增，但工業平均電價反而下跌）：
-     - **提出經濟學解釋**：是否存在規模經濟效益（Capacity Expansion Returns）、大用戶專屬長期購售電合約（PPA）引進了便宜再生能源、或是交叉補貼機制？
-     - **檢驗解釋合理性**：該解釋是否具有在地公用事業法規或制度文獻佐證？
+   - 若實證結果出現與傳統常理或經典模型相悖之現象（例如：加徵關稅後進口量未減反增、最低工資上調後低技能就業反而增加、補貼政策出台後企業創新產出反而停滯）：
+     - **提出經濟學解釋**：是否存在預期效應（Anticipation / Front-running）、市場競爭結構特徵（如勞動市場買方獨占 Monopsony Power）、一般均衡擠出效應（General Equilibrium Crowding-out）或隱性合約限制？
+     - **檢驗解釋合理性**：該解釋是否具有微觀微調文獻、制度架構或行業特徵之理論與經驗佐證？
 4. **頂刊匿名評審模擬 (Simulated Referee Report)**：
    - `Agent Referee` 依據 `templates/referee_report_template.md` 提出 3 大因果與概念質疑、5 大技術檢驗。
 5. **閉環裁決 (Final Verdict)**：
@@ -219,7 +221,7 @@ flowchart TD
 | **期刊評比快速查詢** | `python3 .agents/skills/econ-research-lab/scripts/journal_matcher.py --check "AER"` | 秒查 Top 5 / A+ / A / TSSCI |
 | **列出特定等級期刊** | `python3 .agents/skills/econ-research-lab/scripts/journal_matcher.py --list-tier "A+"` | 查閱特定評比清單 |
 | **自動資料審計與 Table 1** | `python3 .agents/skills/econ-research-lab/scripts/econ_data_profiler.py -d data.csv --latex -o output` | 生成追蹤診斷與 LaTeX/MD 表格 |
-| **繪製風格化事實散佈圖** | `python3 .agents/skills/econ-research-lab/scripts/econ_data_profiler.py -d data.csv -x treatment -y price -o output` | 終端 ASCII + SVG 向量圖 |
+| **繪製風格化事實散佈圖** | `python3 .agents/skills/econ-research-lab/scripts/econ_data_profiler.py -d data.csv -x treatment_exposure -y outcome_var -o output` | 終端 ASCII + SVG 向量圖 |
 
 ---
 
