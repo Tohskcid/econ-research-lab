@@ -8,14 +8,15 @@ Freeze primitives, domains, timing, information, strategy spaces, equilibrium or
 
 ## Workflow
 
-1. Solve the smallest benchmark and reproduce known limiting cases.
-2. State the conjecture with complete quantifiers and hypotheses.
-3. Search analytically and computationally for boundary cases or counterexamples.
-4. Write a paper proof sketch that identifies the critical lemmas.
-5. Formalize the definitions and theorem in Lean 4 + Mathlib.
-6. Run `python3 scripts/check_lean_proof.py path/to/Theorem.lean` and preserve the checked source and command output.
-7. Derive comparative statics, welfare implications, and testable predictions only within the proved domain.
-8. Run the shared referee checkpoint against assumptions, equilibrium selection, and necessity of conditions.
+1. Map the theorem's lineage: nearest propositions, definitions, proof strategies, counterexamples, and the exact assumption or conclusion changed.
+2. Reproduce the closest known benchmark and limiting cases before claiming an extension.
+3. State the conjecture with complete quantifiers and hypotheses.
+4. Search analytically and computationally for boundary cases or counterexamples.
+5. Write a paper proof sketch that identifies the critical lemmas.
+6. Formalize the definitions and theorem in Lean 4 + Mathlib.
+7. Run `python3 scripts/check_lean_proof.py path/to/Theorem.lean` and preserve the checked source and command output.
+8. Derive comparative statics, welfare implications, and testable predictions only within the proved domain.
+9. Run the shared referee checkpoint against assumptions, equilibrium selection, and necessity of conditions.
 
 ## Proof status
 
@@ -27,6 +28,10 @@ Use exactly these labels:
 - `disproved`: a valid counterexample violates the claim under its stated assumptions.
 
 Lean 4 + Mathlib is the sole formal proof authority for this skill. The checker rejects local `sorry`, `admit`, `sorryAx`, and `axiom` escapes before invoking `lake env lean` (or `lean` when no Lake project exists). Computer algebra or numerical search may simplify expressions and find counterexamples, but cannot upgrade proof status. If Lean is absent, do not install it without authorization and do not label a theorem formally proved.
+
+## Independent reconstruction
+
+When asked to prove a published claim without consulting its proof, freeze the statement, definitions, and allowed background results before proof search. Keep the author proof inaccessible to the proof attempt; use a fresh context or independent agent when available. Run a separate counterexample attack. Compare with the author proof only after saving the independent argument. If the acting agent has already seen the proof, disclose contamination and do not call its reconstruction blind.
 
 ## Iteration
 

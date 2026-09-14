@@ -21,7 +21,14 @@ class SkillContractTests(unittest.TestCase):
             self.assertTrue((ROOT / link).is_file(), link)
 
     def test_core_contract_invariants_are_present(self):
-        for phrase in ["Without an explicit autonomy budget", "Do not optimize p-values", "Lean 4 + Mathlib"]:
+        for phrase in [
+            "Without an explicit autonomy budget",
+            "Do not optimize p-values",
+            "Lean 4 + Mathlib",
+            "claim-centered literature map",
+            "mathematical obligations",
+            "never rewrite skill instructions during an ordinary research run",
+        ]:
             self.assertIn(phrase, self.body)
 
     def test_core_is_not_bound_to_a_specific_research_topic(self):

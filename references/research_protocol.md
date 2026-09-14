@@ -2,6 +2,20 @@
 
 Use this reference when synthesizing literature, recording experiments, delegating work, or running the final adversarial review.
 
+## Literature checkpoint
+
+Set the review scope from the question, mechanism, estimand or theorem, method, population/model class, and search cutoff. Search primary papers and credible working papers using concept synonyms, backward references, and forward citations. Record queries, sources searched, dates, access status, and inclusion reasons.
+
+Synthesize by claim rather than paper order. For each close work, capture its question, result, assumptions, design or proof method, scope, and relation to the proposed contribution. For empirical work compare estimands, assignment mechanisms, data, and external validity; for theory compare primitives, solution concepts, theorem statements, and which assumptions strengthen or relax prior results. Surface disagreements and negative results. Do not claim novelty until the nearest alternatives and their differences have been checked.
+
+Scale depth to the deliverable: a feasibility audit may use a compact map; a literature review or novelty claim requires reproducible coverage and explicit search limitations.
+
+## Mathematical reasoning checkpoint
+
+Create only the obligations needed to support the claim. Depending on the mode these may include well-defined domains, existence, uniqueness, identification, rank or support conditions, continuity/convexity, invariance, estimator properties, equilibrium mappings, comparative statics, or bounds.
+
+For each obligation state the proposition, assumptions, argument or checker, status, and unresolved gap. Separate maintained assumptions from derived implications. Test boundary cases and seek counterexamples before strengthening a claim. Symbolic algebra, simulation, and numerical examples may check derivations or find failures but do not replace a proof. Use the proof-status rules in `theory.md` whenever presenting a result as a theorem.
+
 ## Evidence
 
 For each material claim record: source, exact supported claim, research design or proof status, population/model scope, limitation, and verification date. Prefer primary sources. Distinguish published evidence, working papers, official data, documentation, and conjecture. Citation count and journal tier are metadata, not credibility or inclusion rules.

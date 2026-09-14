@@ -8,12 +8,14 @@ Freeze the economic environment, parameterization, identified and calibrated par
 
 ## Baseline and validity gates
 
-1. Reproduce a transparent benchmark and limiting cases.
-2. Verify units, constraints, equilibrium conditions, and accounting identities.
-3. Report convergence, sensitivity to starting values, numerical error, runtime, and seed stability.
-4. Separate in-sample targeted moments from holdout validation.
-5. Diagnose identification or observational equivalence before interpreting parameters.
-6. For counterfactuals, state which policy-invariant primitives and equilibrium responses carry the result.
+1. Map the model lineage, inherited primitives, identification arguments, targeted moments, and competing mechanisms.
+2. Reproduce a transparent benchmark and limiting cases.
+3. Verify units, constraints, equilibrium conditions, and accounting identities.
+4. Establish the relevant existence, uniqueness, equilibrium-mapping, rank, or local/global identification properties analytically where feasible; otherwise label them as numerical evidence or unresolved obligations.
+5. Report convergence, sensitivity to starting values, numerical error, runtime, and seed stability.
+6. Separate in-sample targeted moments from holdout validation.
+7. Diagnose identification or observational equivalence before interpreting parameters.
+8. For counterfactuals, state which policy-invariant primitives and equilibrium responses carry the result.
 
 Fit improvement cannot compensate for non-convergence, failed identities, weaker identification, or an altered validation sample.
 

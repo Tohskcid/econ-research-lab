@@ -5,6 +5,7 @@
 The design adapts two useful ideas:
 
 - [autoresearch](https://github.com/karpathy/autoresearch): freeze the evaluation harness, establish a baseline, test one attributable change, and keep an experiment ledger.
+- [SkillRL](https://github.com/aiming-lab/SkillRL): distill compact lessons from successful and failed runs, then evolve skills against fixed validation.
 - [ponytail](https://github.com/dietrichgebert/ponytail): reuse what exists and add only the smallest solution that survives validation.
 
 Unlike a model-training benchmark, economics rarely has one sufficient score. The research contract therefore fixes mode-specific validity gates before iteration; statistical significance is never the optimization target.
@@ -12,10 +13,11 @@ Unlike a model-training benchmark, economics rarely has one sufficient score. Th
 ## Workflow
 
 1. Define the research contract and autonomy budget.
-2. Route to empirical, theory, or structural/computational guidance.
-3. Establish a reproducible baseline.
-4. Iterate through hypothesis → minimal test → validation → ledger.
-5. Deliver the best result, rejected paths, uncertainty, and reproducibility instructions.
+2. Build a claim-centered literature map and mathematical-obligation list.
+3. Route to empirical, theory, or structural/computational guidance.
+4. Establish a reproducible baseline.
+5. Iterate through hypothesis → minimal test → validation → ledger.
+6. Deliver the best result, rejected paths, uncertainty, and reproducibility instructions.
 
 The lead agent may delegate independent searches or audits when the host supports subagents. It otherwise performs the same checkpoints sequentially.
 
@@ -62,6 +64,17 @@ Verify a Lean theorem before labeling it formally proved:
 python3 scripts/check_lean_proof.py path/to/Theorem.lean
 ```
 
+Optionally use [MarkItDown](https://github.com/microsoft/markitdown) for first-pass PDF navigation:
+
+```bash
+.venv/bin/python -m pip install -e '.[pdf]'
+.venv/bin/markitdown paper.pdf -o paper.md
+```
+
+The Markdown is not authoritative for equations or proof-critical symbols; verify those against rendered PDF pages.
+
+Skill evolution uses the lightweight offline protocol in `references/skill_evolution.md`. It does not require SkillRL's SFT/RL training stack and never promotes a candidate that fails a fixed validity gate.
+
 ## Validation
 
 ```bash
@@ -77,6 +90,8 @@ references/empirical.md    empirical validity gates
 references/theory.md       Lean-backed theory workflow
 references/structural.md   structural/computational workflow
 references/research_protocol.md  evidence and review protocol
+references/pdf_ingestion.md      optional PDF ingestion and verification
+references/skill_evolution.md    offline failure-driven skill evolution
 scripts/                    optional deterministic utilities
 tests/                      CLI and invariant checks
 ```

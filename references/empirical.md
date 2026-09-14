@@ -10,11 +10,16 @@ For prediction, freeze the split, target metric, leakage rules, and baseline. Fo
 
 ## Baseline and validity gates
 
-1. Audit keys, duplicates, missingness, support, treatment timing, and outcome construction.
-2. Produce descriptive facts without causal language.
-3. Fit the simplest specification that identifies the estimand under stated assumptions.
-4. Match inference to assignment and dependence; record cluster counts and spatial or temporal correlation.
-5. Define falsification and sensitivity tests from the actual threat, not a universal checklist.
+1. Use the shared literature checkpoint to compare the closest estimands, designs, data settings, identifying assumptions, and conflicting findings.
+2. Audit keys, duplicates, missingness, support, treatment timing, and outcome construction.
+3. Produce descriptive facts without causal language.
+4. Fit the simplest specification that identifies the estimand under stated assumptions.
+5. Match inference to assignment and dependence; record cluster counts and spatial or temporal correlation.
+6. Define falsification and sensitivity tests from the actual threat, not a universal checklist.
+
+## Mathematical audit
+
+When a conclusion depends on a mathematical property, write the population estimand or identifying moment and derive the mapping from observables under explicit assumptions. Check the relevant support/positivity, rank, functional-form, transformation, weighting, and asymptotic or finite-sample conditions. Verify algebra and limiting cases; seek a data-generating process that breaks the claim. Do not require a formal proof for routine estimation, but do not present an identifying assumption or software output as a proved implication.
 
 Do not use significance as a keep criterion. Compare effect magnitude and uncertainty, identification credibility, out-of-sample performance when relevant, and robustness under predeclared alternatives.
 

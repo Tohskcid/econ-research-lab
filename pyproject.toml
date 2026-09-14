@@ -1,6 +1,6 @@
 [project]
 name = "econ-research-lab-tools"
-version = "2.0.0"
+version = "2.2.0"
 description = "Optional deterministic utilities for the econ-research-lab Agent Skill"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "pandas>=2.0"]
@@ -8,6 +8,7 @@ dependencies = ["numpy>=1.24", "pandas>=2.0"]
 [project.optional-dependencies]
 excel = ["openpyxl>=3.1"]
 parquet = ["pyarrow>=14"]
+pdf = ["markitdown[pdf]>=0.1"]
 
 [tool.setuptools]
 py-modules = []

@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 metadata:
   author: Tohskcid
-  version: "2.0.0"
+  version: "2.2.0"
 ---
 
 # Economics Research Lab
@@ -22,7 +22,9 @@ Act as the lead investigator. Own the research question, coordinate optional spe
 Inspect the project before asking questions. Record or confirm:
 
 - question, mode, and deliverable;
+- literature scope, search cutoff, and claimed contribution;
 - data and estimand, model primitives and target theorem, or structural targets;
+- definitions, assumptions, and mathematical obligations needed for the main claim;
 - files and systems the run may change;
 - fixed validation harness and evidence standard;
 - time, iteration, or cost budget;
@@ -34,23 +36,26 @@ Without an explicit autonomy budget, complete only the baseline, feasibility aud
 
 ## Route by method
 
-Read only the reference required by the contract:
+Always read the compact shared protocol, then only the reference for the active mode:
 
+- Shared literature, evidence, mathematical-reasoning, and referee protocol: [references/research_protocol.md](references/research_protocol.md)
 - Empirical or causal work: [references/empirical.md](references/empirical.md)
 - Pure theory: [references/theory.md](references/theory.md)
 - Structural, calibration, simulation, or computational work: [references/structural.md](references/structural.md)
-- Literature synthesis, evidence grading, compact handoffs, and adversarial review: [references/research_protocol.md](references/research_protocol.md)
 
 For spatial or temporal aggregation details, consult [references/data_granularity_guide.md](references/data_granularity_guide.md) only when granularity is material. Use [references/journal_rankings_2019.md](references/journal_rankings_2019.md) and `scripts/journal_matcher.py` only when the user requests Taiwan journal evaluation or ranking metadata. A journal tier is never an inclusion rule.
 
+For research PDFs, read [references/pdf_ingestion.md](references/pdf_ingestion.md). When explicitly asked to evaluate or evolve this skill, read [references/skill_evolution.md](references/skill_evolution.md); never rewrite skill instructions during an ordinary research run.
+
 ## Research loop
 
-1. Establish a reproducible baseline with the fixed harness.
-2. State one hypothesis and the result that would reject it.
-3. Make the smallest attributable change within the contract.
-4. Run validation and record `keep`, `discard`, `inconclusive`, `blocked`, or `crash`.
-5. Keep a change only when it improves the contract's criteria without weakening identification, proof validity, numerical stability, or reproducibility.
-6. Continue until the budget, milestone, or stop condition is reached; then report the best result, failed paths, uncertainty, and next decision.
+1. Build a claim-centered literature map and list the mathematical obligations that carry the main conclusion.
+2. Establish a reproducible baseline with the fixed harness.
+3. State one hypothesis and the result that would reject it.
+4. Make the smallest attributable change within the contract.
+5. Run validation and record `keep`, `discard`, `inconclusive`, `blocked`, or `crash`.
+6. Keep a change only when it improves the contract's criteria without weakening identification, proof validity, numerical stability, or reproducibility.
+7. Continue until the budget, milestone, or stop condition is reached; then report the best result, failed paths, uncertainty, and next decision.
 
 Do not optimize p-values, rewrite the evaluation harness, or pivot because a result conflicts with intuition. First audit data, code, assumptions, counterexamples, and competing mechanisms.
 
