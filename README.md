@@ -1,6 +1,6 @@
 # Econ Research Lab
 
-`econ-research-lab` is an Agent Skill for running auditable economics research with one accountable lead agent and optional specialist delegation. It supports empirical research, Lean-verified pure theory, and structural or computational work.
+`econ-research-lab` is an Agent Skill for running auditable economics research with one accountable lead agent and optional specialist delegation. It supports empirical research, Lean-verified pure theory, structural or computational work, and on-demand retrieval from a small economics result-card library.
 
 The design adapts selected ideas without importing their full stacks:
 
@@ -25,6 +25,9 @@ flowchart TD
     O -.-> M
     L --> R{Research mode}
     M --> R
+    M --> LIB[(On-demand result library<br/>theorems · estimators · counterexamples)]
+    LIB --> MAP[Assumption mapping<br/>applies · adaptable · not applicable]
+    MAP --> R
 
     R --> E[Empirical<br/>estimand · assignment · inference · refutation]
     R --> T[Pure theory<br/>conjecture · counterexample · Lean proof]
@@ -93,6 +96,18 @@ python3 scripts/journal_matcher.py --check "AER"
 
 The ranking does not determine whether evidence is relevant or credible. Its source is 林明仁、林常青、張俊仁、曹添旺、楊浩彥（2021），〈經濟學門學術期刊評比更新：2019 年〉，《經濟論文叢刊》，49(3), 395–442.
 
+Search the bundled result-card library by research problem:
+
+```bash
+python3 scripts/search_library.py "monotone optimal choice single crossing" --mode theory
+python3 scripts/search_library.py "staggered adoption heterogeneous effects" --mode empirical
+python3 scripts/search_library.py "dynamic discrete choice computation" --mode structural
+python3 scripts/search_library.py --show rust-nested-fixed-point
+python3 scripts/validate_library.py
+```
+
+Search reads only a compact index and returns three candidates by default. Open one selected Markdown card with `--show`; do not scan all cards into context. Use `--show CARD_ID --blind` during an authorized blind reconstruction. It hides proof and solution sections, but the agent must also avoid opening the underlying Markdown directly until its attempt is saved. A match is a candidate solution, not permission to skip primary-source or assumption verification.
+
 Verify a Lean theorem before labeling it formally proved:
 
 ```bash
@@ -141,8 +156,13 @@ references/theory.md       Lean-backed theory workflow
 references/structural.md   structural/computational workflow
 references/research_protocol.md  evidence and review protocol
 references/research_artifacts.md provenance, claim audit, and eval schemas
+references/research_library.md   on-demand result retrieval and blind mode
 references/pdf_ingestion.md      optional PDF ingestion and verification
 references/skill_evolution.md    offline failure-driven skill evolution
+library/index.jsonl             compact result-card search index
+library/papers/*.md             one on-demand Markdown result card per file
+library/catalog.jsonl           paper metadata and source links
+library/relations.jsonl         typed links among result cards
 evals/cases.jsonl                public development cases and validity gates
 scripts/                    optional deterministic utilities
 tests/                      CLI and invariant checks

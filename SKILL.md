@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 metadata:
   author: Tohskcid
-  version: "2.3.0"
+  version: "2.4.0"
 ---
 
 # Economics Research Lab
@@ -48,6 +48,8 @@ Always read the compact shared protocol, then only the reference for the active 
 For spatial or temporal aggregation details, consult [references/data_granularity_guide.md](references/data_granularity_guide.md) only when granularity is material. Use [references/journal_rankings_2019.md](references/journal_rankings_2019.md) and `scripts/journal_matcher.py` only when the user requests Taiwan journal evaluation or ranking metadata. A journal tier is never an inclusion rule.
 
 For research PDFs, read [references/pdf_ingestion.md](references/pdf_ingestion.md). When explicitly asked to evaluate or evolve this skill, read [references/skill_evolution.md](references/skill_evolution.md); never rewrite skill instructions during an ordinary research run.
+
+When a theorem, identification result, estimator, computational method, or counterexample could discharge a research obligation, read [references/research_library.md](references/research_library.md). Search its compact index first and open only the selected Markdown card; treat matches as candidates and verify the primary source before use.
 
 ## Research loop
 

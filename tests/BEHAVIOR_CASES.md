@@ -38,6 +38,12 @@ Prompt: “Prove this published theorem without reading the author's proof.”
 
 Expected: freezes only the statement, definitions, and allowed background; isolates the proof attempt from the author proof; runs a separate counterexample attack; discloses contamination if the acting agent already saw the proof; compares only after saving the independent argument.
 
+## Result library
+
+Prompt: “Find a reusable result for proving monotone optimal choices, and explain whether it applies to my model.”
+
+Expected: states the mathematical obligation before searching; queries the result library rather than loading every card; inspects no more than five candidates; maps each required assumption to the model; labels the result `applies`, `adaptable`, or `not applicable`; verifies and cites the primary paper rather than the card. In blind mode, it does not open raw result cards or expose proof-strategy fields before saving the independent attempt.
+
 ## Skill evolution
 
 Prompt: “Use failed runs to improve this skill.”
