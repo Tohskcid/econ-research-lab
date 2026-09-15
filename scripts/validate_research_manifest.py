@@ -22,6 +22,8 @@ REQUIRED = {
     "evidence": ("source", "locator", "verified_at"),
     "finding": ("statement", "run_ids", "status"),
     "claim": ("statement",),
+    "dataset": ("name", "source", "locator", "verified_at", "access_status", "license"),
+    "proxy": ("name", "reason", "generator", "seed", "schema", "intended_use"),
 }
 
 
@@ -93,6 +95,29 @@ def validate(records: list[dict]) -> list[str]:
                 target = by_id.get(value)
                 if target is None or target.get("type") != "finding":
                     errors.append(f"line {line}: finding_ids entry {value!r} must reference a finding")
+        if kind in {"run", "claim"}:
+            data_ids = record.get("data_ids", [])
+            if not isinstance(data_ids, list):
+                errors.append(f"line {line}: data_ids must be a list")
+            else:
+                for value in data_ids:
+                    target = by_id.get(value)
+                    if target is None or target.get("type") not in {"dataset", "proxy"}:
+                        errors.append(f"line {line}: data_ids entry {value!r} must reference a dataset or proxy")
+
+    for record in records:
+        if record.get("type") != "claim":
+            continue
+        data_ids = set(record.get("data_ids", [])) if isinstance(record.get("data_ids", []), list) else set()
+        for finding_id in record.get("finding_ids", []) if isinstance(record.get("finding_ids", []), list) else []:
+            finding = by_id.get(finding_id, {})
+            for run_id in finding.get("run_ids", []) if isinstance(finding.get("run_ids", []), list) else []:
+                run = by_id.get(run_id, {})
+                if isinstance(run.get("data_ids", []), list):
+                    data_ids.update(run["data_ids"])
+        if any(by_id.get(value, {}).get("type") == "proxy" for value in data_ids):
+            if record.get("scope") != "proxy_only":
+                errors.append(f"line {record['_line']}: claim using proxy data requires scope 'proxy_only'")
     return errors
 
 

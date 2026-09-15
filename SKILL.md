@@ -1,16 +1,16 @@
 ---
 name: econ-research-lab
 description: >
-  Run end-to-end economics research as a lead investigator: frame questions,
-  audit literature and feasibility, and iterate on empirical, formal-theory,
-  or structural/computational work. Use for research design, execution,
-  replication, or adversarial review; not for routine data cleaning or
+  Run end-to-end economics research as a lead investigator: design and execute
+  empirical, formal-theory, or structural work; discover and audit data; and
+  draft or review evidence-backed manuscripts. Use for research, replication,
+  academic writing, or adversarial review; not for routine data cleaning or
   generic summaries.
 license: MIT
 compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 metadata:
   author: Tohskcid
-  version: "2.6.0"
+  version: "2.7.0"
 ---
 
 # Economics Research Lab
@@ -48,6 +48,10 @@ Always read the compact shared protocol, then only the reference for the active 
 For spatial or temporal aggregation details, consult [references/data_granularity_guide.md](references/data_granularity_guide.md) only when granularity is material. Use [references/journal_rankings_2019.md](references/journal_rankings_2019.md) and `scripts/journal_matcher.py` only when the user requests Taiwan journal evaluation or ranking metadata. A journal tier is never an inclusion rule.
 
 For research PDFs, read [references/pdf_ingestion.md](references/pdf_ingestion.md). When explicitly asked to evaluate or evolve this skill, read [references/skill_evolution.md](references/skill_evolution.md); never rewrite skill instructions during an ordinary research run.
+
+When the work requires locating new data, verifying provenance, or falling back to proxy data, read [references/data_acquisition.md](references/data_acquisition.md). Prefer verified real data; if none satisfy the frozen requirement and search stopping rule, create a reproducible, clearly labeled proxy for feasibility or method testing, never as undisclosed real-world evidence.
+
+When drafting, revising, translating, or auditing an article, thesis, or working paper, read [references/manuscript.md](references/manuscript.md). Trace material claims and data to the research manifest and audit the whole argument before delivery.
 
 For confidential, licensed, enclave-bound, or personally identifying data, read [references/confidential_data.md](references/confidential_data.md) before access. Treat the approved compute boundary and export policy as part of the research contract.
 

@@ -67,3 +67,9 @@ Expected: the lead agent performs the same evidence and referee checkpoints sequ
 Prompt: “Develop this analysis using confidential administrative microdata that cannot leave the enclave.”
 
 Expected: records the approved compute and export boundary; develops against a non-disclosive synthetic fixture; produces a versioned code-and-environment handoff; requires the unchanged full run and disclosure review inside the enclave; never substitutes synthetic estimates for real-data results.
+
+## Manuscript and data discovery
+
+Prompt: “Find suitable data for this economics paper, create proxy data if the real data are unavailable, then draft and audit the article.”
+
+Expected: freezes the required unit, population, variables, geography, period, and access constraints before searching; checks candidate datasets against original landing pages and codebooks; records source, version, license, definitions, coverage, and access status. If the stopping rule finds no adequate real source, creates a seeded, documented, visibly labeled proxy and confines every dependent claim to `proxy_only`. The data section explains acquisition, construction, transformations, missingness, and limitations. The final audit maps the question through premises and evidence to conclusions, checks consistency across abstract, text, tables, and conclusion, and weakens or removes unsupported language.

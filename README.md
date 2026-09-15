@@ -1,6 +1,6 @@
 # Econ Research Lab
 
-`econ-research-lab` is an Agent Skill for running auditable economics research with one accountable lead agent and optional specialist delegation. It supports empirical research, Lean-verified pure theory, structural or computational work, and on-demand retrieval from a small economics result-card library.
+`econ-research-lab` is an Agent Skill for running auditable economics research with one accountable lead agent and optional specialist delegation. It supports empirical research, Lean-verified pure theory, structural or computational work, verified data discovery with a labeled proxy fallback, evidence-backed manuscript drafting, and on-demand retrieval from a small economics result-card library.
 
 The design adapts selected ideas without importing their full stacks:
 
@@ -37,6 +37,9 @@ flowchart TD
     PDF -.-> M
     GRAN[On-demand data granularity guide] -.-> E
     EST[On-demand estimator contract<br/>backend · FE · variance · versions] -.-> E
+    DATA[On-demand data discovery<br/>source · codebook · license · version] -.-> E
+    DATA -.-> X
+    DATA --> PROXY[No adequate real source<br/>seeded labeled proxy · limited claims]
     SAFE[Restricted-data boundary<br/>synthetic handoff · enclave run · export review] -.-> E
     SAFE -.-> X
     JR[Optional Taiwan journal metadata] -.-> L
@@ -49,7 +52,8 @@ flowchart TD
     V --> K{Keep / discard /<br/>inconclusive / blocked / crash}
     K -->|budget remains| H
     K -->|stop condition| A[Referee and claim audit]
-    A --> D[Deliver evidence package<br/>best result · failed paths · uncertainty]
+    A --> W[On-demand manuscript<br/>claim/data traceability · argument audit]
+    W --> D[Deliver evidence package<br/>paper · failed paths · uncertainty]
 
     K -.-> P[(Experiment ledger<br/>provenance graph)]
     L -.-> P
@@ -137,7 +141,11 @@ Validate a JSONL research provenance graph and audit Markdown claim markers:
 ```bash
 python3 scripts/validate_research_manifest.py research/manifest.jsonl
 python3 scripts/audit_claims.py manuscript.md research/manifest.jsonl --strict-numbers
+python3 scripts/audit_claims.py manuscript.md research/manifest.jsonl \
+  --strict-numbers --require-data-markers  # empirical/structural manuscripts
 ```
+
+The manifest can record verified `dataset` and generated `proxy` objects. Manuscripts use `[data:DATA_ID]` markers alongside claim markers; the validator rejects real-world claims whose recorded analysis depends on proxy data unless the claim is explicitly scoped `proxy_only`. See `references/data_acquisition.md` and `references/manuscript.md`.
 
 Aggregate independently observed behavior gates for a candidate skill version:
 
@@ -168,6 +176,7 @@ The repository supplies cases and graders but intentionally does not embed a pro
 - The locked Lean harness verifies submitted proof terms, but it does not autoformalize economic prose, generate tactics, run MCTS, or provide a broad economics ontology. Reusable Lean economics primitives are added only when an active checked proof needs them.
 - Public evals detect deterministic contract regressions; an external host must invoke the agent, preserve trajectories, and keep release holdouts private.
 - Restricted data must remain inside its DUA, IRB, enclave, and export boundary. Synthetic fixtures validate code mechanics, not real-data identification, disclosure safety, or estimates.
+- Proxy data are a disclosed fallback for feasibility, code, method, and failure-mode testing. They do not establish real-population magnitudes, causal effects, external validity, or policy conclusions.
 
 ## Validation
 
@@ -185,6 +194,8 @@ references/theory.md       Lean-backed theory workflow
 references/lean_harness.md locked theorem contract and verifier loop
 references/estimation_backends.md backend-neutral estimation contract
 references/confidential_data.md restricted-data and enclave protocol
+references/data_acquisition.md verified data discovery and proxy fallback
+references/manuscript.md     article drafting and whole-argument audit
 references/eval_adapter.md external Agent and DGP eval contract
 references/structural.md   structural/computational workflow
 references/research_protocol.md  evidence and review protocol

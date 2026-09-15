@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 MARKER = re.compile(r"\[claim:([A-Za-z0-9_.:-]+)\]")
+DATA_MARKER = re.compile(r"\[data:([A-Za-z0-9_.:-]+)\]")
 NUMBER = re.compile(r"(?<![\w/])(?:[$€£¥]\s*)?\d+(?:[.,]\d+)*(?:\s*%)?")
 LINK_TARGET = re.compile(r"\]\([^)]+\)")
 
@@ -20,6 +21,17 @@ def claim_ids(path: Path) -> set[str]:
             continue
         record = json.loads(raw)
         if record.get("type") == "claim" and isinstance(record.get("id"), str):
+            ids.add(record["id"])
+    return ids
+
+
+def data_ids(path: Path) -> set[str]:
+    ids: set[str] = set()
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip():
+            continue
+        record = json.loads(raw)
+        if record.get("type") in {"dataset", "proxy"} and isinstance(record.get("id"), str):
             ids.add(record["id"])
     return ids
 
@@ -41,11 +53,23 @@ def prose_paragraphs(text: str):
         buffer.append(line.strip())
 
 
-def audit(markdown: str, known: set[str], strict_numbers: bool) -> list[str]:
+def audit(
+    markdown: str,
+    known: set[str],
+    strict_numbers: bool,
+    known_data: set[str] | None = None,
+    require_data_markers: bool = False,
+) -> list[str]:
     errors: list[str] = []
     used = set(MARKER.findall(markdown))
     for marker in sorted(used - known):
         errors.append(f"unknown claim marker {marker!r}")
+    if known_data is not None:
+        used_data = set(DATA_MARKER.findall(markdown))
+        for marker in sorted(used_data - known_data):
+            errors.append(f"unknown data marker {marker!r}")
+        if require_data_markers and not used_data:
+            errors.append("manuscript requires at least one [data:ID] marker")
     if strict_numbers:
         for line, paragraph in prose_paragraphs(markdown):
             searchable = LINK_TARGET.sub("]", paragraph)
@@ -59,6 +83,7 @@ def main() -> int:
     parser.add_argument("markdown", type=Path)
     parser.add_argument("manifest", type=Path)
     parser.add_argument("--strict-numbers", action="store_true")
+    parser.add_argument("--require-data-markers", action="store_true")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
     if not args.markdown.is_file() or not args.manifest.is_file():
@@ -66,10 +91,17 @@ def main() -> int:
         return 2
     try:
         known = claim_ids(args.manifest)
+        known_data = data_ids(args.manifest)
     except (json.JSONDecodeError, OSError) as exc:
         print(f"[Error] Cannot read manifest: {exc}", file=sys.stderr)
         return 2
-    errors = audit(args.markdown.read_text(encoding="utf-8"), known, args.strict_numbers)
+    errors = audit(
+        args.markdown.read_text(encoding="utf-8"),
+        known,
+        args.strict_numbers,
+        known_data,
+        args.require_data_markers,
+    )
     report = {"valid": not errors, "errors": errors}
     if args.json:
         print(json.dumps(report, ensure_ascii=False, indent=2))

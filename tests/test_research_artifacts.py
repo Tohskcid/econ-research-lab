@@ -23,10 +23,11 @@ class ResearchManifestTests(unittest.TestCase):
         records = [
             {"id": "H1", "type": "hypothesis", "statement": "x", "falsifier": "y", "_line": 1},
             {"id": "E1", "type": "experiment", "hypothesis_id": "H1", "validation": "v", "_line": 2},
-            {"id": "R1", "type": "run", "experiment_id": "E1", "harness_version": "1", "status": "keep", "artifact": "a", "_line": 3},
-            {"id": "F1", "type": "finding", "statement": "z", "run_ids": ["R1"], "status": "supported", "_line": 4},
-            {"id": "S1", "type": "evidence", "source": "doi:x", "locator": "p. 1", "verified_at": "2026-09-15", "_line": 5},
-            {"id": "C1", "type": "claim", "statement": "z", "evidence_ids": ["S1"], "finding_ids": ["F1"], "_line": 6},
+            {"id": "D1", "type": "dataset", "name": "data", "source": "agency", "locator": "https://example.test", "verified_at": "2026-09-16", "access_status": "public", "license": "CC0", "_line": 3},
+            {"id": "R1", "type": "run", "experiment_id": "E1", "harness_version": "1", "status": "keep", "artifact": "a", "data_ids": ["D1"], "_line": 4},
+            {"id": "F1", "type": "finding", "statement": "z", "run_ids": ["R1"], "status": "supported", "_line": 5},
+            {"id": "S1", "type": "evidence", "source": "doi:x", "locator": "p. 1", "verified_at": "2026-09-15", "_line": 6},
+            {"id": "C1", "type": "claim", "statement": "z", "evidence_ids": ["S1"], "finding_ids": ["F1"], "_line": 7},
         ]
         self.assertEqual(manifest_tool.validate(records), [])
 
@@ -38,6 +39,27 @@ class ResearchManifestTests(unittest.TestCase):
         records = [{"id": "C1", "type": "claim", "statement": "z", "_line": 1}]
         self.assertTrue(any("requires evidence_ids or finding_ids" in error for error in manifest_tool.validate(records)))
 
+    def test_proxy_data_cannot_support_unscoped_claim(self):
+        records = [
+            {"id": "P1", "type": "proxy", "name": "synthetic", "reason": "no source", "generator": "make.py", "seed": 7, "schema": "schema.json", "intended_use": "pipeline test", "_line": 1},
+            {"id": "S1", "type": "evidence", "source": "spec", "locator": "p. 1", "verified_at": "2026-09-16", "_line": 2},
+            {"id": "C1", "type": "claim", "statement": "simulation works", "evidence_ids": ["S1"], "data_ids": ["P1"], "_line": 3},
+        ]
+        self.assertTrue(any("proxy_only" in error for error in manifest_tool.validate(records)))
+        records[-1]["scope"] = "proxy_only"
+        self.assertEqual(manifest_tool.validate(records), [])
+
+    def test_proxy_scope_check_follows_finding_and_run_links(self):
+        records = [
+            {"id": "P1", "type": "proxy", "name": "synthetic", "reason": "no source", "generator": "make.py", "seed": 7, "schema": "schema.json", "intended_use": "pipeline test", "_line": 1},
+            {"id": "H1", "type": "hypothesis", "statement": "x", "falsifier": "y", "_line": 2},
+            {"id": "E1", "type": "experiment", "hypothesis_id": "H1", "validation": "v", "_line": 3},
+            {"id": "R1", "type": "run", "experiment_id": "E1", "harness_version": "1", "status": "keep", "artifact": "a", "data_ids": ["P1"], "_line": 4},
+            {"id": "F1", "type": "finding", "statement": "z", "run_ids": ["R1"], "status": "supported", "_line": 5},
+            {"id": "C1", "type": "claim", "statement": "z", "finding_ids": ["F1"], "_line": 6},
+        ]
+        self.assertTrue(any("proxy_only" in error for error in manifest_tool.validate(records)))
+
 
 class ClaimAuditTests(unittest.TestCase):
     def test_unknown_marker_and_unmarked_number(self):
@@ -48,6 +70,14 @@ class ClaimAuditTests(unittest.TestCase):
 
     def test_known_marker_passes(self):
         self.assertEqual(claim_tool.audit("The estimate is 12%. [claim:C1]", {"C1"}, True), [])
+
+    def test_unknown_data_marker_is_rejected(self):
+        errors = claim_tool.audit("The sample uses [data:D2].", set(), False, {"D1"})
+        self.assertIn("unknown data marker 'D2'", errors)
+
+    def test_data_manuscript_requires_a_data_marker(self):
+        errors = claim_tool.audit("No provenance marker.", set(), False, {"D1"}, True)
+        self.assertIn("manuscript requires at least one [data:ID] marker", errors)
 
 
 class SkillEvalTests(unittest.TestCase):

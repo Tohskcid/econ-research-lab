@@ -10,8 +10,12 @@ Use `research/manifest.jsonl` when stronger traceability than the compact experi
 - `experiment`: `hypothesis_id`, `validation`;
 - `run`: `experiment_id`, `harness_version`, `status`, `artifact`; add commit, input hash, seed, and environment when material;
 - `evidence`: `source`, `locator`, `verified_at`; add DOI/version, access status, scope, and `relation` (`supports`, `contradicts`, or `qualifies`) when available;
+- `dataset`: `name`, `source`, `locator`, `verified_at`, `access_status`, and `license`; add release/version, checksum, codebook, unit, coverage, and restrictions when material;
+- `proxy`: `name`, `reason`, `generator`, `seed`, `schema`, and `intended_use`; add calibration sources and known mismatches;
 - `finding`: `statement`, `run_ids`, `status`;
 - `claim`: `statement` plus at least one `evidence_ids` or `finding_ids` link.
+
+Add `data_ids` to each consuming `run` and, when useful, directly to a `claim`. A claim that reaches a `proxy` either directly or through its finding/run chain must use `scope: "proxy_only"`; proxy data cannot support a claim about the real population.
 
 IDs are immutable. Never rewrite a failed run or redirect an old ID to a new object. A changed harness creates a new baseline. Validate links with:
 
@@ -27,14 +31,15 @@ For prospective idea evaluation, freeze a historical literature cutoff before ge
 
 ## Manuscript traceability
 
-Put `[claim:CLAIM_ID]` beside material claims in Markdown. Run:
+Put `[claim:CLAIM_ID]` beside material claims and `[data:DATA_ID]` where a dataset or proxy is introduced or interpreted in Markdown. Run:
 
 ```bash
 python3 scripts/audit_claims.py manuscript.md research/manifest.jsonl
 python3 scripts/audit_claims.py manuscript.md research/manifest.jsonl --strict-numbers
+python3 scripts/audit_claims.py manuscript.md research/manifest.jsonl --strict-numbers --require-data-markers
 ```
 
-The strict option flags prose paragraphs containing numbers but no marker. It is a conservative screening aid: inspect false positives, tables, equations, citations, and generated formats manually. A valid marker proves only that a link exists; the referee checkpoint must still judge whether the evidence supports the wording.
+Use `--require-data-markers` for empirical or structural manuscripts, not data-free theory papers. The audit rejects unknown claim and data markers. The strict option flags prose paragraphs containing numbers but no claim marker. It is a conservative screening aid: inspect false positives, tables, equations, citations, and generated formats manually. A valid marker proves only that a link exists; the referee checkpoint must still judge whether the evidence supports the wording.
 
 ## Skill evals
 
