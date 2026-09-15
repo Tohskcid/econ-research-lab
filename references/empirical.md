@@ -36,6 +36,8 @@ Do not use significance as a keep criterion. Compare effect magnitude and uncert
 
 Use `scripts/econ_data_profiler.py` for deterministic panel checks and descriptive tables. Consult `data_granularity_guide.md` only when aggregation or proxy construction affects the estimand.
 
+When implementing an estimator, read [estimation_backends.md](estimation_backends.md). Freeze semantics before selecting a package; a backend adapter does not establish identification. When the data are restricted or cannot be inspected safely, read [confidential_data.md](confidential_data.md) before accessing them.
+
 ## Iteration
 
 Change one data rule, specification, or estimator at a time. Keep it only if it improves the fixed research criteria without changing the estimand silently, introducing leakage or post-treatment controls, or weakening inference. Record null and failed results.

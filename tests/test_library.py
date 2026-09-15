@@ -37,6 +37,8 @@ class LibraryTests(unittest.TestCase):
         empirical = search_tool.search(self.cards, "staggered adoption heterogeneous effects", "empirical", None, 3, False)
         self.assertEqual(theory[0]["id"], "milgrom-shannon-monotone-comparative-statics")
         self.assertIn("callaway-santanna-group-time-att", {card["id"] for card in empirical})
+        shift_share = search_tool.search(self.cards, "quasi random shocks shift share", "empirical", None, 3, False)
+        self.assertEqual(shift_share[0]["id"], "borusyak-hull-jaravel-shocks")
 
     def test_blind_mode_hides_solution_fields(self):
         result = search_tool.search(self.cards, "Nash equilibrium fixed point", "theory", "theorem", 1, True)[0]

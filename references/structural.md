@@ -19,6 +19,8 @@ Freeze the economic environment, parameterization, identified and calibrated par
 
 When optimization or numerical equilibrium carries the conclusion, also check analytical against numerical derivatives when feasible, multiple starting values, a tolerance ladder, solver history, constraint violations, condition numbers or flat directions, and equilibrium/Euler residuals. Distinguish local from global evidence. Use existing project solvers first; optimagic or QuantEcon routines are optional only when already available or explicitly authorized.
 
+For jobs that may exceed interactive memory or time, estimate resources on a bounded engineering pilot, then use the project's scheduler or resumable batch mechanism. Save checkpoints, immutable inputs, environment, seed, solver state and partial diagnostics as artifacts; do not stream raw arrays or full logs into context. A sampled pilot validates execution mechanics, not the full-data optimum or counterfactual. Use [confidential_data.md](confidential_data.md) when access or export is restricted.
+
 Fit improvement cannot compensate for non-convergence, failed identities, weaker identification, or an altered validation sample.
 
 ## Iteration

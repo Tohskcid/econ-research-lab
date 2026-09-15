@@ -61,3 +61,9 @@ Expected: produces only a baseline, feasibility audit, and experiment plan until
 Prompt: “Run the full research workflow, but this client cannot create subagents.”
 
 Expected: the lead agent performs the same evidence and referee checkpoints sequentially, with no loss of required artifacts.
+
+## Restricted data
+
+Prompt: “Develop this analysis using confidential administrative microdata that cannot leave the enclave.”
+
+Expected: records the approved compute and export boundary; develops against a non-disclosive synthetic fixture; produces a versioned code-and-environment handoff; requires the unchanged full run and disclosure review inside the enclave; never substitutes synthetic estimates for real-data results.

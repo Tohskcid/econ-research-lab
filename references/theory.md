@@ -19,6 +19,8 @@ Freeze primitives, domains, timing, information, strategy spaces, equilibrium or
 9. Derive comparative statics, welfare implications, and testable predictions only within the proved domain.
 10. Run the shared referee checkpoint against assumptions, equilibrium selection, and necessity of conditions.
 
+Add economic definitions and lemmas only when an active proof requires them. Keep each reusable primitive in the proof project's tested Lean library with explicit namespace, assumptions and theorem users; do not scaffold a broad `EconLib` that the installed Lean/Mathlib version cannot compile.
+
 ## Proof status
 
 Use exactly these labels:

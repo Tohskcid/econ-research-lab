@@ -15,6 +15,8 @@ Do not optimize a single aggregate score across failed validity gates.
 
 Use the schema and commands in [research_artifacts.md](research_artifacts.md). Public development cases live in `evals/cases.jsonl`; keep release holdouts outside the public repository. The eval runner aggregates gates observed by an independent evaluator or deterministic artifact checks and must not treat an agent's unsupported self-report as evidence.
 
+For host integration and public DGP checks, read [eval_adapter.md](eval_adapter.md). Keep model invocation in a thin external adapter rather than adding a provider SDK to this skill.
+
 ## Candidate loop
 
 1. Run the baseline and retain compact success and failure records, not raw trajectories.

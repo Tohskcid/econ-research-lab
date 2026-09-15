@@ -36,6 +36,9 @@ flowchart TD
     PDF[On-demand PDF ingestion] -.-> L
     PDF -.-> M
     GRAN[On-demand data granularity guide] -.-> E
+    EST[On-demand estimator contract<br/>backend · FE · variance · versions] -.-> E
+    SAFE[Restricted-data boundary<br/>synthetic handoff · enclave run · export review] -.-> E
+    SAFE -.-> X
     JR[Optional Taiwan journal metadata] -.-> L
 
     E --> B[Reproducible baseline<br/>fixed validation harness]
@@ -51,6 +54,7 @@ flowchart TD
     K -.-> P[(Experiment ledger<br/>provenance graph)]
     L -.-> P
     D -.-> EV[Versioned skill evals]
+    EV --> DGP[External Agent adapter<br/>deterministic DGP grader]
     EV --> SE[Failure distillation<br/>one minimal skill patch]
     SE -->|passes fixed holdout| C
 ```
@@ -145,6 +149,26 @@ The runner does not call or grade an agent by itself. It aggregates evidence sup
 
 Skill evolution uses the lightweight offline protocol in `references/skill_evolution.md`. It does not require SkillRL's SFT/RL training stack and never promotes a candidate that fails a fixed validity gate.
 
+Generate deterministic public DGP cases for an external Agent host, then grade its standardized submissions:
+
+```bash
+python3 scripts/run_dgp_evals.py generate --out-dir path/to/fixtures
+python3 scripts/run_dgp_evals.py grade --results path/to/submissions.jsonl
+python3 scripts/run_dgp_evals.py run \
+  --adapter path/to/agent-adapter --work-dir path/to/run
+```
+
+The repository supplies cases and graders but intentionally does not embed a provider-specific model client. See `references/eval_adapter.md` for the adapter contract and holdout boundary.
+
+## Boundaries
+
+- `econ_data_profiler.py` audits panel structure and descriptive outputs; it is not an estimator. Estimation backends remain project-selected adapters governed by `references/estimation_backends.md`.
+- Frozen specifications, DGP checks, sensitivity analysis, and audit trails reduce specification search; they cannot prove an institutional exclusion restriction or eliminate researcher judgment.
+- The result library contains 19 high-value method cards, not comprehensive coverage or a substitute for current literature search.
+- The locked Lean harness verifies submitted proof terms, but it does not autoformalize economic prose, generate tactics, run MCTS, or provide a broad economics ontology. Reusable Lean economics primitives are added only when an active checked proof needs them.
+- Public evals detect deterministic contract regressions; an external host must invoke the agent, preserve trajectories, and keep release holdouts private.
+- Restricted data must remain inside its DUA, IRB, enclave, and export boundary. Synthetic fixtures validate code mechanics, not real-data identification, disclosure safety, or estimates.
+
 ## Validation
 
 ```bash
@@ -159,6 +183,9 @@ SKILL.md                    short router and research loop
 references/empirical.md    empirical validity gates
 references/theory.md       Lean-backed theory workflow
 references/lean_harness.md locked theorem contract and verifier loop
+references/estimation_backends.md backend-neutral estimation contract
+references/confidential_data.md restricted-data and enclave protocol
+references/eval_adapter.md external Agent and DGP eval contract
 references/structural.md   structural/computational workflow
 references/research_protocol.md  evidence and review protocol
 references/research_artifacts.md provenance, claim audit, and eval schemas
@@ -170,6 +197,7 @@ library/papers/*.md             one on-demand Markdown result card per file
 library/catalog.jsonl           paper metadata and source links
 library/relations.jsonl         typed links among result cards
 evals/cases.jsonl                public development cases and validity gates
+evals/dgp_cases.jsonl            deterministic empirical design cases
 scripts/                    optional deterministic utilities
 tests/                      CLI and invariant checks
 ```

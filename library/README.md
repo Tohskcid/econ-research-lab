@@ -26,4 +26,4 @@ Validate the database after every edit:
 python3 scripts/validate_library.py
 ```
 
-The initial cards record canonical solution routes and core assumptions, not exhaustive theorem statements. `verification` describes how closely the card was checked against the source; it does not certify that the result applies to a new model. Before use, inspect the primary source, reconstruct the assumption mapping, and record any mismatch. Do not commit copyrighted PDFs or restricted material.
+The cards record canonical solution routes and core assumptions, not exhaustive theorem statements. `verification` describes how closely the card was checked against the source; it does not certify that the result applies to a new model. Before use, inspect the primary source, reconstruct the assumption mapping, and record any mismatch. Do not commit copyrighted PDFs or restricted material.
