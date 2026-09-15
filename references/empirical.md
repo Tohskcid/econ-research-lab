@@ -17,6 +17,8 @@ For prediction, freeze the split, target metric, leakage rules, and baseline. Fo
 5. Match inference to assignment and dependence; record cluster counts and spatial or temporal correlation.
 6. Define falsification and sensitivity tests from the actual threat, not a universal checklist.
 
+For causal work, preserve the assumed causal graph or an equivalent assignment narrative and map each material threat to a refutation. Depending on the design, consider placebo treatment or outcome, random-common-cause, data-subset/bootstrap, negative controls, hidden-confounding sensitivity, and support/overlap checks. Passing these tests does not prove identification. When flexible nuisance models are used, freeze sample splitting or cross-fitting and the orthogonal score before comparison.
+
 ## Mathematical audit
 
 When a conclusion depends on a mathematical property, write the population estimand or identifying moment and derive the mapping from observables under explicit assumptions. Check the relevant support/positivity, rank, functional-form, transformation, weighting, and asymptotic or finite-sample conditions. Verify algebra and limiting cases; seek a data-generating process that breaks the claim. Do not require a formal proof for routine estimation, but do not present an identifying assumption or software output as a proved implication.

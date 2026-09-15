@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 metadata:
   author: Tohskcid
-  version: "2.2.0"
+  version: "2.3.0"
 ---
 
 # Economics Research Lab
@@ -31,6 +31,8 @@ Inspect the project before asking questions. Record or confirm:
 - stop conditions.
 
 Use an existing project convention for research artifacts. If none exists, use `research/state.md` for the contract and current best result, and `research/experiments.tsv` with columns `iteration`, `mode`, `hypothesis`, `validation`, `status`, `artifact`, `reason`.
+
+When claims must be traceable across hypotheses, runs, evidence, and a manuscript, read [references/research_artifacts.md](references/research_artifacts.md) and use its validated provenance graph. Do not create duplicate artifact systems when the project already provides equivalent links.
 
 Without an explicit autonomy budget, complete only the baseline, feasibility audit, and experiment plan. Do not start an open-ended loop.
 

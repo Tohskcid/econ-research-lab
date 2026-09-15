@@ -20,6 +20,16 @@ class SkillContractTests(unittest.TestCase):
         for link in links:
             self.assertTrue((ROOT / link).is_file(), link)
 
+    def test_version_is_consistent(self):
+        pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+        self.assertIn('version = "2.3.0"', pyproject)
+        self.assertIn('version: "2.3.0"', self.text)
+
+    def test_readme_documents_architecture(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("```mermaid", readme)
+        self.assertIn("provenance graph", readme)
+
     def test_core_contract_invariants_are_present(self):
         for phrase in [
             "Without an explicit autonomy budget",

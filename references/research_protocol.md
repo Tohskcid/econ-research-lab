@@ -10,6 +10,8 @@ Synthesize by claim rather than paper order. For each close work, capture its qu
 
 Scale depth to the deliverable: a feasibility audit may use a compact map; a literature review or novelty claim requires reproducible coverage and explicit search limitations.
 
+For a sustained review, contradiction search, or novelty audit, use the claim/evidence records in [research_artifacts.md](research_artifacts.md). Reuse an existing local index when available. Metadata retrieval, full-text search, and contextual reranking may assist discovery, but every delivered claim still needs a verified primary-source locator. When evaluating hypothesis generation, prefer a historical literature cutoff and later-paper validation over same-run self-grading.
+
 ## Mathematical reasoning checkpoint
 
 Create only the obligations needed to support the claim. Depending on the mode these may include well-defined domains, existence, uniqueness, identification, rank or support conditions, continuity/convexity, invariance, estimator properties, equilibrium mappings, comparative statics, or bounds.
@@ -19,6 +21,8 @@ For each obligation state the proposition, assumptions, argument or checker, sta
 ## Evidence
 
 For each material claim record: source, exact supported claim, research design or proof status, population/model scope, limitation, and verification date. Prefer primary sources. Distinguish published evidence, working papers, official data, documentation, and conjecture. Citation count and journal tier are metadata, not credibility or inclusion rules.
+
+When a manuscript or evidence package is in scope, link claims to evidence, findings to runs, and runs to the frozen harness. Validate these references before the referee checkpoint; a link proves provenance, not substantive support.
 
 Never claim novelty from a narrow search. Preserve queries, databases, dates, and inclusion reasons. Mark unread or inaccessible full text explicitly.
 

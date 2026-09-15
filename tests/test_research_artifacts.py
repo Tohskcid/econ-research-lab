@@ -1,0 +1,75 @@
+import importlib.util
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def load_module(name, relative_path):
+    spec = importlib.util.spec_from_file_location(name, ROOT / relative_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+manifest_tool = load_module("manifest_tool", "scripts/validate_research_manifest.py")
+claim_tool = load_module("claim_tool", "scripts/audit_claims.py")
+eval_tool = load_module("eval_tool", "scripts/run_skill_evals.py")
+
+
+class ResearchManifestTests(unittest.TestCase):
+    def test_valid_graph(self):
+        records = [
+            {"id": "H1", "type": "hypothesis", "statement": "x", "falsifier": "y", "_line": 1},
+            {"id": "E1", "type": "experiment", "hypothesis_id": "H1", "validation": "v", "_line": 2},
+            {"id": "R1", "type": "run", "experiment_id": "E1", "harness_version": "1", "status": "keep", "artifact": "a", "_line": 3},
+            {"id": "F1", "type": "finding", "statement": "z", "run_ids": ["R1"], "status": "supported", "_line": 4},
+            {"id": "S1", "type": "evidence", "source": "doi:x", "locator": "p. 1", "verified_at": "2026-09-15", "_line": 5},
+            {"id": "C1", "type": "claim", "statement": "z", "evidence_ids": ["S1"], "finding_ids": ["F1"], "_line": 6},
+        ]
+        self.assertEqual(manifest_tool.validate(records), [])
+
+    def test_dangling_run_is_rejected(self):
+        records = [{"id": "F1", "type": "finding", "statement": "z", "run_ids": ["missing"], "status": "supported", "_line": 1}]
+        self.assertTrue(any("must reference a run" in error for error in manifest_tool.validate(records)))
+
+    def test_claim_requires_evidence_or_finding(self):
+        records = [{"id": "C1", "type": "claim", "statement": "z", "_line": 1}]
+        self.assertTrue(any("requires evidence_ids or finding_ids" in error for error in manifest_tool.validate(records)))
+
+
+class ClaimAuditTests(unittest.TestCase):
+    def test_unknown_marker_and_unmarked_number(self):
+        text = "The estimate is 12%.\n\nA supported claim. [claim:C2]"
+        errors = claim_tool.audit(text, {"C1"}, strict_numbers=True)
+        self.assertTrue(any("unknown claim marker" in error for error in errors))
+        self.assertTrue(any("quantitative paragraph" in error for error in errors))
+
+    def test_known_marker_passes(self):
+        self.assertEqual(claim_tool.audit("The estimate is 12%. [claim:C1]", {"C1"}, True), [])
+
+
+class SkillEvalTests(unittest.TestCase):
+    def test_required_and_forbidden_gates(self):
+        cases = [{"id": "case", "required_gates": ["a"], "forbidden_gates": ["bad"]}]
+        good = eval_tool.evaluate(cases, [{"case_id": "case", "gates": ["a"], "token_count": 10}])
+        bad = eval_tool.evaluate(cases, [{"case_id": "case", "gates": ["bad"]}])
+        self.assertTrue(good["all_passed"])
+        self.assertEqual(good["token_count"], 10)
+        self.assertFalse(bad["all_passed"])
+
+    def test_public_eval_cases_are_valid_jsonl(self):
+        cases = eval_tool.rows(ROOT / "evals/cases.jsonl")
+        self.assertGreaterEqual(len(cases), 3)
+        self.assertTrue(all(case.get("required_gates") for case in cases))
+
+    def test_duplicate_results_are_rejected(self):
+        cases = [{"id": "case", "required_gates": []}]
+        report = eval_tool.evaluate(cases, [{"case_id": "case", "gates": []}, {"case_id": "case", "gates": []}])
+        self.assertFalse(report["all_passed"])
+        self.assertIn("duplicate result", report["cases"][0]["errors"])
+
+
+if __name__ == "__main__":
+    unittest.main()

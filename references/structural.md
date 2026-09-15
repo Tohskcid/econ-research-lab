@@ -17,6 +17,8 @@ Freeze the economic environment, parameterization, identified and calibrated par
 7. Diagnose identification or observational equivalence before interpreting parameters.
 8. For counterfactuals, state which policy-invariant primitives and equilibrium responses carry the result.
 
+When optimization or numerical equilibrium carries the conclusion, also check analytical against numerical derivatives when feasible, multiple starting values, a tolerance ladder, solver history, constraint violations, condition numbers or flat directions, and equilibrium/Euler residuals. Distinguish local from global evidence. Use existing project solvers first; optimagic or QuantEcon routines are optional only when already available or explicitly authorized.
+
 Fit improvement cannot compensate for non-convergence, failed identities, weaker identification, or an altered validation sample.
 
 ## Iteration

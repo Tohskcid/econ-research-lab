@@ -11,12 +11,13 @@ Freeze primitives, domains, timing, information, strategy spaces, equilibrium or
 1. Map the theorem's lineage: nearest propositions, definitions, proof strategies, counterexamples, and the exact assumption or conclusion changed.
 2. Reproduce the closest known benchmark and limiting cases before claiming an extension.
 3. State the conjecture with complete quantifiers and hypotheses.
-4. Search analytically and computationally for boundary cases or counterexamples.
-5. Write a paper proof sketch that identifies the critical lemmas.
-6. Formalize the definitions and theorem in Lean 4 + Mathlib.
-7. Run `python3 scripts/check_lean_proof.py path/to/Theorem.lean` and preserve the checked source and command output.
-8. Derive comparative statics, welfare implications, and testable predictions only within the proved domain.
-9. Run the shared referee checkpoint against assumptions, equilibrium selection, and necessity of conditions.
+4. Search Mathlib documentation and the local environment for existing definitions, lemmas, and naming conventions before recreating them. If already configured, LeanSearch/Loogle or LeanDojo-v2 may assist premise search; do not install or contact a service without authority.
+5. Search analytically and computationally for boundary cases or counterexamples.
+6. Write a paper proof sketch and a dependency manifest: theorem statement hash, assumptions, imports, critical lemmas, Mathlib/Lean version, and unresolved obligations.
+7. Formalize the definitions and theorem in Lean 4 + Mathlib.
+8. Run `python3 scripts/check_lean_proof.py path/to/Theorem.lean` and preserve the checked source and command output.
+9. Derive comparative statics, welfare implications, and testable predictions only within the proved domain.
+10. Run the shared referee checkpoint against assumptions, equilibrium selection, and necessity of conditions.
 
 ## Proof status
 
