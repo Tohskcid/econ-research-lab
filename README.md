@@ -30,7 +30,7 @@ flowchart TD
     MAP --> R
 
     R --> E[Empirical<br/>estimand · assignment · inference · refutation]
-    R --> T[Pure theory<br/>conjecture · counterexample · Lean proof]
+    R --> T[Pure theory<br/>locked statement · proof term · counterexample]
     R --> X[Structural / computational<br/>moments · solver · identification · holdout]
 
     PDF[On-demand PDF ingestion] -.-> L
@@ -108,11 +108,16 @@ python3 scripts/validate_library.py
 
 Search reads only a compact index and returns three candidates by default. Open one selected Markdown card with `--show`; do not scan all cards into context. Use `--show CARD_ID --blind` during an authorized blind reconstruction. It hides proof and solution sections, but the agent must also avoid opening the underlying Markdown directly until its attempt is saved. A match is a candidate solution, not permission to skip primary-source or assumption verification.
 
-Verify a Lean theorem before labeling it formally proved:
+For an agent-generated theorem, lock the theorem type and allowed axioms before proof search, then submit only a proof term:
 
 ```bash
-python3 scripts/check_lean_proof.py path/to/Theorem.lean
+python3 scripts/check_lean_proof.py --lock-task proof-task.json --json
+python3 scripts/check_lean_proof.py \
+  --task proof-task.json --proof candidate.lean \
+  --artifact research/proof-attempt-001.json --json
 ```
+
+The harness generates the theorem around the candidate, checks both statement and task hashes, enforces a timeout, compiles with Lean, and rejects direct or transitive axioms outside the contract allowlist. See `references/lean_harness.md`. The legacy full-file command remains available for trusted files but does not provide statement locking.
 
 Optionally use [MarkItDown](https://github.com/microsoft/markitdown) for first-pass PDF navigation:
 
@@ -153,6 +158,7 @@ python3 -m unittest discover -s tests -v
 SKILL.md                    short router and research loop
 references/empirical.md    empirical validity gates
 references/theory.md       Lean-backed theory workflow
+references/lean_harness.md locked theorem contract and verifier loop
 references/structural.md   structural/computational workflow
 references/research_protocol.md  evidence and review protocol
 references/research_artifacts.md provenance, claim audit, and eval schemas

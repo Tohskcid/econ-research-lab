@@ -13,9 +13,9 @@ Freeze primitives, domains, timing, information, strategy spaces, equilibrium or
 3. State the conjecture with complete quantifiers and hypotheses.
 4. Search Mathlib documentation and the local environment for existing definitions, lemmas, and naming conventions before recreating them. If already configured, LeanSearch/Loogle or LeanDojo-v2 may assist premise search; do not install or contact a service without authority.
 5. Search analytically and computationally for boundary cases or counterexamples.
-6. Write a paper proof sketch and a dependency manifest: theorem statement hash, assumptions, imports, critical lemmas, Mathlib/Lean version, and unresolved obligations.
-7. Formalize the definitions and theorem in Lean 4 + Mathlib.
-8. Run `python3 scripts/check_lean_proof.py path/to/Theorem.lean` and preserve the checked source and command output.
+6. Write a paper proof sketch and dependency manifest: assumptions, imports, critical lemmas, Mathlib/Lean version, and unresolved obligations.
+7. For agent-generated formal proofs, read [lean_harness.md](lean_harness.md), freeze and lock the theorem task, and place that contract outside the proving agent's mutation scope.
+8. Formalize only the candidate proof term in Lean 4 + Mathlib. Run the locked checker and preserve its JSON artifact.
 9. Derive comparative statics, welfare implications, and testable predictions only within the proved domain.
 10. Run the shared referee checkpoint against assumptions, equilibrium selection, and necessity of conditions.
 
@@ -25,10 +25,10 @@ Use exactly these labels:
 
 - `conjecture`: no complete proof;
 - `proof sketch`: informal argument with unresolved obligations;
-- `formally proved`: the saved Lean file compiles with no `sorry`, `admit`, or equivalent escape;
+- `formally proved`: the locked theorem compiles, its hashes match, and its transitive axioms pass the allowlist;
 - `disproved`: a valid counterexample violates the claim under its stated assumptions.
 
-Lean 4 + Mathlib is the sole formal proof authority for this skill. The checker rejects local `sorry`, `admit`, `sorryAx`, and `axiom` escapes before invoking `lake env lean` (or `lean` when no Lake project exists). Computer algebra or numerical search may simplify expressions and find counterexamples, but cannot upgrade proof status. If Lean is absent, do not install it without authorization and do not label a theorem formally proved.
+Lean 4 + Mathlib is the sole formal proof authority for this skill. The locked checker isolates the proof term, rejects local proof escapes, invokes Lean with a timeout, and checks `#print axioms` transitively against the task allowlist. Computer algebra or numerical search may simplify expressions and find counterexamples, but cannot upgrade proof status. If Lean is absent, do not install it without authorization and do not label a theorem formally proved.
 
 ## Independent reconstruction
 
@@ -36,4 +36,4 @@ When asked to prove a published claim without consulting its proof, freeze the s
 
 ## Iteration
 
-Change one definition, assumption, lemma, or proof strategy at a time. Keep a change only if the target theorem remains economically meaningful and the checked result becomes stronger, simpler, or more general. Do not weaken assumptions silently merely to make Lean succeed; record any scope change as a new hypothesis.
+For each attempt, use three checkpoints: the planner chooses one lemma or strategy, the prover changes only the proof term, and the rater consumes the checker status and diagnostic. These may be stages of one agent; do not simulate role dialogue. Change one definition, assumption, lemma, or proof strategy at a time. Keep a change only if the target theorem remains economically meaningful and the checked result becomes stronger, simpler, or more general. Do not weaken assumptions silently merely to make Lean succeed; record any scope change as a new locked task.

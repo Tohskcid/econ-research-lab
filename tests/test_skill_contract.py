@@ -22,8 +22,8 @@ class SkillContractTests(unittest.TestCase):
 
     def test_version_is_consistent(self):
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn('version = "2.4.0"', pyproject)
-        self.assertIn('version: "2.4.0"', self.text)
+        self.assertIn('version = "2.5.0"', pyproject)
+        self.assertIn('version: "2.5.0"', self.text)
 
     def test_readme_documents_architecture(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -35,6 +35,7 @@ class SkillContractTests(unittest.TestCase):
             "Without an explicit autonomy budget",
             "Do not optimize p-values",
             "Lean 4 + Mathlib",
+            "locked Lean 4 + Mathlib harness",
             "claim-centered literature map",
             "mathematical obligations",
             "never rewrite skill instructions during an ordinary research run",

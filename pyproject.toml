@@ -1,6 +1,6 @@
 [project]
 name = "econ-research-lab-tools"
-version = "2.4.0"
+version = "2.5.0"
 description = "Optional deterministic utilities for the econ-research-lab Agent Skill"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "pandas>=2.0"]

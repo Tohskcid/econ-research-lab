@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 metadata:
   author: Tohskcid
-  version: "2.4.0"
+  version: "2.5.0"
 ---
 
 # Economics Research Lab
@@ -72,6 +72,6 @@ Remain the single accountable PI. Delegate only separable work that can run in p
 - Reuse project tools and standard libraries before adding code or dependencies.
 - Load one mode reference at a time. Keep raw data, full logs, paper text, and proof traces in artifacts; return only decision-relevant summaries and paths.
 - Treat numerical examples as intuition or counterexample search, never as proof.
-- A theorem is `formally proved` only after Lean 4 + Mathlib accepts it. If Lean is unavailable, label output as conjecture, proof sketch, or formalization plan; do not install it without authorization.
+- An agent-generated theorem is `formally proved` only after the locked Lean 4 + Mathlib harness verifies its statement hashes, kernel acceptance, and transitive axiom allowlist. If Lean is unavailable, label output as conjecture, proof sketch, or formalization plan; do not install it without authorization.
 - Stay inside the contract's mutation scope and budget. Paid access, restricted downloads, dependency installation, external communication, and irreversible actions require separate authority.
 - Cite sources for substantive claims. Do not ask users to cite this skill; the NSTC article is provenance for the optional ranking data only.
