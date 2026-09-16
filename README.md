@@ -18,11 +18,13 @@ Unlike a model-training benchmark, economics rarely has one sufficient score. Th
 flowchart TD
     Q[Research question] --> C[Research contract<br/>scope · mode · evidence · budget · stop]
     C --> S[Shared checkpoint]
-    C -.-> O[Optional separable delegation]
+    C -.-> O[Native subagent task DAG<br/>spawn · wait · handoff · fallback]
     S --> L[Literature map<br/>claim ↔ evidence ↔ contradiction]
     S --> M[Mathematical obligations<br/>assumptions · identification · lemmas]
     O -.-> L
     O -.-> M
+    O -.-> HO[Structured handoffs<br/>evidence · artifacts · uncertainty]
+    HO -.-> A
     L --> R{Research mode}
     M --> R
     M --> LIB[(On-demand result library<br/>theorems · estimators · counterexamples)]
@@ -65,7 +67,21 @@ flowchart TD
 
 The provenance graph links hypotheses, experiments, runs, findings, evidence, and manuscript claims. Skill evolution is a separate, explicitly requested workflow; ordinary research runs never rewrite the live skill.
 
-The lead agent may delegate independent searches or audits when the host supports subagents. It otherwise performs the same checkpoints sequentially.
+When the host supports native subagents and the contract authorizes a bounded team budget, the lead agent dispatches real specialist contexts for separable tasks, waits for structured handoffs, and retains final PI judgment. It uses the external adapter or sequential execution only when native delegation is unavailable.
+
+## Research-team execution
+
+The primary path uses the host's native subagent spawn and wait controls, following `references/team_protocol.md`. The portable V1 runner validates the same provider-neutral specialist task DAG and can execute dependency-ready tasks through an external Agent adapter when native delegation is unavailable:
+
+```bash
+python3 scripts/run_research_team.py validate research/team-plan.json
+python3 scripts/run_research_team.py run research/team-plan.json \
+  --adapter path/to/agent-adapter \
+  --work-dir research/team-run \
+  --max-workers 4
+```
+
+Each task freezes its objective, dependencies, inputs, write scope, validation gates, and timeout budget. Native and adapter paths use the same compact handoff contract. The runner rejects dependency cycles and potentially parallel tasks with overlapping write scopes, records structured handoffs and events, and blocks downstream work after a failed dependency. Use `--max-workers 1` for sequential fallback.
 
 ## Installation
 
@@ -140,12 +156,33 @@ Validate a JSONL research provenance graph and audit Markdown claim markers:
 
 ```bash
 python3 scripts/validate_research_manifest.py research/manifest.jsonl
+python3 scripts/validate_research_manifest.py research/manifest.jsonl --require-argument-graph
 python3 scripts/audit_claims.py manuscript.md research/manifest.jsonl --strict-numbers
 python3 scripts/audit_claims.py manuscript.md research/manifest.jsonl \
   --strict-numbers --require-data-markers  # empirical/structural manuscripts
+python3 scripts/audit_claims.py manuscript.md research/manifest.jsonl --require-central-claims
+python3 scripts/check_logic_review.py \
+  --manuscript manuscript.md --manifest research/manifest.jsonl \
+  --review research/logic-review.json --json
 ```
 
 The manifest can record verified `dataset` and generated `proxy` objects. Manuscripts use `[data:DATA_ID]` markers alongside claim markers; the validator rejects real-world claims whose recorded analysis depends on proxy data unless the claim is explicitly scoped `proxy_only`. See `references/data_acquisition.md` and `references/manuscript.md`.
+
+Compile, inspect logs, and render every page of a LaTeX manuscript:
+
+```bash
+python3 scripts/check_latex.py check \
+  --main paper/main.tex \
+  --build-dir research/latex-build \
+  --render-dir research/latex-pages \
+  --report research/latex-report.json
+python3 scripts/check_latex.py finalize \
+  --report research/latex-report.json \
+  --visual-review research/latex-visual-review.json \
+  --output research/latex-final.json
+```
+
+The automated report deliberately leaves `delivery_ready` false. A fresh typesetting reviewer must inspect every rendered page and bind its compact handoff to the PDF SHA-256 before the PI delivers the manuscript. The logic-review validator similarly binds one short review per central claim to the exact manuscript and manifest hashes; it does not store chain-of-thought.
 
 Aggregate independently observed behavior gates for a candidate skill version:
 
@@ -177,6 +214,8 @@ The repository supplies cases and graders but intentionally does not embed a pro
 - Public evals detect deterministic contract regressions; an external host must invoke the agent, preserve trajectories, and keep release holdouts private.
 - Restricted data must remain inside its DUA, IRB, enclave, and export boundary. Synthetic fixtures validate code mechanics, not real-data identification, disclosure safety, or estimates.
 - Proxy data are a disclosed fallback for feasibility, code, method, and failure-mode testing. They do not establish real-population magnitudes, causal effects, external validity, or policy conclusions.
+- The optional external V1 runner executes a static validated task graph. It does not select models, rewrite the research contract, add tasks during a run, merge conflicting files, or replace the PI's final judgment. Native-capable hosts instead create real subagents for validated tasks. Declared write scopes prevent scheduling conflicts and validate returned artifact paths; actual filesystem isolation remains the host adapter's responsibility.
+- LaTeX compilation and argument-graph validation are hard structural gates, not proofs of visual readability or natural-language entailment. Final delivery also requires independent page review and logic-referee adjudication.
 
 ## Validation
 
@@ -196,6 +235,8 @@ references/estimation_backends.md backend-neutral estimation contract
 references/confidential_data.md restricted-data and enclave protocol
 references/data_acquisition.md verified data discovery and proxy fallback
 references/manuscript.md     article drafting and whole-argument audit
+references/latex_validation.md LaTeX compilation, rendering, and page review
+references/team_protocol.md  multi-agent task, handoff, and decision protocol
 references/eval_adapter.md external Agent and DGP eval contract
 references/structural.md   structural/computational workflow
 references/research_protocol.md  evidence and review protocol

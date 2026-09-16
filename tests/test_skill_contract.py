@@ -22,8 +22,8 @@ class SkillContractTests(unittest.TestCase):
 
     def test_version_is_consistent(self):
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn('version = "2.7.0"', pyproject)
-        self.assertIn('version: "2.7.0"', self.text)
+        self.assertIn('version = "2.9.0"', pyproject)
+        self.assertIn('version: "2.9.0"', self.text)
 
     def test_readme_documents_architecture(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -42,6 +42,13 @@ class SkillContractTests(unittest.TestCase):
             "confidential",
             "proxy data",
             "auditing an article",
+            "validated task DAG",
+            "actually dispatch",
+            "do not merely name roles",
+            "Retain agent identifiers",
+            "wait for every required handoff",
+            "compile and render the full document",
+            "inspect every page",
         ]:
             self.assertIn(phrase, self.body)
 

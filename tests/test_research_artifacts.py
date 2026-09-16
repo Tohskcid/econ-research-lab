@@ -37,7 +37,41 @@ class ResearchManifestTests(unittest.TestCase):
 
     def test_claim_requires_evidence_or_finding(self):
         records = [{"id": "C1", "type": "claim", "statement": "z", "_line": 1}]
-        self.assertTrue(any("requires evidence_ids or finding_ids" in error for error in manifest_tool.validate(records)))
+        self.assertTrue(any("requires evidence_ids, finding_ids, or premise_ids" in error for error in manifest_tool.validate(records)))
+
+    def test_argument_graph_accepts_grounded_conclusion(self):
+        records = [
+            {"id": "S1", "type": "evidence", "source": "doi:x", "locator": "p. 1", "verified_at": "2026-09-16", "_line": 1},
+            {"id": "C1", "type": "claim", "statement": "result", "evidence_ids": ["S1"], "central": True, "role": "premise", "status": "supported", "scope": "sample-a", "uncertainty": "sampling error", "_line": 2},
+            {"id": "C2", "type": "claim", "statement": "conclusion", "premise_ids": ["C1"], "central": True, "role": "conclusion", "status": "supported", "scope": "sample-a", "uncertainty": "external validity", "_line": 3},
+        ]
+        self.assertEqual(manifest_tool.validate(records), [])
+        self.assertEqual(manifest_tool.validate_argument(records), [])
+
+    def test_argument_graph_rejects_cycle_and_ungrounded_conclusion(self):
+        records = [
+            {"id": "C1", "type": "claim", "statement": "a", "premise_ids": ["C2"], "_line": 1},
+            {"id": "C2", "type": "claim", "statement": "b", "premise_ids": ["C1"], "central": True, "role": "conclusion", "status": "supported", "scope": "s", "uncertainty": "u", "_line": 2},
+        ]
+        self.assertTrue(any("cycle" in error for error in manifest_tool.validate(records)))
+        self.assertTrue(any("no path" in error for error in manifest_tool.validate_argument(records)))
+
+    def test_supported_conclusion_rejects_bad_premise(self):
+        records = [
+            {"id": "S1", "type": "evidence", "source": "doi:x", "locator": "p. 1", "verified_at": "2026-09-16", "_line": 1},
+            {"id": "C1", "type": "claim", "statement": "result", "evidence_ids": ["S1"], "status": "contradicted", "_line": 2},
+            {"id": "C2", "type": "claim", "statement": "conclusion", "premise_ids": ["C1"], "central": True, "role": "conclusion", "status": "supported", "scope": "s", "uncertainty": "u", "_line": 3},
+        ]
+        self.assertTrue(any("contradicted" in error for error in manifest_tool.validate_argument(records)))
+
+    def test_proxy_taint_flows_through_claim_premises(self):
+        records = [
+            {"id": "P1", "type": "proxy", "name": "synthetic", "reason": "no source", "generator": "make.py", "seed": 7, "schema": "schema.json", "intended_use": "test", "_line": 1},
+            {"id": "S1", "type": "evidence", "source": "spec", "locator": "p. 1", "verified_at": "2026-09-16", "_line": 2},
+            {"id": "C1", "type": "claim", "statement": "synthetic result", "evidence_ids": ["S1"], "data_ids": ["P1"], "scope": "proxy_only", "_line": 3},
+            {"id": "C2", "type": "claim", "statement": "derived result", "premise_ids": ["C1"], "scope": "real_population", "_line": 4},
+        ]
+        self.assertTrue(any("proxy_only" in error for error in manifest_tool.validate(records)))
 
     def test_proxy_data_cannot_support_unscoped_claim(self):
         records = [
@@ -78,6 +112,10 @@ class ClaimAuditTests(unittest.TestCase):
     def test_data_manuscript_requires_a_data_marker(self):
         errors = claim_tool.audit("No provenance marker.", set(), False, {"D1"}, True)
         self.assertIn("manuscript requires at least one [data:ID] marker", errors)
+
+    def test_manuscript_requires_every_central_claim_marker(self):
+        errors = claim_tool.audit("A result. [claim:C1]", {"C1", "C2"}, False, required_claims={"C1", "C2"})
+        self.assertIn("central claim marker 'C2' is missing from manuscript", errors)
 
 
 class SkillEvalTests(unittest.TestCase):

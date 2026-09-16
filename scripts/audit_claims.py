@@ -36,6 +36,17 @@ def data_ids(path: Path) -> set[str]:
     return ids
 
 
+def central_claim_ids(path: Path) -> set[str]:
+    ids: set[str] = set()
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip():
+            continue
+        record = json.loads(raw)
+        if record.get("type") == "claim" and record.get("central") is True and isinstance(record.get("id"), str):
+            ids.add(record["id"])
+    return ids
+
+
 def prose_paragraphs(text: str):
     in_code, buffer, start = False, [], 0
     for line_no, line in enumerate(text.splitlines() + [""], 1):
@@ -59,11 +70,14 @@ def audit(
     strict_numbers: bool,
     known_data: set[str] | None = None,
     require_data_markers: bool = False,
+    required_claims: set[str] | None = None,
 ) -> list[str]:
     errors: list[str] = []
     used = set(MARKER.findall(markdown))
     for marker in sorted(used - known):
         errors.append(f"unknown claim marker {marker!r}")
+    for marker in sorted((required_claims or set()) - used):
+        errors.append(f"central claim marker {marker!r} is missing from manuscript")
     if known_data is not None:
         used_data = set(DATA_MARKER.findall(markdown))
         for marker in sorted(used_data - known_data):
@@ -84,6 +98,7 @@ def main() -> int:
     parser.add_argument("manifest", type=Path)
     parser.add_argument("--strict-numbers", action="store_true")
     parser.add_argument("--require-data-markers", action="store_true")
+    parser.add_argument("--require-central-claims", action="store_true")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
     if not args.markdown.is_file() or not args.manifest.is_file():
@@ -92,6 +107,7 @@ def main() -> int:
     try:
         known = claim_ids(args.manifest)
         known_data = data_ids(args.manifest)
+        required_claims = central_claim_ids(args.manifest) if args.require_central_claims else None
     except (json.JSONDecodeError, OSError) as exc:
         print(f"[Error] Cannot read manifest: {exc}", file=sys.stderr)
         return 2
@@ -101,6 +117,7 @@ def main() -> int:
         args.strict_numbers,
         known_data,
         args.require_data_markers,
+        required_claims,
     )
     report = {"valid": not errors, "errors": errors}
     if args.json:

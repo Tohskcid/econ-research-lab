@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 metadata:
   author: Tohskcid
-  version: "2.7.0"
+  version: "2.9.0"
 ---
 
 # Economics Research Lab
@@ -51,7 +51,7 @@ For research PDFs, read [references/pdf_ingestion.md](references/pdf_ingestion.m
 
 When the work requires locating new data, verifying provenance, or falling back to proxy data, read [references/data_acquisition.md](references/data_acquisition.md). Prefer verified real data; if none satisfy the frozen requirement and search stopping rule, create a reproducible, clearly labeled proxy for feasibility or method testing, never as undisclosed real-world evidence.
 
-When drafting, revising, translating, or auditing an article, thesis, or working paper, read [references/manuscript.md](references/manuscript.md). Trace material claims and data to the research manifest and audit the whole argument before delivery.
+When drafting, revising, translating, or auditing an article, thesis, or working paper, read [references/manuscript.md](references/manuscript.md). Trace material claims and data to the research manifest and audit the whole argument before delivery. For LaTeX output, also read [references/latex_validation.md](references/latex_validation.md); compile and render the full document, then inspect every page before delivery.
 
 For confidential, licensed, enclave-bound, or personally identifying data, read [references/confidential_data.md](references/confidential_data.md) before access. Treat the approved compute boundary and export policy as part of the research contract.
 
@@ -71,7 +71,9 @@ Do not optimize p-values, rewrite the evaluation harness, or pivot because a res
 
 ## Coordination
 
-Remain the single accountable PI. Delegate only separable work that can run in parallel and is likely to save time, such as independent literature search, data audit, proof attack, or referee review. If delegation is unavailable, run the same checkpoints sequentially. Handoffs contain conclusions, evidence locations, uncertainty, and the next decision—not raw logs or copied source text.
+Remain the single accountable PI. Delegate only separable work that can run in parallel and is likely to save time, such as independent literature search, data audit, proof attack, or referee review. When the user requests a research team or multi-agent work and the host exposes native subagents, use those controls directly for every useful separable task authorized by the contract. Otherwise, when the contract authorizes the budget and at least two useful tasks are independent, actually dispatch them with the host's spawn/wait controls; do not merely name roles, write a plan, or simulate a team conversation. Retain agent identifiers, wait for every required handoff, validate it, and synthesize only afterward. Keep coupled decisions and final synthesis with the PI. If native delegation is unavailable, use the external adapter or run the same checkpoints sequentially. Handoffs contain conclusions, evidence locations, uncertainty, and the next decision—not raw logs or copied source text.
+
+For a multi-agent run, read [references/team_protocol.md](references/team_protocol.md). Use a validated task DAG, non-overlapping write scopes, bounded specialist budgets, and structured handoffs; resolve disagreements by evidence and discriminating tests, never by vote or agent confidence.
 
 ## Economy and boundaries
 

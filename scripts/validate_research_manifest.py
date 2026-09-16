@@ -85,16 +85,25 @@ def validate(records: list[dict]) -> list[str]:
         if kind == "claim":
             finding_ids = record.get("finding_ids", [])
             evidence_ids = record.get("evidence_ids", [])
+            premise_ids = record.get("premise_ids", [])
             if not isinstance(finding_ids, list):
                 errors.append(f"line {line}: finding_ids must be a list")
             if not isinstance(evidence_ids, list):
                 errors.append(f"line {line}: evidence_ids must be a list")
-            if not evidence_ids and not finding_ids:
-                errors.append(f"line {line}: claim requires evidence_ids or finding_ids")
+            if not isinstance(premise_ids, list):
+                errors.append(f"line {line}: premise_ids must be a list")
+            if not evidence_ids and not finding_ids and not premise_ids:
+                errors.append(f"line {line}: claim requires evidence_ids, finding_ids, or premise_ids")
             for value in finding_ids if isinstance(finding_ids, list) else []:
                 target = by_id.get(value)
                 if target is None or target.get("type") != "finding":
                     errors.append(f"line {line}: finding_ids entry {value!r} must reference a finding")
+            for value in premise_ids if isinstance(premise_ids, list) else []:
+                target = by_id.get(value)
+                if value == record.get("id"):
+                    errors.append(f"line {line}: claim cannot cite itself as a premise")
+                elif target is None or target.get("type") != "claim":
+                    errors.append(f"line {line}: premise_ids entry {value!r} must reference a claim")
         if kind in {"run", "claim"}:
             data_ids = record.get("data_ids", [])
             if not isinstance(data_ids, list):
@@ -105,9 +114,35 @@ def validate(records: list[dict]) -> list[str]:
                     if target is None or target.get("type") not in {"dataset", "proxy"}:
                         errors.append(f"line {line}: data_ids entry {value!r} must reference a dataset or proxy")
 
-    for record in records:
-        if record.get("type") != "claim":
-            continue
+    claims = {record["id"]: record for record in records if record.get("type") == "claim" and isinstance(record.get("id"), str)}
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def visit_claim(claim_id: str) -> None:
+        if claim_id in visiting:
+            errors.append(f"line {claims[claim_id]['_line']}: claim premise cycle reaches {claim_id!r}")
+            return
+        if claim_id in visited:
+            return
+        visiting.add(claim_id)
+        premise_ids = claims[claim_id].get("premise_ids", [])
+        for premise_id in premise_ids if isinstance(premise_ids, list) else []:
+            if premise_id in claims:
+                visit_claim(premise_id)
+        visiting.remove(claim_id)
+        visited.add(claim_id)
+
+    for claim_id in claims:
+        visit_claim(claim_id)
+
+    proxy_memo: dict[str, bool] = {}
+
+    def claim_uses_proxy(claim_id: str, stack: set[str]) -> bool:
+        if claim_id in proxy_memo:
+            return proxy_memo[claim_id]
+        if claim_id in stack:
+            return False
+        record = claims[claim_id]
         data_ids = set(record.get("data_ids", [])) if isinstance(record.get("data_ids", []), list) else set()
         for finding_id in record.get("finding_ids", []) if isinstance(record.get("finding_ids", []), list) else []:
             finding = by_id.get(finding_id, {})
@@ -115,9 +150,75 @@ def validate(records: list[dict]) -> list[str]:
                 run = by_id.get(run_id, {})
                 if isinstance(run.get("data_ids", []), list):
                     data_ids.update(run["data_ids"])
-        if any(by_id.get(value, {}).get("type") == "proxy" for value in data_ids):
-            if record.get("scope") != "proxy_only":
-                errors.append(f"line {record['_line']}: claim using proxy data requires scope 'proxy_only'")
+        tainted = any(by_id.get(value, {}).get("type") == "proxy" for value in data_ids)
+        for premise_id in record.get("premise_ids", []) if isinstance(record.get("premise_ids", []), list) else []:
+            if premise_id in claims:
+                tainted = tainted or claim_uses_proxy(premise_id, stack | {claim_id})
+        proxy_memo[claim_id] = tainted
+        return tainted
+
+    for record in records:
+        if record.get("type") != "claim":
+            continue
+        claim_id = record.get("id")
+        if isinstance(claim_id, str) and claim_id in claims and claim_uses_proxy(claim_id, set()) and record.get("scope") != "proxy_only":
+            errors.append(f"line {record['_line']}: claim using proxy data requires scope 'proxy_only'")
+    return errors
+
+
+def validate_argument(records: list[dict]) -> list[str]:
+    errors: list[str] = []
+    claims = {record["id"]: record for record in records if record.get("type") == "claim" and isinstance(record.get("id"), str)}
+    central = [record for record in claims.values() if record.get("central") is True]
+    conclusions = [record for record in central if record.get("role") == "conclusion"]
+    if not conclusions:
+        errors.append("argument graph requires at least one central conclusion")
+    for record in central:
+        line = record["_line"]
+        if record.get("role") not in {"premise", "intermediate", "conclusion"}:
+            errors.append(f"line {line}: central claim requires role premise, intermediate, or conclusion")
+        if record.get("status") not in {"supported", "provisional", "contradicted", "unsupported"}:
+            errors.append(f"line {line}: central claim requires a valid status")
+        for field in ("scope", "uncertainty"):
+            if not isinstance(record.get(field), str) or not record[field].strip():
+                errors.append(f"line {line}: central claim requires non-empty {field}")
+
+    grounded_memo: dict[str, bool] = {}
+
+    def grounded(claim_id: str, stack: set[str]) -> bool:
+        if claim_id in grounded_memo:
+            return grounded_memo[claim_id]
+        if claim_id in stack:
+            return False
+        record = claims[claim_id]
+        result = bool(record.get("evidence_ids") or record.get("finding_ids"))
+        for premise_id in record.get("premise_ids", []) if isinstance(record.get("premise_ids", []), list) else []:
+            if premise_id in claims:
+                result = result or grounded(premise_id, stack | {claim_id})
+        grounded_memo[claim_id] = result
+        return result
+
+    def ancestors(claim_id: str) -> set[str]:
+        premises = claims[claim_id].get("premise_ids", [])
+        result, stack = set(), list(premises) if isinstance(premises, list) else []
+        while stack:
+            current = stack.pop()
+            if current in result or current not in claims:
+                continue
+            result.add(current)
+            more = claims[current].get("premise_ids", [])
+            if isinstance(more, list):
+                stack.extend(more)
+        return result
+
+    for record in conclusions:
+        line, claim_id = record["_line"], record["id"]
+        if not grounded(claim_id, set()):
+            errors.append(f"line {line}: central conclusion has no path to evidence or finding")
+        if record.get("status") == "supported":
+            weak = [value for value in ancestors(claim_id) if claims[value].get("status") in {"contradicted", "unsupported"}]
+            if weak:
+                errors.append(f"line {line}: supported conclusion depends on contradicted or unsupported premises {sorted(weak)}")
     return errors
 
 
@@ -125,12 +226,15 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("manifest", type=Path)
     parser.add_argument("--json", action="store_true", help="emit a machine-readable report")
+    parser.add_argument("--require-argument-graph", action="store_true")
     args = parser.parse_args()
     if not args.manifest.is_file():
         print(f"[Error] File not found: {args.manifest}", file=sys.stderr)
         return 2
     records, errors = load_jsonl(args.manifest)
     errors.extend(validate(records))
+    if args.require_argument_graph:
+        errors.extend(validate_argument(records))
     report = {"valid": not errors, "records": len(records), "errors": errors}
     if args.json:
         print(json.dumps(report, ensure_ascii=False, indent=2))

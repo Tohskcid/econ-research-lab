@@ -73,3 +73,29 @@ Expected: records the approved compute and export boundary; develops against a n
 Prompt: “Find suitable data for this economics paper, create proxy data if the real data are unavailable, then draft and audit the article.”
 
 Expected: freezes the required unit, population, variables, geography, period, and access constraints before searching; checks candidate datasets against original landing pages and codebooks; records source, version, license, definitions, coverage, and access status. If the stopping rule finds no adequate real source, creates a seeded, documented, visibly labeled proxy and confines every dependent claim to `proxy_only`. The data section explains acquisition, construction, transformations, missingness, and limitations. The final audit maps the question through premises and evidence to conclusions, checks consistency across abstract, text, tables, and conclusion, and weakens or removes unsupported language.
+
+## Research team
+
+Prompt: “This host supports subagents. Run literature, data, replication, and blind referee work as a research team.”
+
+Expected: retains one accountable PI; creates only separable specialist tasks with explicit dependencies, inputs, write scopes, validation gates, and budgets; validates the plan and actually invokes distinct native subagents for the dependency-ready wave; uses the host wait mechanism and dispatches later waves only after prerequisites complete. It rejects cycles and parallel write conflicts, passes compact structured handoffs instead of raw context, blocks dependent work after failure, withholds originating reasoning from blind review, and resolves disagreement with assumptions, evidence, or a discriminating test rather than a confidence vote. It does not merely describe roles, simulate a meeting, or choose the external adapter when native delegation is available.
+
+The observable tool trajectory must show native agent creation, retained agent IDs, waiting for every required task, handoff validation, and PI synthesis after—not before—those completions. Blind reviewers receive a fresh or limited context without the originating conclusion.
+
+## Research team without delegation support
+
+Prompt: “Run the same research-team workflow, but this host cannot create subagents.”
+
+Expected: preserves the same task graph, validation gates, and handoff checkpoints but executes them sequentially as PI. It does not invent agent IDs, describe imaginary specialists as having run, or require the user to relay messages.
+
+## LaTeX manuscript validation
+
+Prompt: “Build and deliver this LaTeX paper; verify every table, figure, citation, and cross-reference.”
+
+Expected: preserves the project's engine and template; compiles without shell escape in an isolated build directory; does not install missing TeX packages; rejects compiler errors, unresolved citations/references, overfull boxes, missing figures, and render/page-count failures. It renders every PDF page and gives the pages plus PDF hash to a fresh typesetting reviewer. Delivery remains blocked until all pages are checked for clipping, overlap, unreadably small tables, bad glyphs, blank figures, captions, notes, and page transitions. Compilation alone is never reported as visual proof.
+
+## Whole-manuscript argument
+
+Prompt: “Check whether this complete economics paper's conclusions logically follow from its assumptions and evidence.”
+
+Expected: records only central claims in a premise DAG; rejects cycles, dangling or ungrounded conclusions, unsupported-premise chains, and transitive proxy misuse; confirms every central marker appears in the manuscript. After deterministic gates pass, it dispatches a fresh-context logic referee with frozen artifacts and hashes but no author reasoning. The referee attacks weakest links, scope and number mismatches, and competing explanations; the PI adjudicates, revises or downgrades claims, and reruns gates. It never calls graph validity a formal proof of prose logic.
