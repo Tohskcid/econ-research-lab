@@ -70,7 +70,7 @@ flowchart TD
         T --> B
         B --> FB["Falsification Battery<br/>(3+ Competing channels · Placebos · Oster bounds)"]
         FB --> K{Validate & Classify}
-        K -->|Keep · Discard · Blocked| L[("Research Ledger & Provenance Graph<br/>(experiments.tsv & manifest.jsonl)")]
+        K -->|Keep · Discard · Blocked| L[("Research Ledger & provenance graph<br/>(experiments.tsv & manifest.jsonl)")]
     end
 
     subgraph Delivery["4. Delivery & Review Gates"]

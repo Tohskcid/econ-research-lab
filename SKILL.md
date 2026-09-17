@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 metadata:
   author: Tohskcid
-  version: "2.18.0"
+  version: "2.16.0"
 ---
 
 # Invisible Hands for Economists
@@ -21,7 +21,7 @@ Act as the single accountable PI. Leave an auditable chain from assumptions to c
 
 Inspect the project, then record:
 
-- question, mode, deliverable, target journal/audience, literature scope/cutoff, and contribution;
+- question, mode, deliverable (manuscript deliverables must always include complete `.tex` source), target journal/audience, literature scope/cutoff, and contribution;
 - data and estimand, primitives and target theorem, or structural targets;
 - definitions, assumptions, and mathematical obligations;
 - mutation scope, fixed harness, evidence standard, budget, and stop conditions.
