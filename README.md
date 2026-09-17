@@ -1,57 +1,132 @@
+<div align="center">
+
 # Invisible Hands for Economists
 
-An auditable Agent Skill for empirical, theoretical, and structural economics research. One accountable PI can coordinate bounded specialists, discover and verify data, develop complete or Lean-checked proofs, run reproducible analyses, and audit a manuscript from evidence to conclusion.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Skill: econ-research-lab](https://img.shields.io/badge/Skill-econ--research--lab-2ea44f.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/Version-2.18.0-orange.svg)](SKILL.md)
+[![Theory Proof: Lean 4](https://img.shields.io/badge/Theory%20Proof-Lean%204%20Kernel-purple.svg)](references/lean_harness.md)
+[![Replication: AEA Standard](https://img.shields.io/badge/Replication-AEA%20Standard-success.svg)](references/replication_audit.md)
+[![Journal Tier: 2019 NSTC](https://img.shields.io/badge/Journal%20Tier-2019%20NSTC%20Filter-blue.svg)](library/journals.jsonl)
+[![Architecture: PI DAG](https://img.shields.io/badge/Architecture-PI%20DAG%20%2B%20Referees-blueviolet.svg)](references/team_protocol.md)
 
-Skill ID: `econ-research-lab`.
+<br/>
 
-## Architecture
+<img src="assets/banner.jpg" alt="Invisible Hands for Economists Banner" width="100%" />
+
+<br/>
+
+**An auditable, end-to-end Multi-Agent Research Lab for Empirical, Theoretical, and Structural Economics.**<br/>
+<sub>One accountable PI coordinates bounded specialist agents, discovers and verifies data with cryptographic hashes, formalizes mathematical proofs with Lean 4, runs reproducible econometric pipelines, and stress-tests manuscripts via adversarial peer review.</sub>
+
+<br/>
+
+[Architecture](#-architecture) • [Trust Surface](#-trust-surface--audit-rigor) • [Core Capabilities](#-capabilities) • [Protocol Reference](#-protocol-index) • [Installation](#-install) • [CLI Tools](#-cli-tools)
+
+</div>
+
+---
+
+## 🏛 Trust Surface & Audit Rigor
+
+Unlike generic prompt catalogs, **Invisible Hands for Economists** enforces deterministic, cryptographic, and mathematical verification gates. AI generation is halted whenever a gate fails:
+
+| Verification Lane | Standard / Technology | Gate Rule & Enforcement | Primary Reference |
+|---|---|---|---|
+| **Data Provenance Gate** | SHA-256 Hashes & Public/Enclave Check | Estimation is hard-blocked until data source, schema, license, and acquisition scripts match hashes. | [`data_acquisition.md`](references/data_acquisition.md) |
+| **Methodology Router** | Identification Design Screen | Routes from the estimand and institutional assignment mechanism—never from significance or data shape. | [`method_router.md`](references/method_router.md) |
+| **Database Wrangling** | Institutional Cleaning Conventions | Enforces standard rules for WRDS (CRSP/Compustat CCM), TEJ, CSMAR, CFPS, Census (IPUMS), FRED, and PWT. | [`database_cleaning_recipes.md`](references/database_cleaning_recipes.md) |
+| **Modern Estimation** | Stata / R / Python Recipes | Prescribes heterogeneity-robust DiD (`csdid`, `sunab`, `did_imputation`), bias-corrected RDD (`rdrobust`), and effective weak-IV tests. | [`estimation_recipes.md`](references/estimation_recipes.md) |
+| **Falsification Battery** | Anti-Confirmation-Bias Refutations | Formulates 3+ competing mechanisms; tests temporal placebos, permutation swaps, density discontinuities, and Oster bounds. | [`falsification_battery.md`](references/falsification_battery.md) |
+| **Formal Theory Proof** | Lean 4 + Mathlib Kernel Verification | Mathematical theorems are marked `formally proved` only when verified by the locked Lean 4 kernel with axiom allowlists. | [`lean_harness.md`](references/lean_harness.md) |
+| **Structural Solver** | Fixed Moments & Solver Contraction | Monitors contraction mapping tolerances, holdout sample validation, and numerical stability bounds. | [`structural.md`](references/structural.md) |
+| **Replication Audit** | AEA Data & Code Availability Policy | Verifies zero machine-specific absolute paths, deterministic seeds, raw data immutability, and single master script (`run_all.sh`). | [`replication_audit.md`](references/replication_audit.md) |
+| **Adversarial Peer Review** | 3-Archetype Economics Referees | Pre-delivery multi-agent review simulating the Identification Policeman, Theory/Mechanism Critic, and Data Hygiene Nitpicker. | [`adversarial_referees.md`](references/adversarial_referees.md) |
+
+---
+
+## 🧭 Architecture
 
 ```mermaid
 flowchart TD
-    Q[Question] --> TS[Topic survey gate<br/>nearest work · contribution · decision]
-    TS --> C[Research contract<br/>target journal · scope · budget · stop]
-    C --> S[Shared protocol<br/>literature · evidence · obligations]
-    C -.-> A[Bounded specialist DAG<br/>native agents or adapter]
-    S --> R{Mode}
-    R --> E[Empirical<br/>estimand · assignment mechanism]
-    R --> T[Theory<br/>complete proof · counterexample · Lean]
-    R --> X[Structural<br/>moments · solver · holdout]
-    A -.-> R
-    E --> ER[Method router<br/>design feasibility · estimator · interpretation]
-    ER --> DP[Data provenance gate<br/>source · license · schema · hashes]
-    DP --> B[Reproducible baseline<br/>fixed validation harness]
-    T --> B
-    X --> DP
-    B --> H[One hypothesis<br/>explicit rejection condition]
-    H --> D1[Smallest attributable change]
-    D1 --> V[Run fixed validity gates]
-    V --> K{Classify result}
-    K -->|keep · discard · inconclusive<br/>blocked · crash| P[(Ledger and provenance graph)]
-    P -->|budget remains| H
-    P -->|stop condition| M[Manuscript coverage<br/>sections · claims · artifacts]
-    M --> G[Delivery gates<br/>referee · numbers · LaTeX]
-    G --> D[Evidence package<br/>results · failures · uncertainty]
+    subgraph PI["1. Accountable PI & Research Contract"]
+        Q["Research Question"] --> TS["Topic Survey Gate<br/>(Nearest literature · Contribution)"]
+        TS --> C["Research Contract<br/>(Target outlet · Scope · Budget · Stop condition)"]
+        C --> S["Shared Protocol<br/>(Definitions · Assumptions · Obligations)"]
+    end
+
+    subgraph Modes["2. Tri-Pillar Methodology Router"]
+        S --> M{Research Mode}
+        M -->|Empirical| E["Empirical / Causal<br/>(Estimand · Assignment mechanism)"]
+        M -->|Pure Theory| T["Formal Theory<br/>(Lean 4 proof · Counterexample search)"]
+        M -->|Structural| X["Structural Estimation<br/>(Moments · Solver tolerance · Holdout)"]
+    end
+
+    subgraph Harness["3. Execution & Falsification Battery"]
+        E --> MR["Method Router<br/>(DiD · RDD · IV · SDiD · DML)"]
+        MR --> DP["Data Provenance Gate<br/>(SHA-256 hashes · Source · License)"]
+        X --> DP
+        DP --> B["Reproducible Baseline<br/>(Deterministic harness)"]
+        T --> B
+        B --> FB["Falsification Battery<br/>(3+ Competing channels · Placebos · Oster bounds)"]
+        FB --> K{Validate & Classify}
+        K -->|Keep · Discard · Blocked| L[("Research Ledger & Provenance Graph<br/>(experiments.tsv & manifest.jsonl)")]
+    end
+
+    subgraph Delivery["4. Delivery & Review Gates"]
+        L -->|Budget remains| B
+        L -->|Stop reached| MC["Manuscript Coverage Matrix<br/>(Hash-bound section packets)"]
+        MC --> AR["Adversarial Peer Review<br/>(Ref 1: Identification · Ref 2: Theory · Ref 3: Data)"]
+        AR --> RA["AEA Replication Package Audit<br/>(Master script · Relative paths · Seed lock)"]
+        RA --> EP["Verified Evidence Package<br/>(LaTeX manuscript · Figures · Tables · Code)"]
+    end
+
+    style PI fill:#1a237e,stroke:#3949ab,stroke-width:2px,color:#ffffff
+    style Modes fill:#004d40,stroke:#00796b,stroke-width:2px,color:#ffffff
+    style Harness fill:#263238,stroke:#455a64,stroke-width:2px,color:#ffffff
+    style Delivery fill:#311b92,stroke:#512da8,stroke-width:2px,color:#ffffff
 ```
 
-The loop is bounded by the research contract. It keeps the validation harness fixed, changes one attributable element per iteration, and records both successful and failed paths.
+---
 
-## Capabilities
+## ⚡ Capabilities
 
-- Surveys the nearest literature before selecting a method or claiming novelty.
-- Routes empirical questions from the estimand and assignment mechanism to design-specific diagnostics.
-- Provides modern econometric estimation recipes across Stata, R, and Python with publication-ready output.
-- Enforces a competing mechanisms matrix and falsification battery (placebo timing/units, negative controls, Oster bounds) before claiming causality.
-- Provides institutional data wrangling and cleaning recipes for major empirical databases (WRDS CRSP/Compustat, TEJ, CSMAR, CFPS, US Census/IPUMS, FRED, Penn World Table).
-- Supports complete theory proofs, counterexample search, and optional Lean 4 verification.
-- Supports structural estimation with fixed moments, solver tolerances, holdouts, and numerical checks.
-- Verifies data provenance, lawful literature acquisition, checksums, result bindings, and argument graphs.
-- Enforces AEA-grade replication package audits (relative paths, seed locks, raw data immutability, and single master execution scripts).
-- Simulates pre-submission adversarial peer review across econometric, mechanism, and data referee archetypes.
-- Builds manuscripts from evidence-backed section packets and modular appendices; page count follows validated evidence and outlet constraints.
-- Adapts genre-level outlet conventions without using journal prestige as an evidence filter or imitating individual authors.
-- Coordinates bounded specialist tasks while keeping final research decisions with one accountable PI.
+- **Topic Survey Gate**: Maps the closest literature and establishes novelty before choosing an empirical method or claiming contribution.
+- **Tri-Pillar Economics Coverage**: Integrates reduced-form causal inference, formal microeconomic theory (with Lean 4 kernel verification), and dynamic structural estimation in a unified DAG.
+- **Database Cleaning Recipes**: Eliminates institutional data traps in standard empirical databases:
+  - **WRDS (CRSP & Compustat)**: CCM linkage (`linktype in ('LU', 'LC')`), negative prices (bid-ask midpoint), Fama-French June fiscal lags, and Davis-Fama-French Book Equity.
+  - **Taiwan TEJ**: Price dividend adjustments, quarterly flow variable cumulative-to-single-quarter decomposition, and industry exclusions.
+  - **China CSMAR**: Board filtering (ChiNext, STAR), ST/*ST and financial firm screening, reinvested dividend returns (`Dretwd`), and quarterly flow adjustments.
+  - **Micro / Survey (CFPS & US Census/IPUMS)**: Immutable `pid` vs. dynamic `fid`, sampling weights (`pweight`/`PERWT`), 5-digit zero-padded County FIPS (`09001`), and boundary harmonization crosswalks.
+  - **Macro (FRED & PWT 10.x)**: Flow/stock aggregation rules and living standards (`rgdpe`) vs. productive capacity/TFP (`rgdpo`) selection.
+- **Modern Econometric Recipes**: Pre-configured code patterns for Stata, R, and Python covering Staggered DiD (`csdid`, `sunab`, `did_imputation`), bias-corrected RDD (`rdrobust`), Montiel Olea & Pflueger effective weak-IV tests, Conley spatial HAC, and Double Machine Learning (`DoubleML`).
+- **Falsification & Competing Mechanisms Battery**: Rejects confirmation bias by formalizing 3+ alternative confounding stories, temporal placebos, donor swaps, and Oster selection bounds.
+- **AEA-Grade Replication Audit**: Enforces American Economic Association Data and Code Availability policies: zero absolute paths, pinned seeds, immutable raw data checksums, and single-click master execution.
+- **Pre-Submission Adversarial Peer Review**: Simulates three classic referee archetypes (Identification Policeman, Theory/Mechanism Critic, and Data Hygiene Nitpicker) to stresstest manuscripts before submission.
+- **NSTC 2019 Journal Tier Filter**: Integrates the 2019 Ministry of Science and Technology (NSTC) Economics Journal Tier classification to align manuscript framing and expectations.
 
-## Install
+---
+
+## 📚 Protocol Index
+
+| Area | Reference File | Focus |
+|---|---|---|
+| **Core Protocol** | [`references/research_protocol.md`](references/research_protocol.md) | Single accountable PI rules, state machine, and ledger logging |
+| **Empirical Mode** | [`references/empirical.md`](references/empirical.md) | Reduced-form causal inference, panel FE, and validity checks |
+| **Method Router** | [`references/method_router.md`](references/method_router.md) | Identification screen (DiD, IV, RDD, SDiD, DML, selection) |
+| **Estimation Code** | [`references/estimation_recipes.md`](references/estimation_recipes.md) | Stata/R/Python modern syntax and AER/QJE three-line tables |
+| **Database Recipes** | [`references/database_cleaning_recipes.md`](references/database_cleaning_recipes.md) | Cleaning WRDS, TEJ, CSMAR, CFPS, Census/IPUMS, FRED, PWT |
+| **Falsification Battery** | [`references/falsification_battery.md`](references/falsification_battery.md) | Competing mechanisms matrix, temporal/unit placebos, Oster bounds |
+| **Theory Mode** | [`references/theory.md`](references/theory.md) | Pure theory proofs, counterexamples, and formalization plans |
+| **Lean 4 Verification** | [`references/lean_harness.md`](references/lean_harness.md) | Formal mathematical verification using Lean 4 + Mathlib |
+| **Structural Mode** | [`references/structural.md`](references/structural.md) | Dynamic discrete choice, BLP random coefficients, and solvers |
+| **Replication Audit** | [`references/replication_audit.md`](references/replication_audit.md) | AEA Data & Code Availability replication package checklist |
+| **Adversarial Referees** | [`references/adversarial_referees.md`](references/adversarial_referees.md) | 3-Archetype economics referee stress tests and report generator |
+| **Manuscript Workflow** | [`references/manuscript.md`](references/manuscript.md) | Evidence-driven scale, section packets, and logic reviews |
+
+---
+
+## 📦 Install
 
 Choose project scope when a repository should share the skill, or global scope when it should be available in every workspace. Install only one scope per client to avoid duplicate discovery.
 
@@ -71,8 +146,6 @@ git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
   "$HOME/.agents/skills/econ-research-lab"
 ```
 
-Start Codex in the project and request an economics research task, or invoke `$econ-research-lab` explicitly. Restart Codex only if the newly installed skill does not appear.
-
 ### Claude Code
 
 [Claude Code loads](https://code.claude.com/docs/en/skills) project skills from `.claude/skills` and personal skills from `~/.claude/skills`.
@@ -88,8 +161,6 @@ mkdir -p "$HOME/.claude/skills"
 git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
   "$HOME/.claude/skills/econ-research-lab"
 ```
-
-Ask a matching research question for automatic activation or run `/econ-research-lab`. If the top-level skills directory was created after Claude Code started and is not detected, restart the session.
 
 ### Google Antigravity
 
@@ -107,27 +178,18 @@ git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
   "$HOME/.gemini/config/skills/econ-research-lab"
 ```
 
-Open the workspace in Antigravity and ask an economics research question that matches the skill description.
+---
 
-### Optional Python tools
-
-The instructions-only workflow needs no package installation. Install the optional profiler dependencies inside the cloned skill directory when required:
-
-```bash
-python3 -m venv .venv
-.venv/bin/python -m pip install -e .
-```
-
-## Main tools
+## 🛠 CLI Tools
 
 | Tool | Purpose |
-| --- | --- |
+|---|---|
 | `econ_data_profiler.py` | Panel keys, missingness, balance, descriptive bins, LaTeX/SVG output |
 | `check_data_provenance.py` | Verify source, license, acquisition, schema, and file hashes for real, restricted, or proxy data |
 | `check_literature_archive.py` | Check bibliography coverage, lawful access records, PDF signatures, names, and hashes |
 | `check_manuscript_coverage.py` | Bind every manuscript section and claim to code, results, exhibits, diagnostics, and appendices |
 | `check_topic_survey.py` | Validate nearest-work coverage and the pre-design contribution decision |
-| `search_library.py` | Retrieve a small number of candidate result cards without loading the library |
+| `search_library.py` | Retrieve candidate result cards without loading the entire library |
 | `check_lean_proof.py` | Lock theorem statements and audit Lean proof terms and axioms |
 | `validate_research_manifest.py` / `audit_claims.py` | Validate provenance, proxy scope, argument DAGs, and manuscript markers |
 | `check_result_bindings.py` | Bind displayed manuscript numbers and a results-file hash to structured estimates |
@@ -138,26 +200,19 @@ python3 -m venv .venv
 | `run_research_team.py` | Validate and run a bounded provider-neutral specialist task DAG |
 | `run_dgp_evals.py` / `run_skill_evals.py` | External-agent regression and deterministic design checks |
 
-Detailed contracts live in `references/`. Run the applicable tools directly or declare them in `research/package.json` and execute `python3 scripts/check_research_package.py --root .`.
+---
 
-## Boundaries
-
-- Statistical significance is never an optimization target.
-- Target-journal fit affects framing and format, not evidence inclusion.
-- Proxy data support feasibility and code validation, not undisclosed real-world claims.
-- Quantitative results are blocked until their data source, license, acquisition, schema, and checksums pass the provenance gate.
-- Generated files stay in purpose-specific directories; every cited paper is downloaded and consistently named when lawful access exists, otherwise its verified access gap is recorded.
-- Restricted data remain inside their approved enclave and export policy.
-- Numerical examples do not prove theorems; `formally proved` requires the locked Lean 4 + Mathlib gate.
-- LaTeX compilation and argument graphs do not prove visual quality or natural-language entailment; independent review remains required.
-- Skill evolution is explicit and evaluated against fixed gates; ordinary research runs never rewrite the skill.
-
-## Validate
+## 🛡 Verification & Standards
 
 ```bash
-uvx --from skills-ref agentskills validate "$(pwd)"
-python3 -m unittest discover -s tests -v
+# Validate library cards and journal database
 python3 scripts/validate_library.py --json
+
+# Run package unit tests
+python3 -m unittest discover -s tests -v
+
+# Validate agent skills specification
+uvx --from skills-ref agentskills validate "$(pwd)"
 ```
 
-MIT licensed.
+MIT Licensed. Maintained by [Tohskcid](https://github.com/Tohskcid).
