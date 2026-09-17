@@ -16,6 +16,7 @@ Before acquisition, verify each candidate against the original landing page and 
 - unit of observation, variable definitions, coverage, sampling frame, missingness conventions, geography/time compatibility, and stable identifiers;
 - whether a paper or repository transformed the source and whether those transformations are reproducible;
 - file integrity with a checksum when downloaded, without placing restricted or copyrighted data in Git.
+- when cleaning, merging, or filtering standard databases (WRDS CRSP/Compustat, TEJ, CSMAR, CFPS, Census/IPUMS, FRED, PWT), follow institutional conventions in [database_cleaning_recipes.md](database_cleaning_recipes.md).
 
 Do not infer a license, population, frequency, or variable definition from a filename or aggregator description. Mark inaccessible or unverified candidates explicitly. Record an accepted source as a `dataset` object in the research manifest and link every consuming run with `data_ids`.
 

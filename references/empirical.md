@@ -36,7 +36,7 @@ Do not use significance as a keep criterion. Compare effect magnitude and uncert
 - Spatial/network work: define exposure mapping and direct/spillover estimands. Spatial HAC changes inference, not identification.
 - Generated outcomes or treatments: preserve construction code and propagate first-stage uncertainty where material.
 
-Use `scripts/econ_data_profiler.py` for deterministic panel checks and descriptive tables. Consult `data_granularity_guide.md` only when aggregation or proxy construction affects the estimand.
+Use `scripts/econ_data_profiler.py` for deterministic panel checks and descriptive tables. Consult `data_granularity_guide.md` only when aggregation or proxy construction affects the estimand. For standard financial, micro, or macro database cleaning (WRDS, TEJ, CSMAR, CFPS, Census/IPUMS, FRED, PWT), apply [database_cleaning_recipes.md](database_cleaning_recipes.md).
 
 When implementing an estimator, read [estimation_backends.md](estimation_backends.md) and [estimation_recipes.md](estimation_recipes.md). Freeze semantics before selecting a package; a backend adapter does not establish identification. For sensitivity, placebos, and competing explanations, consult [falsification_battery.md](falsification_battery.md). When the data are restricted or cannot be inspected safely, read [confidential_data.md](confidential_data.md) before accessing them.
 

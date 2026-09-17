@@ -41,6 +41,7 @@ The loop is bounded by the research contract. It keeps the validation harness fi
 - Routes empirical questions from the estimand and assignment mechanism to design-specific diagnostics.
 - Provides modern econometric estimation recipes across Stata, R, and Python with publication-ready output.
 - Enforces a competing mechanisms matrix and falsification battery (placebo timing/units, negative controls, Oster bounds) before claiming causality.
+- Provides institutional data wrangling and cleaning recipes for major empirical databases (WRDS CRSP/Compustat, TEJ, CSMAR, CFPS, US Census/IPUMS, FRED, Penn World Table).
 - Supports complete theory proofs, counterexample search, and optional Lean 4 verification.
 - Supports structural estimation with fixed moments, solver tolerances, holdouts, and numerical checks.
 - Verifies data provenance, lawful literature acquisition, checksums, result bindings, and argument graphs.
