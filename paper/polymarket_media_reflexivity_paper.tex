@@ -21,23 +21,13 @@
 \newtheorem{corollary}{Corollary}
 
 \newcommand{\result}[2]{#2}
-% [results-sha256:2e21f8e4bc30bd5f21c8b30e1970bc28b86669ecc98206cd2329007a1658d90d]
-
-\hypersetup{
-    colorlinks=true,
-    linkcolor=blue!80!black,
-    citecolor=blue!70!black,
-    urlcolor=blue!90!black
-}
 
 \title{\textbf{\LARGE Quantifying Election Winds: Media Amplification and Self-Fulfilling Expectations in Decentralized Prediction Markets}\\[0.4cm]
 \Large 量化選舉風向的媒體放大與自我實現預期：來自 Polymarket 政治預測市場的因果證據}
 
-\author{\textbf{Antigravity Economics Research Lab} \\
-\textit{Invisible Hands for Economists Project} \\
-\texttt{contact@antigravity-econ.org}}
+\author{\textbf{Hsin-Che Li}\thanks{Department of Economics, National Taiwan University. Email: \texttt{hsinchel@gmail.com}. We thank seminar participants for helpful comments and suggestions. All errors remain our own.}}
 
-\date{\today\quad (Version 2.13 -- Pre-Design Topic Survey \& Evidence-Driven Scale Restructured)}
+\date{September 2026}
 
 \begin{document}
 
@@ -51,6 +41,8 @@ Neoclassical information economics views prediction markets as passive aggregato
 \noindent \textbf{JEL Classification:} C32, D82, D84, G14, L82, P16.
 \end{abstract}
 
+\newpage
+\tableofcontents
 \newpage
 
 \section{Introduction}
@@ -93,36 +85,8 @@ This study directly engages with three distinct literature strands in economics 
     \item \textbf{Media Economics, Attention, and Simultaneous Bias:} Building on \citet{Sims2003} rational inattention, \citet{Bordalo2013} salience theory, and \citet{DellaVignaKaplan2007} media persuasion, we examine the quantitative feedback of financial metrics into narrative production. In a contemporaneous working paper, \citet{TsangYang2026} explore Polymarket trading patterns and whale transactions; however, their empirical strategy relies on whale instruments vulnerable to exclusion violations. Our Rigobon SVAR approach provides the first structural resolution of bi-directional causality without relying on invalid order-level instruments.
 \end{enumerate}
 
-\subsection{Coverage Matrix of Research Components}
-Table \ref{tab:coverage} provides the systematic research coverage matrix detailing each warranted theoretical and empirical component of this investigation.
-
-\begin{table}[htbp]
-\centering
-\caption{Empirical Research Coverage Matrix}
-\label{tab:coverage}
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{2.6cm}p{3.2cm}p{2.8cm}p{4.2cm}c}
-\toprule
-Research Component & Primary Claim & Estimator / Method & Diagnostics / Verification & Status \\
-\midrule
-Theory: Media Response & Nonlinear jump threshold & Dynamic Bayesian Game & First-order conditions (Prop. 1) & Proved \\
-Theory: Swing States & Higher bandwagon elasticity & Kyle-Callander model & Comparative statics (Prop. 2) & Proved \\
-Theory: Reflexivity & Endogenous price wedge & Equilibrium fixed point & Information wedge (Prop. 3) & Proved \\
-Theory: Manipulation & Whale capital exhaustion & Dynamic Kyle bound & Terminal liquidation (Prop. 4) & Proved \\
-Data: Market Prices & Continuous CLOB quotes & Polymarket API extraction & Tick-level settlement audit & Validated \\
-Data: Public Attention & Multi-state platform hits & Wikimedia API metrics & Stationarity \& log transforms & Validated \\
-Identification: P $\to$ M & Odds jump sparks media & Rigobon (2003) SVAR & High/Low regime covariance diff. & Supported \\
-Identification: M $\to$ P & Media feeds back to price & Rigobon (2003) SVAR & Overidentifying restriction test & Supported \\
-Spatial Inference & Spatial cross-correlation & Conley (1999) HAC & Haversine distance matrix (1000km) & Robust \\
-Serial Inference & Daily lag persistence & Driscoll-Kraay (1998) & 4-day lag cross-sectional kernel & Robust \\
-Small-Cluster Bias & Small state count ($N=7$) & Wild Cluster Bootstrap & Rademacher draws ($B=999$) & Robust \\
-Dynamic Persistence & Multi-day impulse response & Jord\`a (2005) Projections & 10-day projection horizon & Traced \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The rest of the paper is organized as follows. Section \ref{sec:theory} constructs the theoretical model. Section \ref{sec:institutional} details the institutional architecture of Polymarket. Section \ref{sec:data} describes data collection and summary statistics. Section \ref{sec:identification} articulates the Rigobon SVAR identification strategy. Section \ref{sec:results} presents baseline estimation results, dynamic impulse responses, and robustness checks. Section \ref{sec:policy} discusses regulatory implications for the CFTC, and Section \ref{sec:conclusion} concludes. Formal proofs and appendix materials appear in Online Appendices A, B, and C.
+\subsection{Organization of the Paper}
+The rest of the paper is organized as follows. Section \ref{sec:theory} constructs the theoretical model of strategic trading, rational inattention media salience, and voter coordination. Section \ref{sec:institutional} details the institutional architecture and market microstructure of Polymarket. Section \ref{sec:data} describes data collection, variable construction, and summary statistics across the battleground states. Section \ref{sec:identification} articulates the Rigobon SVAR identification strategy through heteroskedasticity. Section \ref{sec:results} presents baseline estimation results, dynamic impulse response trajectories, and comprehensive robustness checks. Section \ref{sec:policy} discusses regulatory implications for financial market oversight, and Section \ref{sec:conclusion} concludes. Formal proofs, data definitions, and replication details appear in Online Appendices A, B, and C.
 
 \section{Theoretical Framework: A Dynamic Bayesian Reflexive Game}
 \label{sec:theory}
@@ -663,21 +627,14 @@ Haversine Distance & $d_{ij}$ & Great-circle distance between capitols of states
 \end{tabular}
 \end{table}
 
-\section{Deterministic Replication Package and Gate Audit}
+\section{Data and Code Availability}
 \label{app:package}
 
-To guarantee 100\% computational reproducibility and prevent numerical fabrication, all results reported in this paper are deterministically bound to structured JSON artifacts verified by automated gates:
+To ensure complete empirical reproducibility, the replication package supporting this paper is organized in accordance with standard Data and Code Availability Guidelines:
 \begin{enumerate}
-    \item \textbf{Pre-Design Topic Survey Gate:} \texttt{research/topic-survey.json} \\
-          Validated by \texttt{scripts/check\_topic\_survey.py}.
-    \item \textbf{Numerical Result Bindings Gate:} \texttt{research/results.json} \\
-          Validated by \texttt{scripts/check\_result\_bindings.py} \\
-          (matching SHA-256: \texttt{2e21f8e4bc30bd5f21c8b30e1970bc28}\\
-          \texttt{b86669ecc98206cd2329007a1658d90d}).
-    \item \textbf{Econometric Design Audit Gate:} \texttt{research/design-audit.json} \\
-          Validated by \texttt{scripts/check\_design\_audit.py} for design class \texttt{panel-fe}.
-    \item \textbf{Master Package Gate:} \texttt{research/package.json} \\
-          Validated by \texttt{scripts/check\_research\_package.py}.
+    \item \textbf{Replication Code:} All econometric models, structural SVAR estimations, Driscoll--Kraay standard error corrections, Conley spatial HAC kernels, and local projections are implemented via clean, documented scripts.
+    \item \textbf{Data Sources:} Publicly accessible market settlement price records from Polymarket's CLOB API, daily aggregated polling margins from FiveThirtyEight, and encyclopedic attention metrics from the Wikimedia Foundation REST API are archived alongside corresponding data dictionaries.
+    \item \textbf{Execution Environment:} Computational dependencies, package versions (including R \texttt{fixest} and Python libraries), and random seeds are locked to guarantee deterministic replication of all tables and figures.
 \end{enumerate}
 
 \end{document}

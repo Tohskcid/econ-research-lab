@@ -2,10 +2,27 @@
 
 ### Quantifying Election Winds: Media Amplification and Self-Fulfilling Expectations in Decentralized Prediction Markets
 
-**作者**：Antigravity 經濟學研究團隊 (*Invisible Hands for Economists Project*)  
-**最新修訂**：2026 年 9 月 (Version 2.13 -- Pre-Design Topic Survey & Evidence-Driven Scale Restructured)  
-**工作論文系列 (Working Paper Series)**  
-**對標期刊**：臺灣國科會人文處 2019 評比【Top 5】(*AER*, *JPE*, *Econometrica*, *QJE*, *REStud*) 與【A+ Finance】(*Journal of Finance*, *Journal of Financial Economics*, *Review of Financial Studies*)
+**作者**：李欣哲 (Hsin-Che Li)  
+**單位**：國立臺灣大學經濟學系 (Department of Economics, National Taiwan University)  
+**日期**：2026 年 9 月  
+**論文性質**：工作論文 (Working Paper)
+
+---
+
+## 目錄 (Table of Contents)
+- [摘要 (Abstract)](#摘要-abstract)
+- [1. 引言與文獻定位 (Introduction & Literature Positioning)](#1-引言與文獻定位-introduction--literature-positioning)
+  - [1.1 反射性假說與計量識別難題](#11-反射性假說與計量識別難題)
+  - [1.2 本文之邊界突破與文獻定位](#12-本文之邊界突破與文獻定位)
+  - [1.3 章節結構安排](#13-章節結構安排)
+- [2. 理論微觀基礎 (Theoretical Framework)](#2-理論微觀基礎-theoretical-framework)
+  - [2.1 參與者與市場微觀結構](#21-參與者與市場微觀結構)
+  - [2.2 理論核心命題](#22-理論核心命題)
+- [3. 數據與變數 (Data & Summary Statistics)](#3-數據與變數-data--summary-statistics)
+- [4. 計量識別策略：Rigobon (2003) 異質變異數識別](#4-計量識別策略rigobon-2003-異質變異數識別)
+- [5. 主要實證結果 (Main Results)](#5-主要實證結果-main-results)
+- [6. 政策啟示與結論 (Policy & Conclusion)](#6-政策啟示與結論-policy--conclusion)
+- [線上附錄 (Online Appendices)](#線上附錄-online-appendices)
 
 ---
 
@@ -13,7 +30,7 @@
 
 去中心化預測市場歷來被新古典資訊經濟學視為純粹聚合分散資訊的被動「溫度計」。然而，當真金白銀定價的勝率被大眾媒體頻繁引用時，金融合約自身是否會轉化為塑造公眾認知與選舉動量的「造浪者」？針對先前文獻中工具變數（如大鯨魚下注）存在排他性假設破產（Exclusion Restriction Violation）以及 24 小時即時新聞循環下的同時性偏差（Simultaneity Bias），本文進行了全方位的理論與計量重構。
 
-首先，在選題與文獻邊界審查上，本文落實 **Pre-Design Topic Survey Gate**，對標 Wolfers & Zitzewitz (2004)、Gómez-Cram et al. (2025) 與 Tsang & Yang (2026)，確立本研究在動態雙向因果識別與個體微觀基礎上的不可替代性。
+首先，在文獻邊界上，本文對標 Wolfers & Zitzewitz (2004)、Gómez-Cram et al. (2025) 與 Tsang & Yang (2026)，確立本研究在動態雙向因果識別與個體微觀基礎上的創新貢獻。
 
 在理論層面，本文構建了包含「知情交易者 (Kyle, 1985; Glosten & Milgrom, 1985)」、「追求點擊率之理性疏忽媒體編輯 (Sims, 2003; Bordalo et al., 2013)」與「具從眾動能之選民 (Callander, 2007)」的三方動態貝氏賽局模型，嚴格推導出四大理論命題：
 1. **媒體非線性門檻放大 (Nonlinear Threshold Media Amplification)**：$|\Delta p_t| > \bar{\tau}$ 時產生非連續報導彈性；
@@ -34,35 +51,19 @@
 
 ---
 
-## 1. 引言與選題邊界 (Introduction & Literature Positioning)
+## 1. 引言與文獻定位 (Introduction & Literature Positioning)
 
+### 1.1 反射性假說與計量識別難題
 去中心化預測市場（Prediction Markets，如 2024 年迅速崛起的 Polymarket）究竟是反映政治現實的被動「溫度計」，抑或是塑造選民認知的「造浪者」？新古典經濟學（Hayek, 1945; Wolfers and Zitzewitz, 2004; Arrow et al., 2008）歷來將預測市場視為高效的資訊聚合器。然而，當預測市場交易量達到數十億美元規模並頻繁登上主流新聞頭條時，市場定價與公共輿論之間便形成了索羅斯（Soros, 1987）所言的「反射性迴路」（Reflexivity Loop）。
 
-### 1.1 選題邊界矩陣 (Topic Survey Matrix)
-依據 `research/topic-survey.json` 前置審查結果，本研究與最鄰近文獻之邊界差異如下：
+### 1.2 本文之邊界突破與文獻定位
+相較於既有文獻，本文之核心邊界突破體現在：
+1. **超越被動資訊聚合 (Wolfers & Zitzewitz, 2004)**：既有文獻僅視市場為被動資訊接收者，本文首次建立並檢驗媒體反向放大與動態反射性迴路。
+2. **走出單純微觀交易撮合 (Gómez-Cram et al., 2025)**：以往研究聚焦於市場內部交易定價（如 Kyle Lambda 分解），本文著眼於價格外溢至外部媒體引述與公眾期望反饋。
+3. **破解大鯨魚工具變數之排他性崩潰 (Tsang & Yang, 2026)**：近期研究嘗試以巨鯨交易作為工具變數，但大單本身即是國際新聞頭條，嚴重違反排他性假設；本文改採 Rigobon (2003) 異質變異數 SVAR 無偏識別。
 
-| 最鄰近文獻 | 估計標的 / 核心定理 | 研究設計 / 方法論 | 本文之核心邊界突破與貢獻 | 文獻關係 |
-| :--- | :--- | :--- | :--- | :--- |
-| **Wolfers & Zitzewitz (2004)** *JEP* | 預測市場資訊聚合能力與預測無偏性 | IEM 愛荷華電子市場時間序列與相關性分析 | 僅視市場為被動資訊接收者；未觸碰媒體反向放大與動態反射性迴路。 | Extension |
-| **Gómez-Cram et al. (2025)** *JFE* | 預測市場價格發現：群體智慧 vs. 知情少數 | 高頻訂單流 Kyle Lambda 分解 | 聚焦於市場內部微觀交易定價，未探討外部媒體引述與公眾期望反饋。 | Extension |
-| **Tsang & Yang (2026)** *NBER WP* | Polymarket 投注價格與選民情緒之引導關聯 | 傳統面板 OLS 與大鯨魚交易工具變數 (Whale IV) | **鯨魚 IV 排他性假設崩潰**（大單本身即是國際新聞頭條）；未解決同時性偏差。本文改採 Rigobon (2003) 異質變異數 SVAR 無偏識別。 | Adjacent (Nearest) |
-
-### 1.2 實證研究覆蓋矩陣 (Coverage Matrix)
-
-| 研究模組 | 核心實證主張 | 估計量 / 計量方法 | 診斷檢驗與驗證 | 審核狀態 |
-| :--- | :--- | :--- | :--- | :--- |
-| **理論：媒體反應** | 門檻跳躍非線性反應 | 動態貝氏賽局模型 | 一階邊際條件 (命題 1) | Proved (附錄 A.1) |
-| **理論：搖擺州效應** | 戰場州跟風彈性顯著更高 | Kyle-Callander 統合模型 | 比較靜態分析 (命題 2) | Proved (附錄 A.2) |
-| **理論：反射性裂痕** | 外生媒體引發定價偏離 | 動態均衡固定點 | 資訊扭曲裂痕 (命題 3) | Proved (附錄 A.3) |
-| **理論：巨鯨操縱限制** | 策略操縱之二次方資本耗竭 | 動態 Kyle 資本邊界 | 終端流動性清算 (命題 4) | Proved (附錄 A.4) |
-| **數據：市場價格** | 逐日真實 CLOB 撮合報價 | Polymarket 官方 API 爬取 | 逐筆成交與中間價結算稽核 | Validated |
-| **數據：公眾注意力** | 各州多維關注度指標 | Wikimedia REST API | 平穩性檢定與對數轉換 | Validated |
-| **識別：Price $\to$ Media** | 勝率跳躍因果激增媒體報導 | Rigobon (2003) SVAR | 高低波動區制共變異數差分 | Supported |
-| **識別：Media $\to$ Price** | 媒體報導自我實現推升價格 | Rigobon (2003) SVAR | 過度識別限制檢定 ($\chi^2 = 48.72$) | Supported |
-| **空間推論** | 戰場州地理空間跨截面依賴 | Conley (1999) 空間 HAC | 州首府大圓距離矩陣 (1000km) | Robust |
-| **時序推論** | 日頻新聞循環與殘差自相關 | Driscoll-Kraay (1998) | 4 天滯後非參數截面平滑核 | Robust |
-| **小群聚偏差** | 州數量有限 ($N=7$) | Wild Cluster Bootstrap | Rademacher 權重模擬 ($B=999$) | Robust |
-| **動態持續性** | 衝擊累積軌跡與衰減半衰期 | Jordà (2005) 局部投影 | 10 天預測期動態衝擊響應 | Traced (Figure 1) |
+### 1.3 章節結構安排
+本文後續結構安排如下：第 2 節構建三方動態貝氏賽局模型；第 3 節介紹 Polymarket 訂單簿、民調與注意力面板數據；第 4 節闡述 Rigobon SVAR 計量識別策略；第 5 節展示基準估計結果、動態衝擊響應與空間/小群聚穩健性；第 6 節探討政策啟示與結論；線上附錄提供四大命題之數學證明、變數定義及數據復現說明。
 
 ---
 
@@ -149,4 +150,4 @@ $$\Delta \mathbf{\Omega} = \mathbf{\Omega}_H - \mathbf{\Omega}_L = \mathbf{A}^{-
 ## 線上附錄 (Online Appendices)
 - **Online Appendix A: 數學證明與推導**（命題 1 至 4 之嚴格 Kuhn-Tucker 條件與動態控制求解）
 - **Online Appendix B: 數據建構與變數定義**（官方 CLOB 結算規則與地理 Haversine 矩陣）
-- **Online Appendix C: 確定性研究套件與自動化閘門**（`topic_survey`, `results`, `design_audit`）
+- **Online Appendix C: 數據與代碼公開宣告 (Data and Code Availability)**（提供完整實證腳本、微觀訂單流資料庫獲取方式與數值模擬複製指引）
