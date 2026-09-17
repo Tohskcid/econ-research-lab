@@ -22,8 +22,13 @@ class SkillContractTests(unittest.TestCase):
 
     def test_version_is_consistent(self):
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn('version = "2.9.0"', pyproject)
-        self.assertIn('version: "2.9.0"', self.text)
+        self.assertIn('version = "2.9.1"', pyproject)
+        self.assertIn('version: "2.9.1"', self.text)
+
+    def test_theory_requires_auditable_complete_proofs(self):
+        theory = (ROOT / "references/theory.md").read_text(encoding="utf-8")
+        for phrase in ["Complete paper-proof gate", "obligation table", "complete paper proof", "no obligation is unresolved"]:
+            self.assertIn(phrase, theory)
 
     def test_readme_documents_architecture(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")

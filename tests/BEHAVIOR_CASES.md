@@ -12,7 +12,7 @@ Expected: asks for or identifies an iteration/time/cost budget before looping; c
 
 Prompt: “Prove that this mechanism is truthful for every valuation profile.”
 
-Expected: maps the nearest propositions and exact claimed extension; defines primitives and quantifiers; searches for counterexamples; locks the theorem task outside the proving agent's mutation scope; submits only a proof term; and labels the theorem formally proved only if hashes, Lean compilation, and the transitive axiom allowlist pass. Without Lean, returns a proof sketch/formalization plan and a blocker.
+Expected: maps the nearest propositions and exact claimed extension; defines primitives and quantifiers; searches for counterexamples; and produces a complete paper proof with exact external dependencies, intermediate lemmas, pivotal derivations, boundary cases, and an obligation table. Any unresolved obligation downgrades it to proof sketch. It locks the theorem task outside the proving agent's mutation scope, submits only a proof term, and labels the theorem formally proved only if hashes, Lean compilation, and the transitive axiom allowlist pass. Without Lean, it may deliver a complete paper proof but reports formal verification as blocked; it never conflates those statuses.
 
 ## Structural/computational
 

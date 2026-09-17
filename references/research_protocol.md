@@ -18,6 +18,8 @@ Create only the obligations needed to support the claim. Depending on the mode t
 
 For each obligation state the proposition, assumptions, argument or checker, status, and unresolved gap. Separate maintained assumptions from derived implications. Test boundary cases and seek counterexamples before strengthening a claim. Symbolic algebra, simulation, and numerical examples may check derivations or find failures but do not replace a proof. Use the proof-status rules in `theory.md` whenever presenting a result as a theorem.
 
+When a full proof is requested, apply the complete paper-proof gate in `theory.md`. Store the full derivation once as an artifact; downstream agents receive only obligation statuses, exact dependency locators, checker status, uncertainty, and the artifact path unless they are assigned to audit the proof itself.
+
 ## Evidence
 
 For each material claim record: source, exact supported claim, research design or proof status, population/model scope, limitation, and verification date. Prefer primary sources. Distinguish published evidence, working papers, official data, documentation, and conjecture. Citation count and journal tier are metadata, not credibility or inclusion rules.
