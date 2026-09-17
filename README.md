@@ -16,15 +16,22 @@ flowchart TD
     R --> T[Theory<br/>complete proof · counterexample · Lean]
     R --> X[Structural<br/>moments · solver · holdout]
     A -.-> R
-    E --> L[Baseline → one change → validation]
-    T --> L
-    X --> L
-    L --> P[(Ledger and provenance graph)]
-    P --> M[Manuscript and referee gates]
+    E --> B[Reproducible baseline<br/>fixed validation harness]
+    T --> B
+    X --> B
+    B --> H[One hypothesis<br/>explicit rejection condition]
+    H --> D1[Smallest attributable change]
+    D1 --> V[Run fixed validity gates]
+    V --> K{Classify result}
+    K -->|keep · discard · inconclusive<br/>blocked · crash| P[(Ledger and provenance graph)]
+    P -->|budget remains| H
+    P -->|stop condition| M[Manuscript and referee gates]
     M --> D[Evidence package<br/>results · failures · uncertainty]
 ```
 
-`SKILL.md` is a 534-word router. It loads the shared protocol plus only the active research mode and any triggered reference. Raw data, papers, logs, proof traces, and page renders remain artifacts; agent handoffs contain decisions, evidence locations, uncertainty, and next actions.
+This is a bounded engineering loop, not open-ended self-prompting. The harness stays fixed, each iteration changes one attributable element, only a valid improvement updates the current best result, and every failed path remains in the ledger. The loop exits at the contract's budget, milestone, or stop condition.
+
+`SKILL.md` is a 535-word router. It loads the shared protocol plus only the active research mode and any triggered reference. Raw data, papers, logs, proof traces, and page renders remain artifacts; agent handoffs contain decisions, evidence locations, uncertainty, and next actions.
 
 ## Install
 
