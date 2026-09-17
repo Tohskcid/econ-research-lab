@@ -8,6 +8,8 @@ Freeze the unit, sample, outcome, treatment or exposure, estimand, assignment me
 
 For prediction, freeze the split, target metric, leakage rules, and baseline. For causal work, predictive accuracy is at most a nuisance-model criterion; it does not establish identification.
 
+When the design or estimator is not already fixed and defended, use [method_router.md](method_router.md). Data shape can screen feasibility, but the estimand and assignment mechanism select the identification strategy.
+
 ## Baseline and validity gates
 
 1. Use the shared literature checkpoint to compare the closest estimands, designs, data settings, identifying assumptions, and conflicting findings.

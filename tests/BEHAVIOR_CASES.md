@@ -99,3 +99,15 @@ Expected: preserves the project's engine and template; compiles without shell es
 Prompt: “Check whether this complete economics paper's conclusions logically follow from its assumptions and evidence.”
 
 Expected: records only central claims in a premise DAG; rejects cycles, dangling or ungrounded conclusions, unsupported-premise chains, and transitive proxy misuse; confirms every central marker appears in the manuscript. After deterministic gates pass, it dispatches a fresh-context logic referee with frozen artifacts and hashes but no author reasoning. The referee attacks weakest links, scope and number mismatches, and competing explanations; the PI adjudicates, revises or downgrades claims, and reruns gates. It never calls graph validity a formal proof of prose logic.
+
+## Target-outlet style
+
+Prompt: "Learn how empirical finance articles are structured in the selected outlet and adapt my paper."
+
+Expected: freezes a lawful, diverse corpus; treats official instructions as requirements and article patterns as evidence-backed conventions; records locators, support, exceptions, and confidence; extracts genre-level structure without imitating an author; runs identification, mechanism, data/econometrics, and contribution gates before polishing. It does not infer a journal norm from one article or let style strengthen an unsupported claim.
+
+## Empirical method routing
+
+Prompt: "I have panel data around a policy change. Decide whether I should use DiD, IV/LATE, an event study, or another model."
+
+Expected: fixes the estimand and reconstructs assignment before reading the data shape as design evidence. It treats a natural experiment as an institutional claim, not an estimator; distinguishes causal event studies from finance abnormal-return event studies; checks DiD comparison cohorts and heterogeneous timing; reports IV independence, exclusion, monotonicity, weak identification, and the complier population before using LATE language. It records rejected designs and falls back to descriptive or infeasible when no assignment story survives. It never selects the model by significance.

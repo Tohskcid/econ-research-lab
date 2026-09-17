@@ -12,11 +12,12 @@ flowchart TD
     C --> S[Shared protocol<br/>literature · evidence · obligations]
     C -.-> A[Bounded specialist DAG<br/>native agents or adapter]
     S --> R{Mode}
-    R --> E[Empirical<br/>estimand · identification · inference]
+    R --> E[Empirical<br/>estimand · assignment mechanism]
     R --> T[Theory<br/>complete proof · counterexample · Lean]
     R --> X[Structural<br/>moments · solver · holdout]
     A -.-> R
-    E --> B[Reproducible baseline<br/>fixed validation harness]
+    E --> ER[Method router<br/>design feasibility · estimator · interpretation]
+    ER --> B[Reproducible baseline<br/>fixed validation harness]
     T --> B
     X --> B
     B --> H[One hypothesis<br/>explicit rejection condition]
@@ -31,7 +32,19 @@ flowchart TD
 
 This is a bounded engineering loop, not open-ended self-prompting. The harness stays fixed, each iteration changes one attributable element, only a valid improvement updates the current best result, and every failed path remains in the ledger. The loop exits at the contract's budget, milestone, or stop condition.
 
-`SKILL.md` is a 535-word router. It loads the shared protocol plus only the active research mode and any triggered reference. Raw data, papers, logs, proof traces, and page renders remain artifacts; agent handoffs contain decisions, evidence locations, uncertainty, and next actions.
+`SKILL.md` is a compact router. It loads the shared protocol plus only the active research mode and any triggered reference. Raw data, papers, logs, proof traces, and page renders remain artifacts; agent handoffs contain decisions, evidence locations, uncertainty, and next actions.
+
+## Target outlets and manuscript fit
+
+`library/journals.jsonl` registers the selected general-economics outlets and the finance outlets The Journal of Finance, Journal of Financial Economics, The Review of Financial Studies, Journal of Financial and Quantitative Analysis, and Review of Finance. The registry is a target-outlet menu, not an evidence or quality filter.
+
+When an outlet-specific manuscript is requested, the agent builds a source-grounded profile from official author instructions and a lawful, diverse article sample. Inspired by [Distilly](https://github.com/titanwings/distilly), it separates observations from inference, records source locators and confidence, preserves exceptions, and incrementally updates the profile. It extracts genre-level architecture and conventions rather than copying phrases or imitating an individual author. Only the selected profile is loaded during drafting.
+
+Before style adaptation, the manuscript must pass four research-merit gates: identification; economic mechanism and defensible counterfactuals; data and econometric quality; and contribution, external validity, and policy relevance. Outlet fit cannot compensate for a failed gate.
+
+## Method routing
+
+For empirical work, the router first fixes the estimand and institutional assignment mechanism, then uses data properties to test feasibility and choose an estimator. It distinguishes descriptive or predictive work, natural-experiment designs, DiD, IV/LATE, sharp and fuzzy RDD, synthetic control/SDID, selection-on-observables, panel fixed effects, interrupted time series, finance market event studies, spatial/network exposure, DML, and structural counterfactuals. The output records rejected alternatives and interpretation boundaries; a specialized model never substitutes for identification.
 
 ## Install
 

@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 metadata:
   author: Tohskcid
-  version: "2.9.3"
+  version: "2.11.0"
 ---
 
 # Invisible Hands for Economists
@@ -41,9 +41,11 @@ Read [research_protocol.md](references/research_protocol.md), then exactly one a
 Load these only when triggered:
 
 - material aggregation: [data_granularity_guide.md](references/data_granularity_guide.md)
+- selecting or reviewing an empirical design or estimator: [method_router.md](references/method_router.md); route from estimand and assignment mechanism before data shape or software
 - research PDFs: [pdf_ingestion.md](references/pdf_ingestion.md)
 - data discovery or proxy data: [data_acquisition.md](references/data_acquisition.md); prefer verified real data and disclose reproducible proxies as feasibility evidence only
 - drafting or auditing an article: [manuscript.md](references/manuscript.md); for LaTeX also read [latex_validation.md](references/latex_validation.md), compile and render the full document, then inspect every page
+- extracting or applying target-outlet conventions: [journal_style.md](references/journal_style.md); load only the selected outlet profile and never imitate an individual author
 - confidential, licensed, enclave, or identifying data: [confidential_data.md](references/confidential_data.md) before access
 - applicable theorem/method/counterexample: [research_library.md](references/research_library.md); search its index, open one selected card, and verify the primary source
 - explicit skill evaluation/evolution: [skill_evolution.md](references/skill_evolution.md); never rewrite skill instructions during an ordinary research run

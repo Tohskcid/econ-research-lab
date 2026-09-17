@@ -8,6 +8,17 @@ Confirm the target journal or intended audience, format, language, length, expec
 
 Build an evidence-backed outline from the research contract. State one primary question and contribution, then map each section to the claims, evidence or findings, assumptions, tables/figures, and unresolved gaps it needs. Do not manufacture results, references, mechanisms, robustness checks, or novelty. A missing input becomes a marked gap or a scoped research task.
 
+If outlet-specific writing is requested, first read [journal_style.md](journal_style.md). Official author instructions are hard constraints; an evidence-backed outlet profile supplies soft conventions only. Research validity always overrides stylistic fit.
+
+## Research-merit gates
+
+Before polishing prose, grade each dimension `pass`, `revise`, or `blocked` and cite the supporting artifact. Style cannot repair a failed gate.
+
+1. **Identification.** Define the causal or descriptive estimand and assignment mechanism; enumerate reverse causality, omitted variables, selection, interference, anticipation, and measurement threats as applicable; then tie each identifying assumption to institutional evidence, diagnostics, sensitivity analysis, or an explicit limitation. Use RCT, IV, DiD, RDD, structural estimation, or another design only when its assumptions fit the setting. A pre-trend test can reveal violations but cannot prove parallel trends. Do not search controls, samples, fixed effects, clustering, or outcomes for preferred significance.
+2. **Economic mechanism.** State why optimizing households, firms, intermediaries, or institutions generate the prediction, and distinguish model implication, reduced-form mechanism evidence, and speculation. Mediation is causal only under its additional identification assumptions. Run a counterfactual or welfare exercise only when the design or identified model supports it; otherwise label it illustrative.
+3. **Data and econometrics.** Audit provenance, construction, linkage, measurement, missingness, representativeness, timing, geography, weights, disclosure limits, and the match between variation and estimand. Justify inference, fixed effects, clustering, and robustness tests from the data-generating and assignment process. Robustness means testing credible alternatives and failure modes, not accumulating specifications.
+4. **Contribution and relevance.** Establish the nearest literature gap as a difference in question, mechanism, data, identification, or method; bound external validity; quantify economically meaningful magnitudes where justified; and derive policy, welfare, or managerial implications no stronger than the evidence. A fashionable topic or prestigious outlet is not a contribution.
+
 ## Drafting
 
 Use the structure appropriate to the paper rather than forcing fixed headings. Ensure that:

@@ -22,8 +22,8 @@ class SkillContractTests(unittest.TestCase):
 
     def test_version_is_consistent(self):
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn('version = "2.9.3"', pyproject)
-        self.assertIn('version: "2.9.3"', self.text)
+        self.assertIn('version = "2.11.0"', pyproject)
+        self.assertIn('version: "2.11.0"', self.text)
 
     def test_theory_requires_auditable_complete_proofs(self):
         theory = (ROOT / "references/theory.md").read_text(encoding="utf-8")
@@ -83,6 +83,30 @@ class SkillContractTests(unittest.TestCase):
     def test_core_uses_target_journal_without_rankings(self):
         self.assertIn("target journal/audience", self.text)
         self.assertNotIn("ranking", self.text.casefold())
+
+    def test_journal_style_is_progressively_loaded(self):
+        reference = (ROOT / "references/journal_style.md").read_text(encoding="utf-8")
+        self.assertIn("extracting or applying target-outlet conventions", self.body)
+        for phrase in ["observations", "confidence", "do not reproduce distinctive sentences", "research validity"]:
+            self.assertIn(phrase, reference.casefold())
+
+    def test_manuscript_has_research_merit_gates(self):
+        manuscript = (ROOT / "references/manuscript.md").read_text(encoding="utf-8")
+        for phrase in ["Identification", "Economic mechanism", "Data and econometrics", "Contribution and relevance"]:
+            self.assertIn(phrase, manuscript)
+
+    def test_method_router_prioritizes_identification_over_data_shape(self):
+        router = (ROOT / "references/method_router.md").read_text(encoding="utf-8")
+        for phrase in [
+            "estimand and assignment mechanism",
+            "natural experiment",
+            "DiD / causal event study",
+            "IV / LATE",
+            "complier population",
+            "never silently rename LATE as ATE",
+            "do not choose by p-value",
+        ]:
+            self.assertIn(phrase, router)
 
 
 if __name__ == "__main__":
