@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 metadata:
   author: Tohskcid
-  version: "2.16.0"
+  version: "2.17.0"
 ---
 
 # Invisible Hands for Economists
@@ -43,10 +43,14 @@ Load these only when triggered:
 - starting a new research question: [topic_survey.md](references/topic_survey.md); classify the nearest work and contribution before method selection
 - material aggregation: [data_granularity_guide.md](references/data_granularity_guide.md)
 - selecting or reviewing an empirical design or estimator: [method_router.md](references/method_router.md); route from estimand and assignment mechanism before data shape or software
+- implementing an estimator or writing empirical code: [estimation_recipes.md](references/estimation_recipes.md); use modern heterogeneity-robust or bias-corrected syntax across Stata, R, and Python with publication-ready output
+- designing falsifications, placebos, or competing mechanisms: [falsification_battery.md](references/falsification_battery.md); formulate alternative channels before interpreting estimates as causal
 - research PDFs: [pdf_ingestion.md](references/pdf_ingestion.md)
 - creating multi-file outputs or archiving cited papers: [project_layout.md](references/project_layout.md); classify artifacts by purpose and account for every bibliography entry
 - data discovery, acquisition, or proxy data: [data_acquisition.md](references/data_acquisition.md); require tool-acquired, hash-bound provenance before quantitative results and disclose reproducible proxies as feasibility evidence only
 - drafting or auditing an article: [manuscript.md](references/manuscript.md); require hash-bound section coverage rather than a page target; for LaTeX also read [latex_validation.md](references/latex_validation.md), compile and render the full document, then inspect every page
+- pre-submission peer review: [adversarial_referees.md](references/adversarial_referees.md); stress-test manuscripts against identification, mechanism, and data referee archetypes
+- packaging, auditing, or verifying code and data replication: [replication_audit.md](references/replication_audit.md); enforce AEA-grade relative paths, seed locks, raw data immutability, and master scripts
 - extracting or applying target-outlet conventions: [journal_style.md](references/journal_style.md); load only the selected outlet profile and never imitate an individual author
 - confidential, licensed, enclave, or identifying data: [confidential_data.md](references/confidential_data.md) before access
 - applicable theorem/method/counterexample: [research_library.md](references/research_library.md); search its index, open one selected card, and verify the primary source

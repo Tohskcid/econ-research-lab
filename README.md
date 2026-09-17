@@ -39,9 +39,13 @@ The loop is bounded by the research contract. It keeps the validation harness fi
 
 - Surveys the nearest literature before selecting a method or claiming novelty.
 - Routes empirical questions from the estimand and assignment mechanism to design-specific diagnostics.
+- Provides modern econometric estimation recipes across Stata, R, and Python with publication-ready output.
+- Enforces a competing mechanisms matrix and falsification battery (placebo timing/units, negative controls, Oster bounds) before claiming causality.
 - Supports complete theory proofs, counterexample search, and optional Lean 4 verification.
 - Supports structural estimation with fixed moments, solver tolerances, holdouts, and numerical checks.
 - Verifies data provenance, lawful literature acquisition, checksums, result bindings, and argument graphs.
+- Enforces AEA-grade replication package audits (relative paths, seed locks, raw data immutability, and single master execution scripts).
+- Simulates pre-submission adversarial peer review across econometric, mechanism, and data referee archetypes.
 - Builds manuscripts from evidence-backed section packets and modular appendices; page count follows validated evidence and outlet constraints.
 - Adapts genre-level outlet conventions without using journal prestige as an evidence filter or imitating individual authors.
 - Coordinates bounded specialist tasks while keeping final research decisions with one accountable PI.
