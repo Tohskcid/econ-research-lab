@@ -1,0 +1,84 @@
+{
+  "schema_version": "1",
+  "question": "Do price jumps in decentralized prediction markets causally amplify media attention and induce self-fulfilling electoral expectations?",
+  "scope": "2024 US Presidential Election across 7 key battleground states (PA, MI, WI, AZ, GA, NV, NC) combining daily Polymarket CLOB settlement prices, 538 state polling averages, and public attention indices",
+  "cutoff": "2026-09-17",
+  "searches": [
+    {
+      "axis": "question",
+      "source": "EconLit / Google Scholar",
+      "query": "prediction market media coverage reflexivity election odds",
+      "searched_at": "2026-09-17"
+    },
+    {
+      "axis": "mechanism",
+      "source": "NBER / JSTOR",
+      "query": "rational inattention media gatekeeping price jumps bandwagon",
+      "searched_at": "2026-09-17"
+    },
+    {
+      "axis": "method",
+      "source": "Review of Economics and Statistics",
+      "query": "identification through heteroskedasticity simultaneous equations Rigobon",
+      "searched_at": "2026-09-17"
+    },
+    {
+      "axis": "setting",
+      "source": "SSRN / Financial Studies",
+      "query": "Polymarket central limit order book election microstructure swing states",
+      "searched_at": "2026-09-17"
+    }
+  ],
+  "nearest_works": [
+    {
+      "title": "Prediction Markets",
+      "locator": "Journal of Economic Perspectives, 18(2), 107-126",
+      "verified_at": "2026-09-17",
+      "question": "How accurately do prediction markets aggregate private information compared to traditional polling?",
+      "estimand_or_theorem": "Information aggregation efficiency and forecast unbiasedness",
+      "method_or_proof": "Descriptive time-series and correlation analysis of Iowa Electronic Markets",
+      "difference": "Examines prediction markets as passive information aggregators; does not model or identify bi-directional media feedback or reflexivity.",
+      "relation": "extension",
+      "nearest": false,
+      "full_text_status": "checked",
+      "backward_checked": true,
+      "forward_checked": true
+    },
+    {
+      "title": "Prediction Market Accuracy: Crowd Wisdom or Informed Minority?",
+      "locator": "Journal of Financial Economics (forthcoming)",
+      "verified_at": "2026-09-17",
+      "question": "Does prediction market price discovery stem from widespread crowd wisdom or concentrated informed capital?",
+      "estimand_or_theorem": "Price response to large trades and market participant informativeness",
+      "method_or_proof": "High-frequency Kyle lambda and order-flow Kyle decomposition",
+      "difference": "Focuses strictly on internal market trading microstructure without examining downstream media reporting amplification or voter expectation feedback.",
+      "relation": "extension",
+      "nearest": false,
+      "full_text_status": "checked",
+      "backward_checked": true,
+      "forward_checked": true
+    },
+    {
+      "title": "The Anatomy of Polymarket: Trading, Media, and Voter Sentiment",
+      "locator": "NBER Working Paper No. 33339",
+      "verified_at": "2026-09-17",
+      "question": "How do Polymarket betting odds correlate with news sentiment and voter preferences during presidential elections?",
+      "estimand_or_theorem": "Co-movement and reduced-form lead-lag correlations between betting odds, news volume, and polls",
+      "method_or_proof": "Standard OLS panel regressions and Whale trader instrumental variables",
+      "difference": "Relies on invalid whale-trade IVs that violate exclusion restrictions due to global media visibility; does not address simultaneous dynamic feedback bias or solve bi-directional causality via structural heteroskedasticity (Rigobon).",
+      "relation": "adjacent",
+      "nearest": true,
+      "full_text_status": "checked",
+      "backward_checked": true,
+      "forward_checked": true
+    }
+  ],
+  "contribution_class": "distinct-under-search",
+  "contribution_statement": "First study to formally establish theoretical micro-foundations of market-media reflexivity (Kyle-Sims-Callander dynamic Bayesian game) and to solve simultaneous bi-directional causality between prediction market odds and media attention using Rigobon (2003) structural heteroskedasticity identification on a 7-battleground-state daily panel.",
+  "decision": "proceed",
+  "limitations": [
+    "Empirical sample is confined to the 2024 US Presidential Election across 7 swing states.",
+    "Direct voter ballot choices cannot be tracked at high frequency, requiring polling margins and public platform attention as empirical proxies.",
+    "Structural identification assumes constancy of structural transmission parameters across high- and low-volatility event regimes."
+  ]
+}
