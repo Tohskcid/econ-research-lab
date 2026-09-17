@@ -4,6 +4,12 @@ Read this reference whenever a manuscript deliverable includes `.tex` or a PDF b
 
 Preserve the project's document class, build system, engine, bibliography tool, fonts, and journal or university template. Do not install TeX, rewrite the preamble, or switch engines merely to silence an error without authorization. Prefer splitting or redesigning a wide table, calibrated columns, `tabularx`, `longtable`, or a landscape float; use `\resizebox` only as a last resort because it can make text unreadable.
 
+## Long equations
+
+No mathematical ink or equation number may cross the text block or enter either margin. Convert an overlong inline expression to display math. For display equations, break at meaningful relations or additive operators with `align`, `aligned`, `split`, or `multline`; indent continuation lines and preserve the intended equation numbering with `\notag` only where appropriate. When automatic delimiter sizing prevents a safe break, use explicit `\bigl`/`\bigr`-style delimiters around the relevant line segments.
+
+Do not hide an overlong equation with `\resizebox`, `\scalebox`, `\scriptsize`, negative spacing, a smaller global math font, or a relaxed overfull threshold. Refactor notation or introduce a defined intermediate expression when semantic line breaks are still unreadable. The default zero-overfull gate must pass, and the page reviewer must confirm that every formula, delimiter, annotation, and equation number remains visibly inside the margins without overlap or clipping.
+
 Run the harness in a build directory outside the source tree:
 
 ```bash
@@ -14,9 +20,9 @@ python3 scripts/check_latex.py check \
   --report research/latex-report.json
 ```
 
-Specify `--engine` when the project does not declare one and auto-detection would choose incorrectly. The harness does not install missing engines. It fails on compiler errors, missing files, undefined commands, unresolved citations or references, rerun requests that remain after compilation, any overfull box by default, missing/empty PDF, PDF metadata failure, rendering failure, or a rendered page-count mismatch. Underfull boxes remain warnings that require inspection.
+Specify `--engine` when the project does not declare one and auto-detection would choose incorrectly. The harness does not install missing engines. It fails on compiler errors, missing files, undefined commands, unresolved citations or references, rerun requests that remain after compilation, any overfull box by default, missing/empty PDF, PDF metadata failure, rendering failure, or a rendered page-count mismatch. Do not raise `--overfull-limit` to waive a long equation. Underfull boxes remain warnings that require inspection.
 
-Automated success is not delivery approval. Inspect every rendered page image, with special attention to tables, figures, equations, captions, footnotes, bibliography, appendices, rotated pages, headers/footers, glyphs, clipping, overlap, font size, and page transitions. Record defects and rerun the full compile-and-render cycle after each material fix. `delivery_ready` remains false in the machine report because the script cannot prove visual readability.
+Automated success is not delivery approval. Inspect every rendered page image, with special attention to tables, figures, equation line breaks and numbers, captions, footnotes, bibliography, appendices, rotated pages, headers/footers, glyphs, clipping, overlap, font size, margins, and page transitions. Record defects and rerun the full compile-and-render cycle after each material fix. `delivery_ready` remains false in the machine report because the script cannot prove visual readability.
 
 After review, save only a compact record rather than image descriptions or page contents:
 

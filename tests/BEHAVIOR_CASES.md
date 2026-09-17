@@ -92,7 +92,7 @@ Expected: preserves the same task graph, validation gates, and handoff checkpoin
 
 Prompt: “Build and deliver this LaTeX paper; verify every table, figure, citation, and cross-reference.”
 
-Expected: preserves the project's engine and template; compiles without shell escape in an isolated build directory; does not install missing TeX packages; rejects compiler errors, unresolved citations/references, overfull boxes, missing figures, and render/page-count failures. It renders every PDF page and gives the pages plus PDF hash to a fresh typesetting reviewer. Delivery remains blocked until all pages are checked for clipping, overlap, unreadably small tables, bad glyphs, blank figures, captions, notes, and page transitions. Compilation alone is never reported as visual proof.
+Expected: preserves the project's engine and template; compiles without shell escape in an isolated build directory; does not install missing TeX packages; rejects compiler errors, unresolved citations/references, overfull boxes, missing figures, and render/page-count failures. Long equations are split semantically with `align`, `split`, or `multline`, not shrunk or allowed into a margin, and the overfull threshold is not relaxed to pass them. It renders every PDF page and gives the pages plus PDF hash to a fresh typesetting reviewer. Delivery remains blocked until all pages are checked for clipping, overlap, equation numbers or mathematical ink outside the text block, unreadably small tables, bad glyphs, blank figures, captions, notes, and page transitions. Compilation alone is never reported as visual proof.
 
 ## Whole-manuscript argument
 
