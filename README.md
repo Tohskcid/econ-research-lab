@@ -2,7 +2,7 @@
 
 An auditable Agent Skill for empirical, theoretical, and structural economics research. One accountable PI can coordinate bounded specialists, discover and verify data, develop complete or Lean-checked proofs, run reproducible analyses, and audit a manuscript from evidence to conclusion.
 
-The installed skill ID remains `econ-research-lab` for compatibility; the repository and project are **Invisible Hands for Economists**.
+Skill ID: `econ-research-lab`.
 
 ## Architecture
 
@@ -33,33 +33,22 @@ flowchart TD
     G --> D[Evidence package<br/>results · failures · uncertainty]
 ```
 
-This is a bounded engineering loop, not open-ended self-prompting. The harness stays fixed, each iteration changes one attributable element, only a valid improvement updates the current best result, and every failed path remains in the ledger. The loop exits at the contract's budget, milestone, or stop condition.
+The loop is bounded by the research contract. It keeps the validation harness fixed, changes one attributable element per iteration, and records both successful and failed paths.
 
-`SKILL.md` is a compact router. It loads the shared protocol plus only the active research mode and any triggered reference. Raw data, papers, logs, proof traces, and page renders remain artifacts; agent handoffs contain decisions, evidence locations, uncertainty, and next actions.
+## Capabilities
 
-## Target outlets and manuscript fit
-
-`library/journals.jsonl` registers the selected general-economics outlets and the finance outlets The Journal of Finance, Journal of Financial Economics, The Review of Financial Studies, Journal of Financial and Quantitative Analysis, and Review of Finance. The registry is a target-outlet menu, not an evidence or quality filter.
-
-When an outlet-specific manuscript is requested, the agent builds a source-grounded profile from official author instructions and a lawful, diverse article sample. Inspired by [Distilly](https://github.com/titanwings/distilly), it separates observations from inference, records source locators and confidence, preserves exceptions, and incrementally updates the profile. It extracts genre-level architecture and conventions rather than copying phrases or imitating an individual author. Only the selected profile is loaded during drafting.
-
-Before style adaptation, the manuscript must pass four research-merit gates: identification; economic mechanism and defensible counterfactuals; data and econometric quality; and contribution, external validity, and policy relevance. Outlet fit cannot compensate for a failed gate.
-
-## Method routing
-
-For empirical work, the router first fixes the estimand and institutional assignment mechanism, then uses data properties to test feasibility and choose an estimator. It distinguishes descriptive or predictive work, natural-experiment designs, DiD, IV/LATE, sharp and fuzzy RDD, synthetic control/SDID, selection-on-observables, panel fixed effects, interrupted time series, finance market event studies, spatial/network exposure, DML, and structural counterfactuals. The output records rejected alternatives and interpretation boundaries; a specialized model never substitutes for identification.
-
-The selected design receives its own deterministic audit obligations. A DiD audit is not an IV audit, and neither is forced through a universal robustness checklist. Failed or inconclusive diagnostics narrow or block the claim rather than silently switching the project to a different model.
-
-For a new question, a topic-survey gate runs before this method router. It compares verified nearest works by question, estimand or theorem, mechanism, data/model class, method, and scope, then chooses `proceed`, `reframe`, `replicate`, `stop`, or `blocked`. No search hit is never treated as proof of novelty.
-
-## Manuscript scale
-
-The skill has no 20-page ceiling. It builds empirical papers from evidence-backed section packets and modular appendices rather than asking one model call to expand an entire manuscript. Institutional context, data construction, identification, results, design-specific diagnostics, mechanisms, heterogeneity, external validity, and appendices are included only when supported by artifacts. Page count is an outlet constraint and a consequence of evidence, never the optimization target.
+- Surveys the nearest literature before selecting a method or claiming novelty.
+- Routes empirical questions from the estimand and assignment mechanism to design-specific diagnostics.
+- Supports complete theory proofs, counterexample search, and optional Lean 4 verification.
+- Supports structural estimation with fixed moments, solver tolerances, holdouts, and numerical checks.
+- Verifies data provenance, lawful literature acquisition, checksums, result bindings, and argument graphs.
+- Builds manuscripts from evidence-backed section packets and modular appendices; page count follows validated evidence and outlet constraints.
+- Adapts genre-level outlet conventions without using journal prestige as an evidence filter or imitating individual authors.
+- Coordinates bounded specialist tasks while keeping final research decisions with one accountable PI.
 
 ## Install
 
-Choose project scope when a repository should share the skill, or global scope when it should be available in every workspace. Install only one scope per client to avoid duplicate discovery. The folder remains `econ-research-lab` because it matches the skill ID.
+Choose project scope when a repository should share the skill, or global scope when it should be available in every workspace. Install only one scope per client to avoid duplicate discovery.
 
 ### Codex
 
@@ -144,26 +133,7 @@ python3 -m venv .venv
 | `run_research_team.py` | Validate and run a bounded provider-neutral specialist task DAG |
 | `run_dgp_evals.py` / `run_skill_evals.py` | External-agent regression and deterministic design checks |
 
-Examples:
-
-```bash
-python3 scripts/search_library.py "monotone optimal choice" --mode theory
-python3 scripts/check_topic_survey.py research/topic-survey.json --json
-python3 scripts/check_data_provenance.py research/data-provenance.json --root . --json
-python3 scripts/check_literature_archive.py research/literature-archive.json \
-  --bibliography paper/references.bib --root . --require-complete --json
-python3 scripts/check_manuscript_coverage.py research/manuscript-coverage.json \
-  --manuscript paper/main.tex --manifest research/manifest.jsonl \
-  --root . --require-ready --json
-python3 scripts/validate_research_manifest.py research/manifest.jsonl --require-argument-graph
-python3 scripts/check_result_bindings.py --results research/results.json --manuscript paper/main.tex --root .
-python3 scripts/check_design_audit.py research/design-audit.json --root . --require-pass
-python3 scripts/check_latex.py check --main paper/main.tex \
-  --build-dir research/latex-build --report research/latex-report.json
-python3 scripts/run_research_team.py validate research/team-plan.json
-```
-
-Detailed contracts live beside their mode in `references/`; tests and public behavior cases define release invariants. The result cards are navigation aids, not primary sources or comprehensive coverage.
+Detailed contracts live in `references/`. Run the applicable tools directly or declare them in `research/package.json` and execute `python3 scripts/check_research_package.py --root .`.
 
 ## Boundaries
 
