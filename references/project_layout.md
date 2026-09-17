@@ -10,6 +10,7 @@ data/{raw,interim,processed,proxy}/
 scripts/{acquire,clean,analyze}/
 output/{tables,figures,models}/
 research/               contracts, manifests, audits, ledgers, reports
+research/sections/      compact evidence-backed manuscript section packets
 ```
 
 Do not put generated data, PDFs, tables, figures, logs, or draft variants in the project root. Keep one authoritative manuscript path; use version control or immutable run IDs rather than `final`, `final2`, or duplicated copies. Put temporary compilation and extraction files in an ignored build directory or an OS temporary directory. Record the final path of every material artifact in the research manifest or package config. Do not move user files or replace an established layout merely to match these names; map equivalent existing directories to the same categories and keep new outputs consistent.

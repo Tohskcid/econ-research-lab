@@ -22,8 +22,8 @@ class SkillContractTests(unittest.TestCase):
 
     def test_version_is_consistent(self):
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn('version = "2.15.0"', pyproject)
-        self.assertIn('version: "2.15.0"', self.text)
+        self.assertIn('version = "2.16.0"', pyproject)
+        self.assertIn('version: "2.16.0"', self.text)
 
     def test_theory_requires_auditable_complete_proofs(self):
         theory = (ROOT / "references/theory.md").read_text(encoding="utf-8")
@@ -127,7 +127,7 @@ class SkillContractTests(unittest.TestCase):
 
     def test_manuscript_length_is_evidence_driven(self):
         manuscript = (ROOT / "references/manuscript.md").read_text(encoding="utf-8")
-        for phrase in ["Do not target a page count", "section packets", "modular appendices", "not more complete"]:
+        for phrase in ["Do not target a page count", "section packets", "modular appendices", "not more complete", "check_manuscript_coverage.py", "Every ready section"]:
             self.assertIn(phrase, manuscript)
 
     def test_outputs_and_cited_papers_are_organized(self):

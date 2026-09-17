@@ -12,9 +12,40 @@ Build an evidence-backed outline from the research contract. State one primary q
 
 Do not target a page count or draft a full empirical paper in one context pass. Length follows the validated evidence package and outlet rules; concise main text may coexist with a substantial online appendix. Draft from section packets stored as artifacts, then integrate and audit the whole argument. Keep only compact outlines and cross-section decisions in active context.
 
-Before prose, build a coverage matrix mapping each warranted component to claims, runs, tables/figures, assumptions, and status. Depending on the question, this may include institutional setting, data provenance and construction, measurement validation, identification, main estimates, design-specific diagnostics, robustness tied to actual threats, heterogeneity, mechanisms, counterfactual or welfare analysis, external validity, and limitations. Do not add a component merely to increase length; mark unsupported components absent or blocked.
+Before prose, build `research/manuscript-coverage.json`, mapping every manuscript section to its central claims, a compact section packet, and hash-bound supporting artifacts. Depending on the question, this may include institutional setting, data provenance and construction, measurement validation, identification, main estimates, design-specific diagnostics, robustness tied to actual threats, heterogeneity, mechanisms, counterfactual or welfare analysis, external validity, and limitations. Do not add a component merely to increase length; mark unsupported components absent or blocked.
 
-Place material needed to verify but not carry the main argument in modular appendices: variable definitions, sample construction, additional diagnostics, alternative specifications, derivations or proofs, simulation and numerical checks, data-quality audits, disclosure constraints, and reproducibility instructions. Generate tables and figures from analysis artifacts rather than re-describing raw logs. A long manuscript with repeated specifications is not more complete; a short manuscript missing identification evidence is not ready.
+For empirical delivery, the introduction, literature, data, identification, results, robustness, conclusion, and appendix roles must be ready. Every ready section needs a section packet and manifest claim IDs. Data requires documentation and construction code; identification requires code plus a diagnostic or design audit; results and robustness require analysis code, structured results, and a generated table, figure, or diagnostic. Additional mechanism, heterogeneity, and external-validity sections inherit the same quantitative obligations when included. Run:
+
+```json
+{
+  "schema_version": "1",
+  "mode": "empirical",
+  "manuscript_sha256": "64_HEX",
+  "sections": [{
+    "id": "main-results",
+    "role": "results",
+    "status": "ready",
+    "headings": ["Empirical Results"],
+    "claim_ids": ["C_MAIN"],
+    "artifacts": [
+      {"kind": "section_packet", "path": "research/sections/results.md", "sha256": "64_HEX"},
+      {"kind": "analysis_code", "path": "scripts/analyze/main.py", "sha256": "64_HEX"},
+      {"kind": "result", "path": "research/results.json", "sha256": "64_HEX"},
+      {"kind": "table", "path": "output/tables/main.tex", "sha256": "64_HEX"}
+    ]
+  }]
+}
+```
+
+```bash
+python3 scripts/check_manuscript_coverage.py research/manuscript-coverage.json \
+  --manuscript paper/main.tex --manifest research/manifest.jsonl \
+  --root . --require-ready --json
+```
+
+The checker binds the coverage matrix to the manuscript hash, verifies every top-level heading is accounted for, resolves claim IDs against the manifest, and verifies artifact hashes. A valid but incomplete matrix may contain `blocked` sections with explicit gaps; `--require-ready` prevents delivery until every required role is supported. Never convert a blocked section into prose merely to increase page count.
+
+Place material needed to verify but not carry the main argument in modular appendices: variable definitions, sample construction, additional diagnostics, alternative specifications, derivations or proofs, simulation and numerical checks, data-quality audits, disclosure constraints, and reproducibility instructions. Generate tables and figures from analysis artifacts rather than re-describing raw logs, and register them in the coverage matrix. A long manuscript with repeated specifications is not more complete; a short manuscript missing identification evidence is not ready.
 
 If outlet-specific writing is requested, first read [journal_style.md](journal_style.md). Official author instructions are hard constraints; an evidence-backed outlet profile supplies soft conventions only. Research validity always overrides stylistic fit.
 

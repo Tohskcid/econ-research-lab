@@ -11,7 +11,7 @@ from pathlib import Path, PurePosixPath
 
 ALLOWED = {
     "topic_survey", "data_provenance", "manifest", "manuscript", "bibliography",
-    "literature_archive", "results", "design_audit", "latex_main",
+    "literature_archive", "coverage", "results", "design_audit", "latex_main",
 }
 
 
@@ -48,8 +48,12 @@ def check(root: Path, config_path: Path, scripts: Path) -> dict:
     paths = {field: resolve(root, value, field) for field, value in config.items()}
     if "results" in paths and "data_provenance" not in paths:
         raise ValueError("results requires data_provenance; estimation is blocked without verified inputs")
-    if "manuscript" in paths and not {"bibliography", "literature_archive"}.issubset(paths):
-        raise ValueError("manuscript requires bibliography and literature_archive")
+    manuscript_requirements = {"manifest", "coverage", "bibliography", "literature_archive"}
+    if "manuscript" in paths and not manuscript_requirements.issubset(paths):
+        missing = sorted(manuscript_requirements - set(paths))
+        raise ValueError(f"manuscript requires manifest, coverage, bibliography, and literature_archive; missing {missing}")
+    if "coverage" in paths and not {"manuscript", "manifest"}.issubset(paths):
+        raise ValueError("coverage requires manuscript and manifest")
     if ("bibliography" in paths) != ("literature_archive" in paths):
         raise ValueError("bibliography and literature_archive must be declared together")
     checks: list[dict] = []
@@ -70,6 +74,12 @@ def check(root: Path, config_path: Path, scripts: Path) -> dict:
         ]))
     if "manifest" in paths:
         checks.append(run([python, str(scripts / "validate_research_manifest.py"), str(paths["manifest"]), "--require-argument-graph", "--json"]))
+    if "coverage" in paths:
+        checks.append(run([
+            python, str(scripts / "check_manuscript_coverage.py"), str(paths["coverage"]),
+            "--manuscript", str(paths["manuscript"]), "--manifest", str(paths["manifest"]),
+            "--root", str(root), "--require-ready", "--json",
+        ]))
     if "manuscript" in paths and "manifest" in paths:
         checks.append(run([
             python, str(scripts / "audit_claims.py"), str(paths["manuscript"]), str(paths["manifest"]),

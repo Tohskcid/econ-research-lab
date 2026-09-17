@@ -28,8 +28,8 @@ flowchart TD
     V --> K{Classify result}
     K -->|keep · discard · inconclusive<br/>blocked · crash| P[(Ledger and provenance graph)]
     P -->|budget remains| H
-    P -->|stop condition| M[Manuscript and referee gates]
-    M --> G[Package gates<br/>design audit · number binding · LaTeX]
+    P -->|stop condition| M[Manuscript coverage<br/>sections · claims · artifacts]
+    M --> G[Delivery gates<br/>referee · numbers · LaTeX]
     G --> D[Evidence package<br/>results · failures · uncertainty]
 ```
 
@@ -131,6 +131,7 @@ python3 -m venv .venv
 | `econ_data_profiler.py` | Panel keys, missingness, balance, descriptive bins, LaTeX/SVG output |
 | `check_data_provenance.py` | Verify source, license, acquisition, schema, and file hashes for real, restricted, or proxy data |
 | `check_literature_archive.py` | Check bibliography coverage, lawful access records, PDF signatures, names, and hashes |
+| `check_manuscript_coverage.py` | Bind every manuscript section and claim to code, results, exhibits, diagnostics, and appendices |
 | `check_topic_survey.py` | Validate nearest-work coverage and the pre-design contribution decision |
 | `search_library.py` | Retrieve a small number of candidate result cards without loading the library |
 | `check_lean_proof.py` | Lock theorem statements and audit Lean proof terms and axioms |
@@ -151,6 +152,9 @@ python3 scripts/check_topic_survey.py research/topic-survey.json --json
 python3 scripts/check_data_provenance.py research/data-provenance.json --root . --json
 python3 scripts/check_literature_archive.py research/literature-archive.json \
   --bibliography paper/references.bib --root . --require-complete --json
+python3 scripts/check_manuscript_coverage.py research/manuscript-coverage.json \
+  --manuscript paper/main.tex --manifest research/manifest.jsonl \
+  --root . --require-ready --json
 python3 scripts/validate_research_manifest.py research/manifest.jsonl --require-argument-graph
 python3 scripts/check_result_bindings.py --results research/results.json --manuscript paper/main.tex --root .
 python3 scripts/check_design_audit.py research/design-audit.json --root . --require-pass

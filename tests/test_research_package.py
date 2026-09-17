@@ -35,7 +35,16 @@ class ResearchPackageTests(unittest.TestCase):
             (root / "paper/main.tex").write_text("text", encoding="utf-8")
             config = root / "package.json"
             config.write_text(json.dumps({"manuscript": "paper/main.tex"}), encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "requires bibliography and literature_archive"):
+            with self.assertRaisesRegex(ValueError, "requires manifest, coverage, bibliography"):
+                MODULE.check(root, config, ROOT / "scripts")
+
+    def test_coverage_cannot_run_without_manuscript_and_manifest(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "coverage.json").write_text("{}", encoding="utf-8")
+            config = root / "package.json"
+            config.write_text(json.dumps({"coverage": "coverage.json"}), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "coverage requires manuscript and manifest"):
                 MODULE.check(root, config, ROOT / "scripts")
 
 

@@ -76,6 +76,7 @@ Projects may declare applicable gates in `research/package.json`:
   "data_provenance": "research/data-provenance.json",
   "manifest": "research/manifest.jsonl",
   "manuscript": "paper/main.md",
+  "coverage": "research/manuscript-coverage.json",
   "bibliography": "paper/references.bib",
   "literature_archive": "research/literature-archive.json",
   "results": "research/results.json",
@@ -84,7 +85,7 @@ Projects may declare applicable gates in `research/package.json`:
 }
 ```
 
-Run `python3 scripts/check_research_package.py --root .`. Only declared, existing artifacts are checked, except that quantitative `results` require valid `data_provenance`, while a `manuscript` requires a `bibliography` and complete `literature_archive`. A LaTeX automated pass still requires the separate hash-bound visual review before delivery. The repository CI tests the generic harness; run the package gate in the research project's own CI so project content is not confused with a skill fixture.
+Run `python3 scripts/check_research_package.py --root .`. Only declared, existing artifacts are checked, except that quantitative `results` require valid `data_provenance`, while a `manuscript` requires a manifest, ready coverage matrix, bibliography, and complete literature archive. A LaTeX automated pass still requires the separate hash-bound visual review before delivery. The repository CI tests the generic harness; run the package gate in the research project's own CI so project content is not confused with a skill fixture.
 
 File organization and the local cited-paper archive follow [project_layout.md](project_layout.md). Keep literature metadata in `research/literature-archive.json` and PDFs under `literature/papers/`; do not mix papers, data, tables, and build products in one output directory.
 
