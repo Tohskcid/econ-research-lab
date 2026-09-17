@@ -22,7 +22,7 @@ When a full proof is requested, apply the complete paper-proof gate in `theory.m
 
 ## Evidence
 
-For each material claim record: source, exact supported claim, research design or proof status, population/model scope, limitation, and verification date. Prefer primary sources. Distinguish published evidence, working papers, official data, documentation, and conjecture. Citation count and journal tier are metadata, not credibility or inclusion rules.
+For each material claim record: source, exact supported claim, research design or proof status, population/model scope, limitation, and verification date. Prefer primary sources. Distinguish published evidence, working papers, official data, documentation, and conjecture. Citation count and journal prestige do not determine credibility or inclusion.
 
 When a manuscript or evidence package is in scope, link claims to evidence, findings to runs, and runs to the frozen harness. Validate these references before the referee checkpoint; a link proves provenance, not substantive support.
 

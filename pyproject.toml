@@ -1,7 +1,7 @@
 [project]
-name = "econ-research-lab-tools"
-version = "2.9.1"
-description = "Optional deterministic utilities for the econ-research-lab Agent Skill"
+name = "invisible-hands-for-economists-tools"
+version = "2.9.2"
+description = "Deterministic utilities for the Invisible Hands for Economists Agent Skill"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "pandas>=2.0"]
 

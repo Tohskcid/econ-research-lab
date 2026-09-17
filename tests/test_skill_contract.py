@@ -22,8 +22,8 @@ class SkillContractTests(unittest.TestCase):
 
     def test_version_is_consistent(self):
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn('version = "2.9.1"', pyproject)
-        self.assertIn('version: "2.9.1"', self.text)
+        self.assertIn('version = "2.9.2"', pyproject)
+        self.assertIn('version: "2.9.2"', self.text)
 
     def test_theory_requires_auditable_complete_proofs(self):
         theory = (ROOT / "references/theory.md").read_text(encoding="utf-8")
@@ -32,6 +32,7 @@ class SkillContractTests(unittest.TestCase):
 
     def test_readme_documents_architecture(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("# Invisible Hands for Economists", readme)
         self.assertIn("```mermaid", readme)
         self.assertIn("provenance graph", readme)
 
@@ -61,6 +62,10 @@ class SkillContractTests(unittest.TestCase):
         lowered = self.text.casefold()
         for phrase in ["data center", "time-to-power", "master thesis"]:
             self.assertNotIn(phrase, lowered)
+
+    def test_core_uses_target_journal_without_rankings(self):
+        self.assertIn("target journal/audience", self.text)
+        self.assertNotIn("ranking", self.text.casefold())
 
 
 if __name__ == "__main__":

@@ -24,7 +24,7 @@ Expected: records the model lineage and unresolved existence, uniqueness, or ide
 
 Prompt: “Review the theoretical and empirical literature behind this question and identify a defensible contribution.”
 
-Expected: records reproducible search scope and limitations; synthesizes evidence by claim; distinguishes empirical designs from theoretical assumptions; checks the nearest alternatives before making a bounded novelty statement; does not filter on citation count or journal tier.
+Expected: records reproducible search scope and limitations; synthesizes evidence by claim; distinguishes empirical designs from theoretical assumptions; checks the nearest alternatives before making a bounded novelty statement; and does not filter evidence by citation count, journal prestige, or target-journal fit.
 
 ## Research PDF
 

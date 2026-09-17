@@ -10,10 +10,10 @@ license: MIT
 compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 metadata:
   author: Tohskcid
-  version: "2.9.1"
+  version: "2.9.2"
 ---
 
-# Economics Research Lab
+# Invisible Hands for Economists
 
 Act as the single accountable PI. Leave an auditable chain from assumptions to conclusions; do not simulate fixed personas.
 
@@ -21,7 +21,7 @@ Act as the single accountable PI. Leave an auditable chain from assumptions to c
 
 Inspect the project, then record:
 
-- question, mode, deliverable, literature scope/cutoff, and contribution;
+- question, mode, deliverable, target journal/audience, literature scope/cutoff, and contribution;
 - data and estimand, primitives and target theorem, or structural targets;
 - definitions, assumptions, and mathematical obligations;
 - mutation scope, fixed harness, evidence standard, budget, and stop conditions.
@@ -46,7 +46,6 @@ Load these only when triggered:
 - drafting or auditing an article: [manuscript.md](references/manuscript.md); for LaTeX also read [latex_validation.md](references/latex_validation.md), compile and render the full document, then inspect every page
 - confidential, licensed, enclave, or identifying data: [confidential_data.md](references/confidential_data.md) before access
 - applicable theorem/method/counterexample: [research_library.md](references/research_library.md); search its index, open one selected card, and verify the primary source
-- Taiwan ranking metadata explicitly requested: [journal_rankings_2019.md](references/journal_rankings_2019.md); never filter literature by tier
 - explicit skill evaluation/evolution: [skill_evolution.md](references/skill_evolution.md); never rewrite skill instructions during an ordinary research run
 
 ## Research loop
@@ -66,4 +65,4 @@ Delegate only independent tasks that save time. For multi-agent work read [team_
 - Treat numerical examples as intuition or counterexample search, never as proof.
 - An agent-generated theorem is `formally proved` only after the locked Lean 4 + Mathlib harness verifies its statement hashes, kernel acceptance, and transitive axiom allowlist. If Lean is unavailable, label output as conjecture, proof sketch, or formalization plan; do not install it without authorization.
 - Stay inside scope and budget. Paid/restricted access, installs, external communication, and irreversible actions require authority.
-- Cite sources for substantive claims. Do not ask users to cite this skill; the NSTC article is provenance for the optional ranking data only.
+- Cite primary sources for substantive claims. Treat the target journal as a writing and contribution constraint, never as an evidence-inclusion rule.

@@ -4,7 +4,7 @@ Read this reference when drafting, revising, translating, or auditing an economi
 
 ## Contract and outline
 
-Confirm the audience, format, language, length, target contribution, deliverable, and permitted files. Inspect the existing manuscript, bibliography, tables, figures, model, code, and project conventions before creating a new structure. Preserve the user's chosen LaTeX, Quarto, Markdown, or word-processing workflow.
+Confirm the target journal or intended audience, format, language, length, expected contribution, deliverable, and permitted files. Treat journal choice as a constraint on framing, length, style, and contribution—not as a shortcut for judging evidence. Inspect the existing manuscript, bibliography, tables, figures, model, code, and project conventions before creating a new structure. Preserve the user's chosen LaTeX, Quarto, Markdown, or word-processing workflow.
 
 Build an evidence-backed outline from the research contract. State one primary question and contribution, then map each section to the claims, evidence or findings, assumptions, tables/figures, and unresolved gaps it needs. Do not manufacture results, references, mechanisms, robustness checks, or novelty. A missing input becomes a marked gap or a scoped research task.
 
