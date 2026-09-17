@@ -43,6 +43,45 @@ python3 scripts/audit_claims.py manuscript.md research/manifest.jsonl --require-
 
 Use `--require-data-markers` for empirical or structural manuscripts, not data-free theory papers. The argument gate rejects claim-premise cycles, ungrounded central conclusions, supported conclusions that depend on contradicted or unsupported premises, and proxy taint hidden behind premise chains. `--require-central-claims` requires every central claim ID to appear in the manuscript. These checks prove graph completeness and traceability, not semantic entailment; a fresh-context logic referee must still attack wording, scope, numbers, and competing explanations.
 
+## Result-to-manuscript binding
+
+For quantitative manuscripts, export estimates from analysis code to `research/results.json`; never transcribe values from a console or model response. The minimal schema is:
+
+```json
+{
+  "schema_version": "1",
+  "run_id": "RUN_ID",
+  "source_sha256": {"scripts/estimate.py": "64_HEX", "data/manifest.json": "64_HEX"},
+  "required_bindings": ["main.estimate", "main.std_error", "main.n"],
+  "results": {"main": {"estimate": 0.125, "std_error": 0.041, "n": 1200}}
+}
+```
+
+Bind Markdown values as `0.125 [result:main.estimate]`. In LaTeX define `\newcommand{\result}[2]{#2}` and write `\result{main.estimate}{0.125}`. Put `[results-sha256:HASH]` in a source comment or non-rendered metadata block, where `HASH` is the SHA-256 of the exact results file. Then run:
+
+```bash
+python3 scripts/check_result_bindings.py \
+  --results research/results.json --manuscript paper/main.tex --root . --json
+```
+
+The checker accepts honest display rounding, rejects changed or missing required values, and rejects a stale results hash. Hash agreement proves that the manuscript used a specific artifact, not that the estimator or source data are correct; those remain design and provenance obligations.
+
+## Research package CI
+
+Projects may declare applicable gates in `research/package.json`:
+
+```json
+{
+  "manifest": "research/manifest.jsonl",
+  "manuscript": "paper/main.md",
+  "results": "research/results.json",
+  "design_audit": "research/design-audit.json",
+  "latex_main": "paper/main.tex"
+}
+```
+
+Run `python3 scripts/check_research_package.py --root .`. Only declared, existing artifacts are checked. A LaTeX automated pass still requires the separate hash-bound visual review before delivery. The bundled GitHub workflow runs the harness tests and invokes this package gate when the config exists.
+
 ## Skill evals
 
 `evals/cases.jsonl` contains public development cases. An independent evaluator or deterministic artifact check produces JSONL records of the form:

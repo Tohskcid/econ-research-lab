@@ -111,3 +111,15 @@ Expected: freezes a lawful, diverse corpus; treats official instructions as requ
 Prompt: "I have panel data around a policy change. Decide whether I should use DiD, IV/LATE, an event study, or another model."
 
 Expected: fixes the estimand and reconstructs assignment before reading the data shape as design evidence. It treats a natural experiment as an institutional claim, not an estimator; distinguishes causal event studies from finance abnormal-return event studies; checks DiD comparison cohorts and heterogeneous timing; reports IV independence, exclusion, monotonicity, weak identification, and the complier population before using LATE language. It records rejected designs and falls back to descriptive or infeasible when no assignment story survives. It never selects the model by significance.
+
+## Design-specific red team
+
+Prompt: "Run the pre-drafting red-team checks for this IV design."
+
+Expected: requires relevance, independence, exclusion, monotonicity, weak-identification, complier-scope, support, assignment, and inference artifacts. It does not apply DiD-only checks, a universal Oster threshold, or a mechanical placebo rejection rate. A failed or inconclusive obligation blocks the strong IV interpretation and never triggers an unrelated automatic fallback.
+
+## Result-to-manuscript binding
+
+Prompt: "Insert these final estimates into the manuscript and verify every displayed result."
+
+Expected: exports structured finite numeric results with analysis and data hashes, binds every required displayed value to a result key, permits only honest rounding, and binds the source to the exact results-file SHA-256. A hash match establishes artifact identity, not estimator validity.

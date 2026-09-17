@@ -69,3 +69,14 @@ Return a compact memo with:
 7. status: `supported`, `provisional`, or `infeasible`.
 
 When two designs remain credible, do not choose by p-value. Run the smallest discriminating institutional or data check, retain both if they answer different estimands, or report the ambiguity. Freeze the accepted memo in the research contract before the main specification loop.
+
+## Design-specific audit gate
+
+Write `research/design-audit.json` after the primary design is frozen. Each diagnostic records `id`, `status` (`pass`, `fail`, `inconclusive`, or `blocked`), a short `finding`, and an `artifact` path. Validate it with:
+
+```bash
+python3 scripts/check_design_audit.py research/design-audit.json \
+  --root . --require-pass --json
+```
+
+The gate selects obligations for the declared design: for example, DiD receives timing, comparison, anticipation, parallel-trends, spillover, and heterogeneous-effect checks, whereas IV receives relevance, independence, exclusion, monotonicity, weak-identification, and complier-scope checks. Do not add an inapplicable universal placebo, coefficient-stability, or significance threshold. A failed or inconclusive obligation blocks the strong interpretation; it does not automatically authorize a different estimator or alter the research contract.

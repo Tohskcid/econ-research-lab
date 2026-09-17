@@ -27,7 +27,8 @@ flowchart TD
     K -->|keep · discard · inconclusive<br/>blocked · crash| P[(Ledger and provenance graph)]
     P -->|budget remains| H
     P -->|stop condition| M[Manuscript and referee gates]
-    M --> D[Evidence package<br/>results · failures · uncertainty]
+    M --> G[Package gates<br/>design audit · number binding · LaTeX]
+    G --> D[Evidence package<br/>results · failures · uncertainty]
 ```
 
 This is a bounded engineering loop, not open-ended self-prompting. The harness stays fixed, each iteration changes one attributable element, only a valid improvement updates the current best result, and every failed path remains in the ledger. The loop exits at the contract's budget, milestone, or stop condition.
@@ -45,6 +46,8 @@ Before style adaptation, the manuscript must pass four research-merit gates: ide
 ## Method routing
 
 For empirical work, the router first fixes the estimand and institutional assignment mechanism, then uses data properties to test feasibility and choose an estimator. It distinguishes descriptive or predictive work, natural-experiment designs, DiD, IV/LATE, sharp and fuzzy RDD, synthetic control/SDID, selection-on-observables, panel fixed effects, interrupted time series, finance market event studies, spatial/network exposure, DML, and structural counterfactuals. The output records rejected alternatives and interpretation boundaries; a specialized model never substitutes for identification.
+
+The selected design receives its own deterministic audit obligations. A DiD audit is not an IV audit, and neither is forced through a universal robustness checklist. Failed or inconclusive diagnostics narrow or block the claim rather than silently switching the project to a different model.
 
 ## Install
 
@@ -121,6 +124,9 @@ python3 -m venv .venv
 | `search_library.py` | Retrieve a small number of candidate result cards without loading the library |
 | `check_lean_proof.py` | Lock theorem statements and audit Lean proof terms and axioms |
 | `validate_research_manifest.py` / `audit_claims.py` | Validate provenance, proxy scope, argument DAGs, and manuscript markers |
+| `check_result_bindings.py` | Bind displayed manuscript numbers and a results-file hash to structured estimates |
+| `check_design_audit.py` | Enforce diagnostics selected for the declared empirical design |
+| `check_research_package.py` | Run applicable manifest, manuscript, result, design, and LaTeX gates for CI |
 | `check_latex.py` | Compile safely, inspect logs, render every page, and bind visual review to the PDF hash |
 | `check_logic_review.py` | Bind a central-claim referee report to manuscript and manifest hashes |
 | `run_research_team.py` | Validate and run a bounded provider-neutral specialist task DAG |
@@ -131,6 +137,8 @@ Examples:
 ```bash
 python3 scripts/search_library.py "monotone optimal choice" --mode theory
 python3 scripts/validate_research_manifest.py research/manifest.jsonl --require-argument-graph
+python3 scripts/check_result_bindings.py --results research/results.json --manuscript paper/main.tex --root .
+python3 scripts/check_design_audit.py research/design-audit.json --root . --require-pass
 python3 scripts/check_latex.py check --main paper/main.tex \
   --build-dir research/latex-build --report research/latex-report.json
 python3 scripts/run_research_team.py validate research/team-plan.json

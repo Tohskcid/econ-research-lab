@@ -22,8 +22,8 @@ class SkillContractTests(unittest.TestCase):
 
     def test_version_is_consistent(self):
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn('version = "2.11.0"', pyproject)
-        self.assertIn('version: "2.11.0"', self.text)
+        self.assertIn('version = "2.12.0"', pyproject)
+        self.assertIn('version: "2.12.0"', self.text)
 
     def test_theory_requires_auditable_complete_proofs(self):
         theory = (ROOT / "references/theory.md").read_text(encoding="utf-8")
@@ -106,6 +106,14 @@ class SkillContractTests(unittest.TestCase):
             "never silently rename LATE as ATE",
             "do not choose by p-value",
         ]:
+            self.assertIn(phrase, router)
+
+    def test_deterministic_empirical_package_gates_are_documented(self):
+        artifacts = (ROOT / "references/research_artifacts.md").read_text(encoding="utf-8")
+        router = (ROOT / "references/method_router.md").read_text(encoding="utf-8")
+        for phrase in ["research/results.json", "check_result_bindings.py", "results-sha256", "check_research_package.py"]:
+            self.assertIn(phrase, artifacts)
+        for phrase in ["design-audit.json", "check_design_audit.py", "does not automatically authorize"]:
             self.assertIn(phrase, router)
 
 
