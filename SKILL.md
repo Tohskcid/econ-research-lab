@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 metadata:
   author: Tohskcid
-  version: "2.12.0"
+  version: "2.13.0"
 ---
 
 # Invisible Hands for Economists
@@ -40,6 +40,7 @@ Read [research_protocol.md](references/research_protocol.md), then exactly one a
 
 Load these only when triggered:
 
+- starting a new research question: [topic_survey.md](references/topic_survey.md); classify the nearest work and contribution before method selection
 - material aggregation: [data_granularity_guide.md](references/data_granularity_guide.md)
 - selecting or reviewing an empirical design or estimator: [method_router.md](references/method_router.md); route from estimand and assignment mechanism before data shape or software
 - research PDFs: [pdf_ingestion.md](references/pdf_ingestion.md)

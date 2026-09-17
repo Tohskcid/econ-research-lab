@@ -72,6 +72,7 @@ Projects may declare applicable gates in `research/package.json`:
 
 ```json
 {
+  "topic_survey": "research/topic-survey.json",
   "manifest": "research/manifest.jsonl",
   "manuscript": "paper/main.md",
   "results": "research/results.json",

@@ -8,7 +8,8 @@ The installed skill ID remains `econ-research-lab` for compatibility; the reposi
 
 ```mermaid
 flowchart TD
-    Q[Question] --> C[Research contract<br/>target journal · scope · budget · stop]
+    Q[Question] --> TS[Topic survey gate<br/>nearest work · contribution · decision]
+    TS --> C[Research contract<br/>target journal · scope · budget · stop]
     C --> S[Shared protocol<br/>literature · evidence · obligations]
     C -.-> A[Bounded specialist DAG<br/>native agents or adapter]
     S --> R{Mode}
@@ -48,6 +49,12 @@ Before style adaptation, the manuscript must pass four research-merit gates: ide
 For empirical work, the router first fixes the estimand and institutional assignment mechanism, then uses data properties to test feasibility and choose an estimator. It distinguishes descriptive or predictive work, natural-experiment designs, DiD, IV/LATE, sharp and fuzzy RDD, synthetic control/SDID, selection-on-observables, panel fixed effects, interrupted time series, finance market event studies, spatial/network exposure, DML, and structural counterfactuals. The output records rejected alternatives and interpretation boundaries; a specialized model never substitutes for identification.
 
 The selected design receives its own deterministic audit obligations. A DiD audit is not an IV audit, and neither is forced through a universal robustness checklist. Failed or inconclusive diagnostics narrow or block the claim rather than silently switching the project to a different model.
+
+For a new question, a topic-survey gate runs before this method router. It compares verified nearest works by question, estimand or theorem, mechanism, data/model class, method, and scope, then chooses `proceed`, `reframe`, `replicate`, `stop`, or `blocked`. No search hit is never treated as proof of novelty.
+
+## Manuscript scale
+
+The skill has no 20-page ceiling. It builds empirical papers from evidence-backed section packets and modular appendices rather than asking one model call to expand an entire manuscript. Institutional context, data construction, identification, results, design-specific diagnostics, mechanisms, heterogeneity, external validity, and appendices are included only when supported by artifacts. Page count is an outlet constraint and a consequence of evidence, never the optimization target.
 
 ## Install
 
@@ -121,6 +128,7 @@ python3 -m venv .venv
 | Tool | Purpose |
 | --- | --- |
 | `econ_data_profiler.py` | Panel keys, missingness, balance, descriptive bins, LaTeX/SVG output |
+| `check_topic_survey.py` | Validate nearest-work coverage and the pre-design contribution decision |
 | `search_library.py` | Retrieve a small number of candidate result cards without loading the library |
 | `check_lean_proof.py` | Lock theorem statements and audit Lean proof terms and axioms |
 | `validate_research_manifest.py` / `audit_claims.py` | Validate provenance, proxy scope, argument DAGs, and manuscript markers |
@@ -136,6 +144,7 @@ Examples:
 
 ```bash
 python3 scripts/search_library.py "monotone optimal choice" --mode theory
+python3 scripts/check_topic_survey.py research/topic-survey.json --json
 python3 scripts/validate_research_manifest.py research/manifest.jsonl --require-argument-graph
 python3 scripts/check_result_bindings.py --results research/results.json --manuscript paper/main.tex --root .
 python3 scripts/check_design_audit.py research/design-audit.json --root . --require-pass

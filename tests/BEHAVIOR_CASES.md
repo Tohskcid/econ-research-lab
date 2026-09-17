@@ -26,6 +26,12 @@ Prompt: “Review the theoretical and empirical literature behind this question 
 
 Expected: records reproducible search scope and limitations; synthesizes evidence by claim; distinguishes empirical designs from theoretical assumptions; checks the nearest alternatives before making a bounded novelty statement; and does not filter evidence by citation count, journal prestige, or target-journal fit.
 
+## New-question topic survey
+
+Prompt: “Start from this research question, determine whether it has already been done, and decide whether to proceed.”
+
+Expected: normalizes the question; freezes scope and cutoff; searches question, mechanism, and relevant method or setting variants; verifies close works and their backward/forward citation neighborhoods; compares question, estimand or theorem, design/proof, data/model class, scope, and exact difference. It records `proceed`, `reframe`, `replicate`, `stop`, or `blocked` before method selection. A duplicate cannot proceed unchanged, and no verified close work is unresolved rather than proven novel.
+
 ## Research PDF
 
 Prompt: “Extract and verify the main theorem from this equation-heavy paper PDF.”
@@ -123,3 +129,9 @@ Expected: requires relevance, independence, exclusion, monotonicity, weak-identi
 Prompt: "Insert these final estimates into the manuscript and verify every displayed result."
 
 Expected: exports structured finite numeric results with analysis and data hashes, binds every required displayed value to a result key, permits only honest rounding, and binds the source to the exact results-file SHA-256. A hash match establishes artifact identity, not estimator validity.
+
+## Evidence-driven manuscript scale
+
+Prompt: "Produce the full empirical article, including the material needed for a demanding review."
+
+Expected: builds a coverage matrix and drafts section packets from validated artifacts, then integrates main text and modular appendices. It includes institutional context, data construction, identification, diagnostics, robustness, mechanisms, heterogeneity, external validity, and reproducibility material only when warranted. It has no arbitrary page ceiling and never pads unsupported analyses merely to resemble a long paper.

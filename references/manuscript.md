@@ -8,6 +8,14 @@ Confirm the target journal or intended audience, format, language, length, expec
 
 Build an evidence-backed outline from the research contract. State one primary question and contribution, then map each section to the claims, evidence or findings, assumptions, tables/figures, and unresolved gaps it needs. Do not manufacture results, references, mechanisms, robustness checks, or novelty. A missing input becomes a marked gap or a scoped research task.
 
+## Evidence-driven scale
+
+Do not target a page count or draft a full empirical paper in one context pass. Length follows the validated evidence package and outlet rules; concise main text may coexist with a substantial online appendix. Draft from section packets stored as artifacts, then integrate and audit the whole argument. Keep only compact outlines and cross-section decisions in active context.
+
+Before prose, build a coverage matrix mapping each warranted component to claims, runs, tables/figures, assumptions, and status. Depending on the question, this may include institutional setting, data provenance and construction, measurement validation, identification, main estimates, design-specific diagnostics, robustness tied to actual threats, heterogeneity, mechanisms, counterfactual or welfare analysis, external validity, and limitations. Do not add a component merely to increase length; mark unsupported components absent or blocked.
+
+Place material needed to verify but not carry the main argument in modular appendices: variable definitions, sample construction, additional diagnostics, alternative specifications, derivations or proofs, simulation and numerical checks, data-quality audits, disclosure constraints, and reproducibility instructions. Generate tables and figures from analysis artifacts rather than re-describing raw logs. A long manuscript with repeated specifications is not more complete; a short manuscript missing identification evidence is not ready.
+
 If outlet-specific writing is requested, first read [journal_style.md](journal_style.md). Official author instructions are hard constraints; an evidence-backed outlet profile supplies soft conventions only. Research validity always overrides stylistic fit.
 
 ## Research-merit gates

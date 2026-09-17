@@ -9,7 +9,7 @@ import tempfile
 from pathlib import Path, PurePosixPath
 
 
-ALLOWED = {"manifest", "manuscript", "results", "design_audit", "latex_main"}
+ALLOWED = {"topic_survey", "manifest", "manuscript", "results", "design_audit", "latex_main"}
 
 
 def resolve(root: Path, value: object, field: str) -> Path:
@@ -46,6 +46,8 @@ def check(root: Path, config_path: Path, scripts: Path) -> dict:
     checks: list[dict] = []
     python = sys.executable
 
+    if "topic_survey" in paths:
+        checks.append(run([python, str(scripts / "check_topic_survey.py"), str(paths["topic_survey"]), "--json"]))
     if "manifest" in paths:
         checks.append(run([python, str(scripts / "validate_research_manifest.py"), str(paths["manifest"]), "--require-argument-graph", "--json"]))
     if "manuscript" in paths and "manifest" in paths:

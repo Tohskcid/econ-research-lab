@@ -4,6 +4,8 @@ Use this reference when synthesizing literature, recording experiments, delegati
 
 ## Literature checkpoint
 
+For a new research question, run the pre-design gate in [topic_survey.md](topic_survey.md) before selecting a method or promising novelty. A general literature synthesis may continue below after that decision.
+
 Set the review scope from the question, mechanism, estimand or theorem, method, population/model class, and search cutoff. Search primary papers and credible working papers using concept synonyms, backward references, and forward citations. Record queries, sources searched, dates, access status, and inclusion reasons.
 
 Synthesize by claim rather than paper order. For each close work, capture its question, result, assumptions, design or proof method, scope, and relation to the proposed contribution. For empirical work compare estimands, assignment mechanisms, data, and external validity; for theory compare primitives, solution concepts, theorem statements, and which assumptions strengthen or relax prior results. Surface disagreements and negative results. Do not claim novelty until the nearest alternatives and their differences have been checked.

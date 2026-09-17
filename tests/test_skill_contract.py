@@ -22,8 +22,8 @@ class SkillContractTests(unittest.TestCase):
 
     def test_version_is_consistent(self):
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn('version = "2.12.0"', pyproject)
-        self.assertIn('version: "2.12.0"', self.text)
+        self.assertIn('version = "2.13.0"', pyproject)
+        self.assertIn('version: "2.13.0"', self.text)
 
     def test_theory_requires_auditable_complete_proofs(self):
         theory = (ROOT / "references/theory.md").read_text(encoding="utf-8")
@@ -115,6 +115,17 @@ class SkillContractTests(unittest.TestCase):
             self.assertIn(phrase, artifacts)
         for phrase in ["design-audit.json", "check_design_audit.py", "does not automatically authorize"]:
             self.assertIn(phrase, router)
+
+    def test_new_questions_require_topic_survey_before_method_choice(self):
+        survey = (ROOT / "references/topic_survey.md").read_text(encoding="utf-8")
+        self.assertIn("starting a new research question", self.body)
+        for phrase in ["before choosing", "nearest alternative", "zero verified close works", "method router"]:
+            self.assertIn(phrase, survey)
+
+    def test_manuscript_length_is_evidence_driven(self):
+        manuscript = (ROOT / "references/manuscript.md").read_text(encoding="utf-8")
+        for phrase in ["Do not target a page count", "section packets", "modular appendices", "not more complete"]:
+            self.assertIn(phrase, manuscript)
 
 
 if __name__ == "__main__":
