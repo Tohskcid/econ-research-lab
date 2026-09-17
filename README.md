@@ -18,9 +18,10 @@ flowchart TD
     R --> X[Structural<br/>moments · solver · holdout]
     A -.-> R
     E --> ER[Method router<br/>design feasibility · estimator · interpretation]
-    ER --> B[Reproducible baseline<br/>fixed validation harness]
+    ER --> DP[Data provenance gate<br/>source · license · schema · hashes]
+    DP --> B[Reproducible baseline<br/>fixed validation harness]
     T --> B
-    X --> B
+    X --> DP
     B --> H[One hypothesis<br/>explicit rejection condition]
     H --> D1[Smallest attributable change]
     D1 --> V[Run fixed validity gates]
@@ -128,6 +129,8 @@ python3 -m venv .venv
 | Tool | Purpose |
 | --- | --- |
 | `econ_data_profiler.py` | Panel keys, missingness, balance, descriptive bins, LaTeX/SVG output |
+| `check_data_provenance.py` | Verify source, license, acquisition, schema, and file hashes for real, restricted, or proxy data |
+| `check_literature_archive.py` | Check bibliography coverage, lawful access records, PDF signatures, names, and hashes |
 | `check_topic_survey.py` | Validate nearest-work coverage and the pre-design contribution decision |
 | `search_library.py` | Retrieve a small number of candidate result cards without loading the library |
 | `check_lean_proof.py` | Lock theorem statements and audit Lean proof terms and axioms |
@@ -145,6 +148,9 @@ Examples:
 ```bash
 python3 scripts/search_library.py "monotone optimal choice" --mode theory
 python3 scripts/check_topic_survey.py research/topic-survey.json --json
+python3 scripts/check_data_provenance.py research/data-provenance.json --root . --json
+python3 scripts/check_literature_archive.py research/literature-archive.json \
+  --bibliography paper/references.bib --root . --require-complete --json
 python3 scripts/validate_research_manifest.py research/manifest.jsonl --require-argument-graph
 python3 scripts/check_result_bindings.py --results research/results.json --manuscript paper/main.tex --root .
 python3 scripts/check_design_audit.py research/design-audit.json --root . --require-pass
@@ -160,6 +166,8 @@ Detailed contracts live beside their mode in `references/`; tests and public beh
 - Statistical significance is never an optimization target.
 - Target-journal fit affects framing and format, not evidence inclusion.
 - Proxy data support feasibility and code validation, not undisclosed real-world claims.
+- Quantitative results are blocked until their data source, license, acquisition, schema, and checksums pass the provenance gate.
+- Generated files stay in purpose-specific directories; every cited paper is downloaded and consistently named when lawful access exists, otherwise its verified access gap is recorded.
 - Restricted data remain inside their approved enclave and export policy.
 - Numerical examples do not prove theorems; `formally proved` requires the locked Lean 4 + Mathlib gate.
 - LaTeX compilation and argument graphs do not prove visual quality or natural-language entailment; independent review remains required.

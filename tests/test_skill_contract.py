@@ -22,8 +22,8 @@ class SkillContractTests(unittest.TestCase):
 
     def test_version_is_consistent(self):
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn('version = "2.13.0"', pyproject)
-        self.assertIn('version: "2.13.0"', self.text)
+        self.assertIn('version = "2.15.0"', pyproject)
+        self.assertIn('version: "2.15.0"', self.text)
 
     def test_theory_requires_auditable_complete_proofs(self):
         theory = (ROOT / "references/theory.md").read_text(encoding="utf-8")
@@ -110,9 +110,12 @@ class SkillContractTests(unittest.TestCase):
 
     def test_deterministic_empirical_package_gates_are_documented(self):
         artifacts = (ROOT / "references/research_artifacts.md").read_text(encoding="utf-8")
+        acquisition = (ROOT / "references/data_acquisition.md").read_text(encoding="utf-8")
         router = (ROOT / "references/method_router.md").read_text(encoding="utf-8")
-        for phrase in ["research/results.json", "check_result_bindings.py", "results-sha256", "check_research_package.py"]:
+        for phrase in ["research/results.json", "check_result_bindings.py", "results-sha256", "check_research_package.py", "data_provenance"]:
             self.assertIn(phrase, artifacts)
+        for phrase in ["Hard provenance gate", "check_data_provenance.py", "block estimation", "Never create a provenance record"]:
+            self.assertIn(phrase, acquisition)
         for phrase in ["design-audit.json", "check_design_audit.py", "does not automatically authorize"]:
             self.assertIn(phrase, router)
 
@@ -126,6 +129,18 @@ class SkillContractTests(unittest.TestCase):
         manuscript = (ROOT / "references/manuscript.md").read_text(encoding="utf-8")
         for phrase in ["Do not target a page count", "section packets", "modular appendices", "not more complete"]:
             self.assertIn(phrase, manuscript)
+
+    def test_outputs_and_cited_papers_are_organized(self):
+        layout = (ROOT / "references/project_layout.md").read_text(encoding="utf-8")
+        for phrase in [
+            "Do not put generated data",
+            "literature/papers/",
+            "every BibTeX entry",
+            "Never bypass authentication",
+            "check_literature_archive.py",
+            "Keep copyrighted PDFs out of Git",
+        ]:
+            self.assertIn(phrase, layout)
 
 
 if __name__ == "__main__":

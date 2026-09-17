@@ -73,15 +73,20 @@ Projects may declare applicable gates in `research/package.json`:
 ```json
 {
   "topic_survey": "research/topic-survey.json",
+  "data_provenance": "research/data-provenance.json",
   "manifest": "research/manifest.jsonl",
   "manuscript": "paper/main.md",
+  "bibliography": "paper/references.bib",
+  "literature_archive": "research/literature-archive.json",
   "results": "research/results.json",
   "design_audit": "research/design-audit.json",
   "latex_main": "paper/main.tex"
 }
 ```
 
-Run `python3 scripts/check_research_package.py --root .`. Only declared, existing artifacts are checked. A LaTeX automated pass still requires the separate hash-bound visual review before delivery. The bundled GitHub workflow runs the harness tests and invokes this package gate when the config exists.
+Run `python3 scripts/check_research_package.py --root .`. Only declared, existing artifacts are checked, except that quantitative `results` require valid `data_provenance`, while a `manuscript` requires a `bibliography` and complete `literature_archive`. A LaTeX automated pass still requires the separate hash-bound visual review before delivery. The repository CI tests the generic harness; run the package gate in the research project's own CI so project content is not confused with a skill fixture.
+
+File organization and the local cited-paper archive follow [project_layout.md](project_layout.md). Keep literature metadata in `research/literature-archive.json` and PDFs under `literature/papers/`; do not mix papers, data, tables, and build products in one output directory.
 
 ## Skill evals
 

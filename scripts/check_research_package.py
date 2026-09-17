@@ -9,7 +9,10 @@ import tempfile
 from pathlib import Path, PurePosixPath
 
 
-ALLOWED = {"topic_survey", "manifest", "manuscript", "results", "design_audit", "latex_main"}
+ALLOWED = {
+    "topic_survey", "data_provenance", "manifest", "manuscript", "bibliography",
+    "literature_archive", "results", "design_audit", "latex_main",
+}
 
 
 def resolve(root: Path, value: object, field: str) -> Path:
@@ -43,11 +46,28 @@ def check(root: Path, config_path: Path, scripts: Path) -> dict:
     if unknown:
         raise ValueError(f"unknown package fields: {unknown}")
     paths = {field: resolve(root, value, field) for field, value in config.items()}
+    if "results" in paths and "data_provenance" not in paths:
+        raise ValueError("results requires data_provenance; estimation is blocked without verified inputs")
+    if "manuscript" in paths and not {"bibliography", "literature_archive"}.issubset(paths):
+        raise ValueError("manuscript requires bibliography and literature_archive")
+    if ("bibliography" in paths) != ("literature_archive" in paths):
+        raise ValueError("bibliography and literature_archive must be declared together")
     checks: list[dict] = []
     python = sys.executable
 
     if "topic_survey" in paths:
         checks.append(run([python, str(scripts / "check_topic_survey.py"), str(paths["topic_survey"]), "--json"]))
+    if "data_provenance" in paths:
+        checks.append(run([
+            python, str(scripts / "check_data_provenance.py"), str(paths["data_provenance"]),
+            "--root", str(root), "--json",
+        ]))
+    if "literature_archive" in paths:
+        checks.append(run([
+            python, str(scripts / "check_literature_archive.py"), str(paths["literature_archive"]),
+            "--bibliography", str(paths["bibliography"]), "--root", str(root),
+            "--require-complete", "--json",
+        ]))
     if "manifest" in paths:
         checks.append(run([python, str(scripts / "validate_research_manifest.py"), str(paths["manifest"]), "--require-argument-graph", "--json"]))
     if "manuscript" in paths and "manifest" in paths:
@@ -55,8 +75,8 @@ def check(root: Path, config_path: Path, scripts: Path) -> dict:
             python, str(scripts / "audit_claims.py"), str(paths["manuscript"]), str(paths["manifest"]),
             "--strict-numbers", "--require-central-claims", "--json",
         ]))
-    if ("results" in paths) != ("manuscript" in paths):
-        raise ValueError("results and manuscript must be declared together")
+    if "results" in paths and "manuscript" not in paths:
+        raise ValueError("results requires manuscript")
     if "results" in paths:
         checks.append(run([
             python, str(scripts / "check_result_bindings.py"), "--results", str(paths["results"]),

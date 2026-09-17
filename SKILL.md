@@ -10,7 +10,7 @@ license: MIT
 compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 metadata:
   author: Tohskcid
-  version: "2.13.0"
+  version: "2.15.0"
 ---
 
 # Invisible Hands for Economists
@@ -44,7 +44,8 @@ Load these only when triggered:
 - material aggregation: [data_granularity_guide.md](references/data_granularity_guide.md)
 - selecting or reviewing an empirical design or estimator: [method_router.md](references/method_router.md); route from estimand and assignment mechanism before data shape or software
 - research PDFs: [pdf_ingestion.md](references/pdf_ingestion.md)
-- data discovery or proxy data: [data_acquisition.md](references/data_acquisition.md); prefer verified real data and disclose reproducible proxies as feasibility evidence only
+- creating multi-file outputs or archiving cited papers: [project_layout.md](references/project_layout.md); classify artifacts by purpose and account for every bibliography entry
+- data discovery, acquisition, or proxy data: [data_acquisition.md](references/data_acquisition.md); require tool-acquired, hash-bound provenance before quantitative results and disclose reproducible proxies as feasibility evidence only
 - drafting or auditing an article: [manuscript.md](references/manuscript.md); for LaTeX also read [latex_validation.md](references/latex_validation.md), compile and render the full document, then inspect every page
 - extracting or applying target-outlet conventions: [journal_style.md](references/journal_style.md); load only the selected outlet profile and never imitate an individual author
 - confidential, licensed, enclave, or identifying data: [confidential_data.md](references/confidential_data.md) before access
@@ -64,6 +65,8 @@ Delegate only independent tasks that save time. For multi-agent work read [team_
 ## Boundaries
 
 - Reuse project tools and standard libraries before adding code or dependencies.
+- Keep generated artifacts in stable purpose-specific directories, not the project root. Lawfully acquire, verify, checksum, and consistently name every available cited PDF; record restricted or unavailable full text instead of fabricating it.
+- Never estimate or draft quantitative claims from unverified data. Public, restricted, and proxy inputs must pass the applicable provenance gate; missing provenance is `blocked`, not a prompt to invent records.
 - Load one mode reference at a time. Keep raw data, full logs, papers, and proof traces in artifacts; return only decisions and paths.
 - Treat numerical examples as intuition or counterexample search, never as proof.
 - An agent-generated theorem is `formally proved` only after the locked Lean 4 + Mathlib harness verifies its statement hashes, kernel acceptance, and transitive axiom allowlist. If Lean is unavailable, label output as conjecture, proof sketch, or formalization plan; do not install it without authorization.

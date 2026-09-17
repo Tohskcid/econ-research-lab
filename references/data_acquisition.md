@@ -19,6 +19,22 @@ Before acquisition, verify each candidate against the original landing page and 
 
 Do not infer a license, population, frequency, or variable definition from a filename or aggregator description. Mark inaccessible or unverified candidates explicitly. Record an accepted source as a `dataset` object in the research manifest and link every consuming run with `data_ids`.
 
+## Hard provenance gate
+
+For empirical or structural estimation, create `research/data-provenance.json` before producing results. Verify sources through an actual browser/API/database tool call, not model memory. Each dataset record must bind the canonical HTTPS locator, a saved source-metadata response or landing-page record, producer, release/version, retrieval timestamp, verified license or terms and its locator, unit and coverage, a schema artifact, the acquisition script or recorded manual action, and every consumed file to SHA-256 hashes. Required keys are `id`, `kind`, `name`, `producer`, `locator`, `version`, `retrieved_at`, `license`, `license_locator`, `unit`, `coverage`, `source_evidence_artifact`, `source_evidence_sha256`, `schema_artifact`, `schema_sha256`, `acquisition`, and `files`. Run:
+
+```bash
+python3 scripts/check_data_provenance.py research/data-provenance.json --root . --json
+```
+
+The gate distinguishes:
+
+- `real`: public files and acquisition/schema artifacts must exist below the project root and match their hashes;
+- `restricted`: record logical paths and hashes inside the enclave, the access boundary, and a lawful exported verification artifact; never copy protected data out for validation;
+- `proxy`: meet the real-data fields and additionally record a deterministic seed, intended use, and canonical calibration sources.
+
+Add `"data_provenance": "research/data-provenance.json"` to `research/package.json`. A package that declares quantitative `results` without this field is invalid. Missing, inaccessible, stale, checksum-mismatched, or unlicensed inputs block estimation and manuscript claims; they are not warnings. Never create a provenance record from manuscript prose alone or label reconstructed/model-generated values as observed real data.
+
 ## Fallback when no adequate data are available
 
 After the stopping rule is reached, create proxy data automatically when it can advance feasibility, code, estimator, power, or failure-mode testing. Use the closest defensible rung:

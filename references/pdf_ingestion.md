@@ -9,3 +9,5 @@ Use this reference for papers supplied only as PDF. Preserve the original file a
 5. For scanned pages, use OCR only when available and authorized, then apply the same visual check. Never silently repair a formula from context.
 
 Keep the Markdown and page renders as artifacts rather than loading the entire paper into context. MarkItDown is optional; fall back to existing PDF extraction and rendering tools when unavailable.
+
+For papers acquired as part of a bibliography rather than supplied by the user, also follow [project_layout.md](project_layout.md) for lawful acquisition, stable naming, checksums, and archive coverage.
