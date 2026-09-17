@@ -1,3 +1,4 @@
+%!TEX program = xelatex
 \documentclass[12pt, a4paper]{article}
 \usepackage{ctex}
 \usepackage{amsmath, amssymb, amsthm}
@@ -18,6 +19,9 @@
 \newtheorem{assumption}{Assumption}
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
+
+\newcommand{\result}[2]{#2}
+% [results-sha256:2e21f8e4bc30bd5f21c8b30e1970bc28b86669ecc98206cd2329007a1658d90d]
 
 \hypersetup{
     colorlinks=true,
@@ -68,7 +72,7 @@ To overcome these structural dilemmas, this paper makes four coordinated contrib
 We bridge market microstructure \citep{Kyle1985, GlostenMilgrom1985, EasleyOHara2004} with behavioral media economics \citep{Sims2003, Bordalo2013} and sequential political voting \citep{Callander2007}. In our three-player dynamic Bayesian game, strategic informed traders submit orders through a Central Limit Order Book (CLOB). Media editors, constrained by finite Shannon channel capacity, allocate reporting attention exclusively to highly salient price jumps ($|\Delta p_t| > \bar{\tau}$). Voters utilize these salient numbers as a cognitive heuristic of candidate quality, generating a coordination bandwagon. We formalize three testable propositions: (i) media amplification is strictly nonlinear in odds jumps; (ii) bandwagon updating is intensely concentrated in high-variance swing states; and (iii) excessive media attention drives an endogenous ``Reflexivity Wedge'' where prices permanently diverge from pure Bayesian fundamentals.
 
 \paragraph{2. Structural Identification via Heteroskedasticity.}
-Abandoning invalid whale instruments, we deploy the identification-through-heteroskedasticity methodology of \citet{Rigobon2003}. We partition the 2024 campaign timeline into high-volatility regimes ($H$, comprising 16 major exogenous event shocks including televised debates, assassination attempts, candidate withdrawals, and unexpected legal rulings) and low-volatility baseline regimes ($L$). Under the defensible assumption that structural transmission elasticities remain invariant across short-lived volatility bursts while structural shock variances shift dramatically, the difference in the reduced-form covariance matrix $\Delta \mathbf{\Omega} = \mathbf{\Omega}_H - \mathbf{\Omega}_L$ exactly identifies the bi-directional causal system.
+Abandoning invalid whale instruments, we deploy the heteroskedasticity-based identification methodology of \citet{Rigobon2003}. We partition the 2024 campaign timeline into high-volatility regimes ($H$, comprising 16 major exogenous event shocks including televised debates, assassination attempts, candidate withdrawals, and unexpected legal rulings) and low-volatility baseline regimes ($L$). Under the defensible assumption that structural transmission elasticities remain invariant across short-lived volatility bursts while structural shock variances shift dramatically, the difference in the reduced-form covariance matrix $\Delta \mathbf{\Omega} = \mathbf{\Omega}_H - \mathbf{\Omega}_L$ exactly identifies the bi-directional causal system.
 
 \paragraph{3. High-Frequency Multi-Source Balanced Panel.}
 We construct a unified daily panel spanning March 1 to November 5, 2024 across the seven decisive battleground states: Pennsylvania, Michigan, Wisconsin, Arizona, Georgia, Nevada, and North Carolina ($N=1,750$, effective $N=1,743$). We fuse three independent data pipelines: (i) tick-level order book settlements from Polymarket's official CLOB API; (ii) day-by-day aggregated polling margins from FiveThirtyEight (538); and (iii) daily encyclopedic attention metrics from the Wikimedia Foundation REST API.
@@ -193,7 +197,7 @@ During the 2024 presidential campaign, Polymarket established itself as the domi
 \section{Data and Summary Statistics}
 \label{sec:data}
 
-Our empirical analysis builds upon a purpose-constructed, high-frequency balanced panel dataset tracking the 2024 US Presidential Election across the seven decisive battleground states: Pennsylvania (PA), Michigan (MI), Wisconsin (WI), Arizona (AZ), Georgia (GA), Nevada (NV), and North Carolina (NC). The panel spans 250 continuous trading days from March 1, 2024 to Election Day on November 5, 2024 ($7 \times 250 = 1,750$ total state-day observations).
+Our empirical analysis builds upon a purpose-constructed, high-frequency balanced panel dataset tracking the 2024 US Presidential Election across the seven decisive battleground states: Pennsylvania (PA), Michigan (MI), Wisconsin (WI), Arizona (AZ), Georgia (GA), Nevada (NV), and North Carolina (NC). The panel spans 250 continuous trading days from March 1, 2024 to Election Day on November 5, 2024 ($7 \times 250 = \result{main.n_total}{1750}$ total state-day observations).
 
 \subsection{Data Sources and Pipeline}
 \begin{enumerate}
@@ -208,7 +212,7 @@ Our empirical analysis builds upon a purpose-constructed, high-frequency balance
 
 \input{../output/tables/table1_descriptive_stats.tex}
 
-Table \ref{tab:descriptive} reports summary statistics for our real swing state panel. The average implied probability for Donald Trump across the battleground states over this period was 52.89\% (SD = 0.0657), fluctuating between a low of 39.60\% (post-Biden withdrawal rally for Harris) and a high of 72.90\% (late October momentum peak). Daily price changes $\Delta p_{i,t}$ have a mean of approximately zero (+0.03 percentage points) with a daily standard deviation of 1.47 percentage points, reaching maximum single-day jumps of +8.25 percentage points. Public platform pageviews averaged 1,108.3 hits per day, spiking to an extreme maximum of 18,435 during major crisis events. First-differencing the panel causes the loss of the initial observation for each of the 7 states, leaving an effective estimation sample of $N = 7 \times 249 = 1,743$ balanced observations.
+Table \ref{tab:descriptive} reports summary statistics for our real swing state panel. The average implied probability for Donald Trump across the battleground states over this period was 52.89\% (SD = 0.0657), fluctuating between a low of 39.60\% (post-Biden withdrawal rally for Harris) and a high of 72.90\% (late October momentum peak). Daily price changes $\Delta p_{i,t}$ have a mean of approximately zero (+0.03 percentage points) with a daily standard deviation of 1.47 percentage points, reaching maximum single-day jumps of +8.25 percentage points. Public platform pageviews averaged 1,108.3 hits per day, spiking to an extreme maximum of 18,435 during major crisis events. First-differencing the panel causes the loss of the initial observation for each of the 7 states, leaving an effective estimation sample of $N = 7 \times 249 = \result{main.n_obs}{1743}$ balanced observations.
 
 \section{Econometric Identification Strategy}
 \label{sec:identification}
@@ -275,7 +279,7 @@ We define the High-Volatility Regime ($H$) as the 16 major exogenous shock windo
 \end{itemize}
 All other trading days are classified into the Low-Volatility Baseline Regime ($L$).
 
-Taking the difference between the reduced-form covariance matrices of the two regimes yields:
+Differencing the reduced-form covariance matrices of the two regimes yields:
 \begin{equation}
 \Delta \mathbf{\Omega} \equiv \mathbf{\Omega}_H - \mathbf{\Omega}_L = \mathbf{A}^{-1} \left( \mathbf{\Sigma}_{\varepsilon, H} - \mathbf{\Sigma}_{\varepsilon, L} \right) (\mathbf{A}^{-1})^\prime
 \end{equation}
@@ -316,7 +320,7 @@ Table \ref{tab:main_results} presents the baseline estimation results comparing 
 
 Columns (1) and (2) estimate the forward transmission channel $\alpha_1$ (Price $\to$ Media). In Column (2), under Rigobon heteroskedasticity identification, the structural point estimate is:
 \begin{equation}
-\hat{\alpha}_1 = 5.4764^{***} \quad (\text{Driscoll-Kraay } SE = 1.9807, \; t = 2.76, \; p = 0.006)
+\hat{\alpha}_1 = \result{main.alpha_1_estimate}{5.4764}^{***} \quad (\text{Driscoll-Kraay } SE = \result{main.alpha_1_dk_se}{1.9807}, \; t = 2.76, \; p = 0.006)
 \end{equation}
 Conley (1999) spatial HAC standard errors yield an even tighter confidence bound ($SE = 0.1076$), and the Wild Cluster Bootstrap firmly rejects the null hypothesis ($p = 0.006$). 
 
@@ -330,7 +334,7 @@ or a direct log-linear approximation of \textbf{+54.8\%} in public encyclopedia 
 \paragraph{Reflexivity Feedback.}
 Columns (3) and (4) estimate the reverse feedback parameter $\alpha_2$ (Media $\to$ Price). While naive OLS in Column (3) yields an insignificant coefficient of 0.0078 ($t = 1.25$), the Rigobon SVAR estimator in Column (4) uncovers a positive, statistically significant structural coefficient:
 \begin{equation}
-\hat{\alpha}_2 = 0.0351^{***} \quad (\text{Driscoll-Kraay } SE = 0.0057, \; t = 6.18, \; p < 0.001)
+\hat{\alpha}_2 = \result{main.alpha_2_estimate}{0.0351}^{***} \quad (\text{Driscoll-Kraay } SE = \result{main.alpha_2_dk_se}{0.0057}, \; t = 6.18, \; p < 0.001)
 \end{equation}
 Wild Cluster Bootstrap simulations produce an empirical $p$-value of $0.000$. This confirms the existence of a genuine reflexivity loop. Naive OLS severely underestimates $\alpha_2$ because measurement errors in attention and simultaneous feedback create negative attenuation bias. A doubling of public attention ($\Delta \ln(1+\text{Media}) = 1.0$) causally feeds back into market pricing, lifting the candidate's contract price by 3.51 percentage points.
 
