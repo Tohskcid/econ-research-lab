@@ -35,13 +35,65 @@ This is a bounded engineering loop, not open-ended self-prompting. The harness s
 
 ## Install
 
-Place this repository at a client-supported Agent Skills path:
+Choose project scope when a repository should share the skill, or global scope when it should be available in every workspace. Install only one scope per client to avoid duplicate discovery. The folder remains `econ-research-lab` because it matches the skill ID.
 
-```text
-.agents/skills/econ-research-lab/
+### Codex
+
+[Codex loads](https://developers.openai.com/codex/skills) project skills from `.agents/skills` and personal skills from `$HOME/.agents/skills`.
+
+```bash
+# Project scope — run from the target repository root
+mkdir -p .agents/skills
+git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
+  .agents/skills/econ-research-lab
+
+# Global scope — use instead of project scope
+mkdir -p "$HOME/.agents/skills"
+git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
+  "$HOME/.agents/skills/econ-research-lab"
 ```
 
-Optional profiler dependencies:
+Start Codex in the project and request an economics research task, or invoke `$econ-research-lab` explicitly. Restart Codex only if the newly installed skill does not appear.
+
+### Claude Code
+
+[Claude Code loads](https://code.claude.com/docs/en/skills) project skills from `.claude/skills` and personal skills from `~/.claude/skills`.
+
+```bash
+# Project scope — run from the target repository root
+mkdir -p .claude/skills
+git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
+  .claude/skills/econ-research-lab
+
+# Global scope — use instead of project scope
+mkdir -p "$HOME/.claude/skills"
+git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
+  "$HOME/.claude/skills/econ-research-lab"
+```
+
+Ask a matching research question for automatic activation or run `/econ-research-lab`. If the top-level skills directory was created after Claude Code started and is not detected, restart the session.
+
+### Google Antigravity
+
+[Antigravity loads](https://antigravity.google/docs/skills) workspace skills from `.agents/skills` and global skills from `~/.gemini/config/skills`.
+
+```bash
+# Workspace scope — run from the target workspace root
+mkdir -p .agents/skills
+git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
+  .agents/skills/econ-research-lab
+
+# Global scope — use instead of workspace scope
+mkdir -p "$HOME/.gemini/config/skills"
+git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
+  "$HOME/.gemini/config/skills/econ-research-lab"
+```
+
+Open the workspace in Antigravity and ask an economics research question that matches the skill description.
+
+### Optional Python tools
+
+The instructions-only workflow needs no package installation. Install the optional profiler dependencies inside the cloned skill directory when required:
 
 ```bash
 python3 -m venv .venv

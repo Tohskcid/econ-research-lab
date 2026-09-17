@@ -36,6 +36,18 @@ class SkillContractTests(unittest.TestCase):
         self.assertIn("```mermaid", readme)
         self.assertIn("provenance graph", readme)
 
+    def test_readme_documents_supported_install_locations(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        for phrase in [
+            "### Codex",
+            '"$HOME/.agents/skills/econ-research-lab"',
+            "### Claude Code",
+            '"$HOME/.claude/skills/econ-research-lab"',
+            "### Google Antigravity",
+            '"$HOME/.gemini/config/skills/econ-research-lab"',
+        ]:
+            self.assertIn(phrase, readme)
+
     def test_core_contract_invariants_are_present(self):
         for phrase in [
             "Without an explicit autonomy budget",
