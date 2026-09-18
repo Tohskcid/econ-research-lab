@@ -52,7 +52,16 @@ def engine_commands(engine: str, main: Path, build_dir: Path) -> list[list[str]]
     if engine == "tectonic":
         return [[engine, "--only-cached", "--untrusted", "--keep-logs", "--keep-intermediates", "--outdir", output, main.name]]
     command = [engine, "-interaction=nonstopmode", "-halt-on-error", "-file-line-error", "-no-shell-escape", "-recorder", f"-output-directory={output}", main.name]
-    return [command, command]
+    cmds = [command]
+    if shutil.which("bibtex"):
+        try:
+            rel_aux = (build_dir / main.stem).resolve().relative_to(main.parent.resolve())
+        except ValueError:
+            rel_aux = build_dir / main.stem
+        cmds.append(["bibtex", str(rel_aux)])
+        cmds.append(command)
+    cmds.append(command)
+    return cmds
 
 
 def analyze_log(text: str, overfull_limit: float) -> tuple[list[str], list[str]]:
