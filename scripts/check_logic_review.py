@@ -31,7 +31,13 @@ def central_claims(manifest: list[dict]) -> set[str]:
     }
 
 
-def validate(review: dict, manuscript: Path, manifest_path: Path, manifest: list[dict]) -> list[str]:
+def validate(
+    review: dict,
+    manuscript: Path,
+    manifest_path: Path,
+    manifest: list[dict],
+    require_pass: bool = False,
+) -> list[str]:
     errors = []
     hashes = review.get("reviewed_sha256")
     expected_hashes = {"manuscript": file_hash(manuscript), "manifest": file_hash(manifest_path)}
@@ -41,6 +47,8 @@ def validate(review: dict, manuscript: Path, manifest_path: Path, manifest: list
     overall = review.get("overall_verdict")
     if overall not in {"pass", "revise", "reject"}:
         errors.append("overall_verdict must be pass, revise, or reject")
+    elif require_pass and overall != "pass":
+        errors.append("overall_verdict must be pass for delivery")
     gaps = review.get("global_gaps")
     if not isinstance(gaps, list) or any(not isinstance(gap, str) for gap in gaps):
         errors.append("global_gaps must be a list of strings")
@@ -88,12 +96,13 @@ def main() -> int:
     parser.add_argument("--manuscript", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--review", type=Path, required=True)
+    parser.add_argument("--require-pass", action="store_true")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
     try:
         manifest = load_manifest(args.manifest)
         review = json.loads(args.review.read_text(encoding="utf-8"))
-        errors = validate(review, args.manuscript, args.manifest, manifest)
+        errors = validate(review, args.manuscript, args.manifest, manifest, args.require_pass)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         errors = [str(exc)]
     result = {"passed": not errors, "errors": errors}

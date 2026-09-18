@@ -1,4 +1,7 @@
+import hashlib
 import importlib.util
+import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -23,6 +26,8 @@ class TopicSurveyTests(unittest.TestCase):
             "nearest_works": [{
                 "title": "Closest paper",
                 "locator": "https://example.org/paper",
+                "source_evidence_artifact": "research/source.json",
+                "source_evidence_sha256": "a" * 64,
                 "verified_at": "2026-09-17",
                 "question": "Related policy question",
                 "estimand_or_theorem": "ATT",
@@ -58,6 +63,39 @@ class TopicSurveyTests(unittest.TestCase):
         report = MODULE.validate(survey)
         self.assertFalse(report["valid"])
         self.assertTrue(any("blocked/unresolved" in error for error in report["errors"]))
+
+    def test_locator_must_be_canonical_https_url(self):
+        survey = self.survey()
+        survey["nearest_works"][0]["locator"] = "Journal Name 1(2): 3-4"
+        report = MODULE.validate(survey)
+        self.assertFalse(report["valid"])
+        self.assertTrue(any("canonical HTTPS URL" in error for error in report["errors"]))
+
+    def test_source_evidence_requires_safe_path_and_sha256(self):
+        survey = self.survey()
+        survey["nearest_works"][0]["source_evidence_artifact"] = "../source.json"
+        survey["nearest_works"][0]["source_evidence_sha256"] = "not-a-hash"
+        report = MODULE.validate(survey)
+        self.assertFalse(report["valid"])
+        self.assertTrue(any("safe source_evidence_artifact" in error for error in report["errors"]))
+        self.assertTrue(any("source_evidence_sha256" in error for error in report["errors"]))
+
+    def test_source_evidence_checksum_is_verified(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            evidence = root / "research/source.json"
+            evidence.parent.mkdir()
+            survey = self.survey()
+            work = survey["nearest_works"][0]
+            evidence.write_text(json.dumps({"sources": [{
+                "title": work["title"],
+                "canonical_locator": work["locator"],
+            }]}), encoding="utf-8")
+            survey["nearest_works"][0]["source_evidence_sha256"] = hashlib.sha256(evidence.read_bytes()).hexdigest()
+            self.assertTrue(MODULE.validate(survey, root)["valid"])
+            evidence.write_text("changed", encoding="utf-8")
+            report = MODULE.validate(survey, root)
+        self.assertTrue(any("checksum mismatch" in error for error in report["errors"]))
 
 
 if __name__ == "__main__":

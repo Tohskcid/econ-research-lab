@@ -11,7 +11,8 @@ from pathlib import Path, PurePosixPath
 
 ALLOWED = {
     "topic_survey", "data_provenance", "manifest", "manuscript", "bibliography",
-    "literature_archive", "coverage", "results", "design_audit", "latex_main",
+    "literature_archive", "coverage", "results", "design_audit", "structural_audit", "logic_review",
+    "latex_main", "latex_visual_review",
 }
 
 
@@ -48,19 +49,31 @@ def check(root: Path, config_path: Path, scripts: Path) -> dict:
     paths = {field: resolve(root, value, field) for field, value in config.items()}
     if "results" in paths and "data_provenance" not in paths:
         raise ValueError("results requires data_provenance; estimation is blocked without verified inputs")
-    manuscript_requirements = {"manifest", "coverage", "bibliography", "literature_archive"}
+    manuscript_requirements = {"manifest", "coverage", "bibliography", "literature_archive", "logic_review"}
     if "manuscript" in paths and not manuscript_requirements.issubset(paths):
         missing = sorted(manuscript_requirements - set(paths))
-        raise ValueError(f"manuscript requires manifest, coverage, bibliography, and literature_archive; missing {missing}")
+        raise ValueError(
+            "manuscript requires manifest, coverage, bibliography, literature_archive, and logic_review; "
+            f"missing {missing}"
+        )
     if "coverage" in paths and not {"manuscript", "manifest"}.issubset(paths):
         raise ValueError("coverage requires manuscript and manifest")
     if ("bibliography" in paths) != ("literature_archive" in paths):
         raise ValueError("bibliography and literature_archive must be declared together")
+    if "logic_review" in paths and not {"manuscript", "manifest"}.issubset(paths):
+        raise ValueError("logic_review requires manuscript and manifest")
+    if "latex_main" in paths and "latex_visual_review" not in paths:
+        raise ValueError("latex_main requires latex_visual_review for delivery")
+    if "latex_visual_review" in paths and "latex_main" not in paths:
+        raise ValueError("latex_visual_review requires latex_main")
     checks: list[dict] = []
     python = sys.executable
 
     if "topic_survey" in paths:
-        checks.append(run([python, str(scripts / "check_topic_survey.py"), str(paths["topic_survey"]), "--json"]))
+        checks.append(run([
+            python, str(scripts / "check_topic_survey.py"), str(paths["topic_survey"]),
+            "--root", str(root), "--json",
+        ]))
     if "data_provenance" in paths:
         checks.append(run([
             python, str(scripts / "check_data_provenance.py"), str(paths["data_provenance"]),
@@ -85,6 +98,12 @@ def check(root: Path, config_path: Path, scripts: Path) -> dict:
             python, str(scripts / "audit_claims.py"), str(paths["manuscript"]), str(paths["manifest"]),
             "--strict-numbers", "--require-central-claims", "--json",
         ]))
+    if "logic_review" in paths:
+        checks.append(run([
+            python, str(scripts / "check_logic_review.py"),
+            "--manuscript", str(paths["manuscript"]), "--manifest", str(paths["manifest"]),
+            "--review", str(paths["logic_review"]), "--require-pass", "--json",
+        ]))
     if "results" in paths and "manuscript" not in paths:
         raise ValueError("results requires manuscript")
     if "results" in paths:
@@ -97,12 +116,22 @@ def check(root: Path, config_path: Path, scripts: Path) -> dict:
             python, str(scripts / "check_design_audit.py"), str(paths["design_audit"]),
             "--root", str(root), "--require-pass", "--json",
         ]))
+    if "structural_audit" in paths:
+        checks.append(run([
+            python, str(scripts / "check_structural_audit.py"), str(paths["structural_audit"]),
+            "--root", str(root), "--require-pass", "--json",
+        ]))
     if "latex_main" in paths:
         with tempfile.TemporaryDirectory(prefix="research-latex-") as directory:
             build = Path(directory) / "build"
+            report = build / "report.json"
             checks.append(run([
                 python, str(scripts / "check_latex.py"), "check", "--main", str(paths["latex_main"]),
-                "--build-dir", str(build), "--report", str(build / "report.json"),
+                "--build-dir", str(build), "--report", str(report),
+            ]))
+            checks.append(run([
+                python, str(scripts / "check_latex.py"), "finalize", "--report", str(report),
+                "--visual-review", str(paths["latex_visual_review"]),
             ]))
     if not checks:
         raise ValueError("package config selects no checks")

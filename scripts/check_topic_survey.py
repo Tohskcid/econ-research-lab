@@ -2,10 +2,12 @@
 """Validate the pre-design survey and bounded contribution decision for a new question."""
 
 import argparse
+import hashlib
 import json
 import re
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+from urllib.parse import urlparse
 
 
 AXES = {"question", "mechanism", "method", "setting"}
@@ -13,13 +15,28 @@ RELATIONS = {"duplicate", "replication", "extension", "external-validity", "adja
 DECISIONS = {"proceed", "reframe", "replicate", "stop", "blocked"}
 CONTRIBUTIONS = {"distinct-under-search", "extension", "external-validity", "replication", "synthesis", "duplicate", "unresolved"}
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
 def nonempty(value: object) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
-def validate(document: object) -> dict:
+def canonical_locator(value: object) -> bool:
+    if not nonempty(value):
+        return False
+    parsed = urlparse(value)
+    return parsed.scheme == "https" and bool(parsed.netloc)
+
+
+def safe_relative(value: object) -> bool:
+    if not nonempty(value):
+        return False
+    path = PurePosixPath(value)
+    return not path.is_absolute() and ".." not in path.parts
+
+
+def validate(document: object, root: Path | None = None) -> dict:
     errors: list[str] = []
     if not isinstance(document, dict):
         return {"valid": False, "errors": ["survey must be a JSON object"]}
@@ -76,6 +93,32 @@ def validate(document: object) -> dict:
         for field in ("title", "locator", "verified_at", "question", "estimand_or_theorem", "method_or_proof", "difference"):
             if not nonempty(work.get(field)):
                 errors.append(f"nearest work {index} requires {field}")
+        if nonempty(work.get("locator")) and not canonical_locator(work["locator"]):
+            errors.append(f"nearest work {index} locator must be a canonical HTTPS URL")
+        artifact = work.get("source_evidence_artifact")
+        digest = work.get("source_evidence_sha256")
+        if not safe_relative(artifact):
+            errors.append(f"nearest work {index} requires a safe source_evidence_artifact path")
+        if not isinstance(digest, str) or not SHA256.fullmatch(digest):
+            errors.append(f"nearest work {index} requires a lowercase source_evidence_sha256")
+        elif root is not None and safe_relative(artifact):
+            evidence = root / artifact
+            if not evidence.is_file():
+                errors.append(f"nearest work {index} source evidence does not exist: {artifact}")
+            elif hashlib.sha256(evidence.read_bytes()).hexdigest() != digest:
+                errors.append(f"nearest work {index} source evidence checksum mismatch")
+            else:
+                try:
+                    source_records = json.loads(evidence.read_text(encoding="utf-8")).get("sources", [])
+                except (OSError, AttributeError, json.JSONDecodeError):
+                    source_records = []
+                if not any(
+                    isinstance(record, dict)
+                    and record.get("title") == work.get("title")
+                    and record.get("canonical_locator") == work.get("locator")
+                    for record in source_records
+                ):
+                    errors.append(f"nearest work {index} is not present in its source evidence")
         if nonempty(work.get("verified_at")) and not DATE.fullmatch(work["verified_at"]):
             errors.append(f"nearest work {index} verified_at must use YYYY-MM-DD")
         if work.get("full_text_status") not in {"checked", "abstract-only", "inaccessible"}:
@@ -108,13 +151,17 @@ def validate(document: object) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("survey", type=Path)
+    parser.add_argument("--root", type=Path, help="verify source-evidence artifacts below this root")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
     if not args.survey.is_file():
         print(f"[Error] File not found: {args.survey}", file=sys.stderr)
         return 2
     try:
-        report = validate(json.loads(args.survey.read_text(encoding="utf-8")))
+        report = validate(
+            json.loads(args.survey.read_text(encoding="utf-8")),
+            args.root.resolve() if args.root else None,
+        )
     except (OSError, json.JSONDecodeError) as exc:
         print(f"[Error] Cannot read topic survey: {exc}", file=sys.stderr)
         return 2

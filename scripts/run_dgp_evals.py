@@ -54,7 +54,55 @@ def randomized(case: dict) -> tuple[list[str], list[list[object]]]:
     return ["unit", "treatment", "outcome"], data
 
 
-GENERATORS = {"invalid_iv": invalid_iv, "panel_pretrend": panel_pretrend, "randomized": randomized}
+def staggered_heterogeneous(case: dict) -> tuple[list[str], list[list[object]]]:
+    rng = random.Random(case["seed"])
+    periods = 9
+    units = case["rows"] // periods
+    data = []
+    for unit in range(units):
+        cohort = 3 if unit < units // 3 else 6 if unit < 2 * units // 3 else 0
+        unit_effect = rng.gauss(0, 1)
+        for period in range(periods):
+            treated = int(cohort > 0 and period >= cohort)
+            effect = (1.0 + 0.4 * (period - cohort)) if cohort == 3 and treated else 3.0 * treated
+            outcome = unit_effect + 0.15 * period + effect + rng.gauss(0, 0.35)
+            data.append([unit, period, cohort, treated, outcome])
+    return ["unit", "time", "first_treat_time", "treatment", "outcome"], data
+
+
+def weak_iv(case: dict) -> tuple[list[str], list[list[object]]]:
+    rng = random.Random(case["seed"])
+    data = []
+    for index in range(case["rows"]):
+        confounder = rng.gauss(0, 1)
+        instrument = rng.randrange(2)
+        treatment = 0.04 * instrument + confounder + rng.gauss(0, 1)
+        outcome = 2 * treatment + confounder + rng.gauss(0, 1)
+        data.append([index, instrument, treatment, outcome])
+    return ["unit", "instrument", "treatment", "outcome"], data
+
+
+def rdd_manipulation(case: dict) -> tuple[list[str], list[list[object]]]:
+    rng = random.Random(case["seed"])
+    data = []
+    for index in range(case["rows"]):
+        running = rng.uniform(-1, 1)
+        if -0.12 < running < 0:
+            running = abs(running)
+        treatment = int(running >= 0)
+        outcome = 0.5 * running + 2 * treatment + rng.gauss(0, 0.5)
+        data.append([index, running, treatment, outcome])
+    return ["unit", "running_variable", "treatment", "outcome"], data
+
+
+GENERATORS = {
+    "invalid_iv": invalid_iv,
+    "panel_pretrend": panel_pretrend,
+    "randomized": randomized,
+    "staggered_heterogeneous": staggered_heterogeneous,
+    "weak_iv": weak_iv,
+    "rdd_manipulation": rdd_manipulation,
+}
 
 
 def generate(cases: list[dict], output_dir: Path) -> list[dict]:

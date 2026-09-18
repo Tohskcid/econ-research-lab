@@ -4,10 +4,9 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Skill: econ-research-lab](https://img.shields.io/badge/Skill-econ--research--lab-2ea44f.svg)](SKILL.md)
-[![Version](https://img.shields.io/badge/Version-2.18.0-orange.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/Version-2.16.0-orange.svg)](SKILL.md)
 [![Theory Proof: Lean 4](https://img.shields.io/badge/Theory%20Proof-Lean%204%20Kernel-purple.svg)](references/lean_harness.md)
 [![Replication: AEA Standard](https://img.shields.io/badge/Replication-AEA%20Standard-success.svg)](references/replication_audit.md)
-[![Journal Tier: 2019 NSTC](https://img.shields.io/badge/Journal%20Tier-2019%20NSTC%20Filter-blue.svg)](library/journals.jsonl)
 [![Architecture: PI DAG](https://img.shields.io/badge/Architecture-PI%20DAG%20%2B%20Referees-blueviolet.svg)](references/team_protocol.md)
 
 <br/>
@@ -103,7 +102,6 @@ flowchart TD
 - **Falsification & Competing Mechanisms Battery**: Rejects confirmation bias by formalizing 3+ alternative confounding stories, temporal placebos, donor swaps, and Oster selection bounds.
 - **AEA-Grade Replication Audit**: Enforces American Economic Association Data and Code Availability policies: zero absolute paths, pinned seeds, immutable raw data checksums, and single-click master execution.
 - **Pre-Submission Adversarial Peer Review**: Simulates three classic referee archetypes (Identification Policeman, Theory/Mechanism Critic, and Data Hygiene Nitpicker) to stresstest manuscripts before submission.
-- **NSTC 2019 Journal Tier Filter**: Integrates the 2019 Ministry of Science and Technology (NSTC) Economics Journal Tier classification to align manuscript framing and expectations.
 
 ---
 
@@ -194,7 +192,8 @@ git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
 | `validate_research_manifest.py` / `audit_claims.py` | Validate provenance, proxy scope, argument DAGs, and manuscript markers |
 | `check_result_bindings.py` | Bind displayed manuscript numbers and a results-file hash to structured estimates |
 | `check_design_audit.py` | Enforce diagnostics selected for the declared empirical design |
-| `check_research_package.py` | Run applicable manifest, manuscript, result, design, and LaTeX gates for CI |
+| `check_structural_audit.py` | Enforce convergence, identification, holdout, and counterfactual diagnostics |
+| `check_research_package.py` | Run applicable manifest, manuscript, result, empirical/structural audit, and LaTeX gates for CI |
 | `check_latex.py` | Compile safely, inspect logs, render every page, and bind visual review to the PDF hash |
 | `check_logic_review.py` | Bind a central-claim referee report to manuscript and manifest hashes |
 | `run_research_team.py` | Validate and run a bounded provider-neutral specialist task DAG |

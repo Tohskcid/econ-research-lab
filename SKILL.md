@@ -7,10 +7,10 @@ description: >
   academic writing, or adversarial review; not for routine data cleaning or
   generic summaries.
 license: MIT
-compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 metadata:
   author: Tohskcid
   version: "2.16.0"
+  compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 ---
 
 # Invisible Hands for Economists

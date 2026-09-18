@@ -18,7 +18,7 @@ Use discovery indexes to find candidates, then verify bibliographic metadata and
 
 ## Nearest-work matrix
 
-For each close work record its verified locator, question, estimand or theorem, design or proof method, mechanism, data/model class, scope, main result, and exact difference from the proposal. Mark at least one nearest alternative and classify the relationship as `duplicate`, `replication`, `extension`, `external-validity`, `adjacent`, or `contradiction`.
+For each close work record a canonical HTTPS locator to the DOI, publisher, working-paper archive, or official repository; a free-form citation is not verification. Bind the checked metadata or saved landing-page record through `source_evidence_artifact` and `source_evidence_sha256`. Also record its question, estimand or theorem, design or proof method, mechanism, data/model class, scope, main result, and exact difference from the proposal. Mark at least one nearest alternative and classify the relationship as `duplicate`, `replication`, `extension`, `external-validity`, `adjacent`, or `contradiction`.
 
 Compare differences that can support a contribution: a distinct question, new credible variation, new data measurement, relaxed or sharper assumptions, new mechanism, materially broader scope, external-validity test, or informative replication. A different country, sample, estimator, or recent period is not automatically a contribution; explain why it changes what can be learned.
 
@@ -27,7 +27,7 @@ Compare differences that can support a contribution: a distinct question, new cr
 Write `research/topic-survey.json` and validate it:
 
 ```bash
-python3 scripts/check_topic_survey.py research/topic-survey.json --json
+python3 scripts/check_topic_survey.py research/topic-survey.json --root . --json
 ```
 
 Choose one decision:

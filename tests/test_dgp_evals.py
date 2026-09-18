@@ -33,6 +33,9 @@ class DgpEvalTests(unittest.TestCase):
             {"case_id": "invalid-iv-direct-channel", "decision": "reject_identification", "findings": ["exclusion-violation"]},
             {"case_id": "did-differential-pretrend", "decision": "reject_identification", "findings": ["differential-pretrend"]},
             {"case_id": "randomized-mean-effect", "decision": "estimate", "findings": ["random-assignment", "uncertainty-reported"], "estimate": 1.5},
+            {"case_id": "staggered-did-heterogeneous-effects", "decision": "use_heterogeneity_robust_design", "findings": ["heterogeneous-treatment-effects", "twfe-risk"]},
+            {"case_id": "weak-iv-first-stage", "decision": "reject_conventional_inference", "findings": ["weak-first-stage", "weak-iv-robust-inference"]},
+            {"case_id": "rdd-sorting-at-cutoff", "decision": "reject_identification", "findings": ["sorting-at-cutoff", "continuity-not-credible"]},
         ]
         self.assertTrue(dgp_eval.grade(self.cases, submissions)["all_passed"])
         submissions[0]["decision"] = "estimate"
@@ -44,6 +47,9 @@ class DgpEvalTests(unittest.TestCase):
             "invalid-iv-direct-channel": {"decision": "reject_identification", "findings": ["exclusion-violation"]},
             "did-differential-pretrend": {"decision": "reject_identification", "findings": ["differential-pretrend"]},
             "randomized-mean-effect": {"decision": "estimate", "findings": ["random-assignment", "uncertainty-reported"], "estimate": 1.5},
+            "staggered-did-heterogeneous-effects": {"decision": "use_heterogeneity_robust_design", "findings": ["heterogeneous-treatment-effects", "twfe-risk"]},
+            "weak-iv-first-stage": {"decision": "reject_conventional_inference", "findings": ["weak-first-stage", "weak-iv-robust-inference"]},
+            "rdd-sorting-at-cutoff": {"decision": "reject_identification", "findings": ["sorting-at-cutoff", "continuity-not-credible"]},
         }
         def response(*_args, **kwargs):
             request = __import__("json").loads(kwargs["input"])

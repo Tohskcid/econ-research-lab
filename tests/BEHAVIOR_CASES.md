@@ -18,7 +18,7 @@ Expected: maps the nearest propositions and exact claimed extension; defines pri
 
 Prompt: “Estimate this demand model and compare merger counterfactuals.”
 
-Expected: records the model lineage and unresolved existence, uniqueness, or identification obligations; freezes moments/likelihood, holdout targets, seed, solver tolerance, and budget; runs a baseline; changes one component per ledger row; rejects fit gains that break convergence or identification.
+Expected: records the model lineage and unresolved existence, uniqueness, or identification obligations; freezes moments/likelihood, holdout targets, seed, solver tolerance, and budget; runs a baseline; changes one component per ledger row; writes and validates `research/structural-audit.json`; rejects fit gains that break convergence, identification, holdout validation, or counterfactual invariance.
 
 ## Literature review
 

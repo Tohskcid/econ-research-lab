@@ -53,6 +53,17 @@ class LogicReviewTests(unittest.TestCase):
         errors = logic_review.validate(review, self.manuscript, self.manifest_path, self.manifest)
         self.assertTrue(any("sha256" in error for error in errors))
 
+    def test_delivery_requires_passing_verdict(self):
+        review = self.review()
+        review["overall_verdict"] = "revise"
+        self.assertEqual(
+            logic_review.validate(review, self.manuscript, self.manifest_path, self.manifest), []
+        )
+        errors = logic_review.validate(
+            review, self.manuscript, self.manifest_path, self.manifest, require_pass=True
+        )
+        self.assertIn("overall_verdict must be pass for delivery", errors)
+
     def test_rejects_missing_central_claim(self):
         review = self.review()
         review["claim_reviews"] = []

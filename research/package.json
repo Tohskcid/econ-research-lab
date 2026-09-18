@@ -1,6 +1,4 @@
 {
   "topic_survey": "research/topic-survey.json",
-  "results": "research/results.json",
-  "manuscript": "paper/polymarket_media_reflexivity_paper.tex",
   "design_audit": "research/design-audit.json"
 }

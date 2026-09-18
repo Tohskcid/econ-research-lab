@@ -23,6 +23,17 @@ For jobs that may exceed interactive memory or time, estimate resources on a bou
 
 Fit improvement cannot compensate for non-convergence, failed identities, weaker identification, or an altered validation sample.
 
+## Structural audit gate
+
+Write `research/structural-audit.json` with `schema_version`, `model`, `target`, `estimator_or_solver`, `counterfactual_required`, and diagnostics. Required diagnostic IDs are `benchmark`, `identities`, `convergence`, `starting-values`, `tolerance-ladder`, `numerical-error`, `seed-stability`, `identification`, and `holdout-validation`. Add `counterfactual-invariance` when a counterfactual is required. Every diagnostic records `status` (`pass`, `fail`, `inconclusive`, or `blocked`), `finding`, and a relative `artifact` path. Run:
+
+```bash
+python3 scripts/check_structural_audit.py research/structural-audit.json \
+  --root . --require-pass --json
+```
+
+A valid but nonpassing audit may document an unresolved model. It cannot support parameter interpretation, welfare claims, or policy counterfactual delivery.
+
 ## Iteration
 
 Run one attributable change per row: a moment, parameter restriction, numerical method, or model mechanism. Evaluate it with the frozen harness and record fit, holdout performance, convergence, runtime, and complexity. Keep equal-performing simplifications; discard cosmetic complexity and changes that only retune the evaluation target.
