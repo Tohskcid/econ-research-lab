@@ -58,6 +58,8 @@ Before polishing prose, grade each dimension `pass`, `revise`, or `blocked` and 
 3. **Data and econometrics.** Audit provenance, construction, linkage, measurement, missingness, representativeness, timing, geography, weights, disclosure limits, and the match between variation and estimand. Justify inference, fixed effects, clustering, and robustness tests from the data-generating and assignment process. Robustness means testing credible alternatives and failure modes, not accumulating specifications.
 4. **Contribution and relevance.** Establish the nearest literature gap as a difference in question, mechanism, data, identification, or method; bound external validity; quantify economically meaningful magnitudes where justified; and derive policy, welfare, or managerial implications no stronger than the evidence. A fashionable topic or prestigious outlet is not a contribution.
 
+If the manuscript makes a policy, managerial, deployment, welfare, or other real-world recommendation, read [real_world_relevance.md](real_world_relevance.md), declare `claim_scope: real-world`, and pass the applicability gate. Otherwise declare `claim_scope: research-only` and keep conclusions explicitly academic. Statistical significance and internal validity alone do not make a result decision-ready.
+
 ## Drafting
 
 Use the structure appropriate to the paper rather than forcing fixed headings. Ensure that:

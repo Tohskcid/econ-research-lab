@@ -55,14 +55,19 @@ class ResearchPackageTests(unittest.TestCase):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(content, encoding="utf-8")
             config = root / "research/package.json"
-            config.write_text(json.dumps({
+            package = {
                 "manuscript": "paper/main.tex",
                 "manifest": "research/manifest.jsonl",
                 "coverage": "research/coverage.json",
                 "bibliography": "paper/references.bib",
                 "literature_archive": "research/literature.json",
                 "logic_review": "research/logic-review.json",
-            }), encoding="utf-8")
+            }
+            config.write_text(json.dumps(package), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "requires claim_scope"):
+                MODULE.check(root, config, ROOT / "scripts")
+            package["claim_scope"] = "research-only"
+            config.write_text(json.dumps(package), encoding="utf-8")
             with patch.object(MODULE, "run", return_value={"passed": True}) as run:
                 MODULE.check(root, config, ROOT / "scripts")
             commands = [call.args[0] for call in run.call_args_list]
@@ -103,6 +108,28 @@ class ResearchPackageTests(unittest.TestCase):
             command = run.call_args.args[0]
             self.assertIn("check_structural_audit.py", command[1])
             self.assertIn("--require-pass", command)
+
+    def test_real_world_claims_require_applicability_audit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "research").mkdir()
+            config = root / "research/package.json"
+            config.write_text(json.dumps({"claim_scope": "marketing"}), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "claim_scope must be"):
+                MODULE.check(root, config, ROOT / "scripts")
+            config.write_text(json.dumps({"claim_scope": "real-world"}), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "requires real_world_audit"):
+                MODULE.check(root, config, ROOT / "scripts")
+            (root / "research/real-world-audit.json").write_text("{}", encoding="utf-8")
+            config.write_text(json.dumps({
+                "claim_scope": "real-world",
+                "real_world_audit": "research/real-world-audit.json",
+            }), encoding="utf-8")
+            with patch.object(MODULE, "run", return_value={"passed": True}) as run:
+                MODULE.check(root, config, ROOT / "scripts")
+            command = run.call_args.args[0]
+            self.assertIn("check_real_world_audit.py", command[1])
+            self.assertIn("--require-applicable", command)
 
     def test_coverage_cannot_run_without_manuscript_and_manifest(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -50,6 +50,7 @@ Load these only when triggered:
 - creating multi-file outputs or archiving cited papers: [project_layout.md](references/project_layout.md); classify artifacts by purpose and account for every bibliography entry
 - data discovery, acquisition, or proxy data: [data_acquisition.md](references/data_acquisition.md); require tool-acquired, hash-bound provenance before quantitative results and disclose reproducible proxies as feasibility evidence only
 - drafting or auditing an article: [manuscript.md](references/manuscript.md); require hash-bound section coverage rather than a page target; for LaTeX also read [latex_validation.md](references/latex_validation.md), compile and render the full document, then inspect every page
+- policy, managerial, deployment, welfare, or other real-world recommendations: [real_world_relevance.md](references/real_world_relevance.md); separate academic validity from decision applicability and require a bounded decision contract
 - pre-submission peer review: [adversarial_referees.md](references/adversarial_referees.md); stress-test manuscripts against identification, mechanism, and data referee archetypes
 - packaging, auditing, or verifying code and data replication: [replication_audit.md](references/replication_audit.md); enforce AEA-grade relative paths, seed locks, raw data immutability, and master scripts
 - extracting or applying target-outlet conventions: [journal_style.md](references/journal_style.md); load only the selected outlet profile and never imitate an individual author

@@ -26,6 +26,12 @@ Prompt: “Review the theoretical and empirical literature behind this question 
 
 Expected: records reproducible search scope and limitations; synthesizes evidence by claim; distinguishes empirical designs from theoretical assumptions; checks the nearest alternatives before making a bounded novelty statement; and does not filter evidence by citation count, journal prestige, or target-journal fit.
 
+## Real-world recommendation
+
+Prompt: “Use these results to recommend whether a city should deploy the program next year.”
+
+Expected: separates academic validity from decision applicability; freezes the decision maker, deployment context, target population, time horizon, and acceptable failure; audits transportability, institutional match, measurement, data freshness, decision sensitivity, feasibility, distribution, equilibrium response, and monitoring. It declares `claim_scope: real-world` and blocks a recommendation unless the hash-bound real-world audit concludes `applicable`; a provisional result supports only a bounded pilot or further validation.
+
 ## New-question topic survey
 
 Prompt: “Start from this research question, determine whether it has already been done, and decide whether to proceed.”

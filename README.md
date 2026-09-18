@@ -118,6 +118,7 @@ flowchart TD
 | **Theory Mode** | [`references/theory.md`](references/theory.md) | Pure theory proofs, counterexamples, and formalization plans |
 | **Lean 4 Verification** | [`references/lean_harness.md`](references/lean_harness.md) | Formal mathematical verification using Lean 4 + Mathlib |
 | **Structural Mode** | [`references/structural.md`](references/structural.md) | Dynamic discrete choice, BLP random coefficients, and solvers |
+| **Real-World Relevance** | [`references/real_world_relevance.md`](references/real_world_relevance.md) | Decision applicability, transportability, feasibility, and monitoring |
 | **Replication Audit** | [`references/replication_audit.md`](references/replication_audit.md) | AEA Data & Code Availability replication package checklist |
 | **Adversarial Referees** | [`references/adversarial_referees.md`](references/adversarial_referees.md) | 3-Archetype economics referee stress tests and report generator |
 | **Manuscript Workflow** | [`references/manuscript.md`](references/manuscript.md) | Evidence-driven scale, section packets, and logic reviews |
@@ -193,6 +194,7 @@ git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
 | `check_result_bindings.py` | Bind displayed manuscript numbers and a results-file hash to structured estimates |
 | `check_design_audit.py` | Enforce diagnostics selected for the declared empirical design |
 | `check_structural_audit.py` | Enforce convergence, identification, holdout, and counterfactual diagnostics |
+| `check_real_world_audit.py` | Block real-world recommendations without applicability evidence |
 | `check_research_package.py` | Run applicable manifest, manuscript, result, empirical/structural audit, and LaTeX gates for CI |
 | `check_latex.py` | Compile safely, inspect logs, render every page, and bind visual review to the PDF hash |
 | `check_logic_review.py` | Bind a central-claim referee report to manuscript and manifest hashes |

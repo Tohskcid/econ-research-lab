@@ -81,11 +81,13 @@ Projects may declare applicable gates in `research/package.json`:
   "literature_archive": "research/literature-archive.json",
   "results": "research/results.json",
   "design_audit": "research/design-audit.json",
+  "claim_scope": "real-world",
+  "real_world_audit": "research/real-world-audit.json",
   "latex_main": "paper/main.tex"
 }
 ```
 
-Run `python3 scripts/check_research_package.py --root .`. Only declared, existing artifacts are checked, except that quantitative `results` require valid `data_provenance`, while a `manuscript` requires a manifest, ready coverage matrix, bibliography, complete literature archive, and a passing hash-bound logic review. Declare `design_audit` or `structural_audit` for the applicable quantitative mode. Declaring `latex_main` also requires a hash-bound visual review that covers every rendered page. Repository CI tests both the generic harness and the bounded bundled audit; research projects should run their own package gate for project-specific artifacts.
+Run `python3 scripts/check_research_package.py --root .`. Only declared, existing artifacts are checked, except that quantitative `results` require valid `data_provenance`, while a `manuscript` requires a manifest, ready coverage matrix, bibliography, complete literature archive, and a passing hash-bound logic review. A package with a manuscript or results must declare `claim_scope` as `research-only` or `real-world`; real-world scope requires a passing `real_world_audit`. Declare `design_audit` or `structural_audit` for the applicable quantitative mode. Declaring `latex_main` also requires a hash-bound visual review that covers every rendered page. Repository CI tests both the generic harness and the bounded bundled audit; research projects should run their own package gate for project-specific artifacts.
 
 File organization and the local cited-paper archive follow [project_layout.md](project_layout.md). Keep literature metadata in `research/literature-archive.json` and PDFs under `literature/papers/`; do not mix papers, data, tables, and build products in one output directory.
 

@@ -100,6 +100,16 @@ class SkillContractTests(unittest.TestCase):
         for phrase in ["Identification", "Economic mechanism", "Data and econometrics", "Contribution and relevance"]:
             self.assertIn(phrase, manuscript)
 
+    def test_real_world_gate_is_conditional_and_decision_centered(self):
+        reference = (ROOT / "references/real_world_relevance.md").read_text(encoding="utf-8")
+        self.assertIn("policy, managerial, deployment", self.body)
+        for phrase in [
+            "claim_scope", "research-only", "real-world", "target decision",
+            "decision-sensitivity", "implementation-feasibility", "monitoring-plan",
+            "check_real_world_audit.py",
+        ]:
+            self.assertIn(phrase, reference)
+
     def test_method_router_prioritizes_identification_over_data_shape(self):
         router = (ROOT / "references/method_router.md").read_text(encoding="utf-8")
         for phrase in [

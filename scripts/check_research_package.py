@@ -9,11 +9,13 @@ import tempfile
 from pathlib import Path, PurePosixPath
 
 
-ALLOWED = {
+PATH_FIELDS = {
     "topic_survey", "data_provenance", "manifest", "manuscript", "bibliography",
     "literature_archive", "coverage", "results", "design_audit", "structural_audit", "logic_review",
-    "latex_main", "latex_visual_review",
+    "real_world_audit", "latex_main", "latex_visual_review",
 }
+METADATA_FIELDS = {"claim_scope"}
+ALLOWED = PATH_FIELDS | METADATA_FIELDS
 
 
 def resolve(root: Path, value: object, field: str) -> Path:
@@ -46,7 +48,7 @@ def check(root: Path, config_path: Path, scripts: Path) -> dict:
     unknown = sorted(set(config) - ALLOWED)
     if unknown:
         raise ValueError(f"unknown package fields: {unknown}")
-    paths = {field: resolve(root, value, field) for field, value in config.items()}
+    paths = {field: resolve(root, config[field], field) for field in PATH_FIELDS if field in config}
     if "results" in paths and "data_provenance" not in paths:
         raise ValueError("results requires data_provenance; estimation is blocked without verified inputs")
     manuscript_requirements = {"manifest", "coverage", "bibliography", "literature_archive", "logic_review"}
@@ -66,6 +68,13 @@ def check(root: Path, config_path: Path, scripts: Path) -> dict:
         raise ValueError("latex_main requires latex_visual_review for delivery")
     if "latex_visual_review" in paths and "latex_main" not in paths:
         raise ValueError("latex_visual_review requires latex_main")
+    claim_scope = config.get("claim_scope")
+    if claim_scope is not None and claim_scope not in {"research-only", "real-world"}:
+        raise ValueError("claim_scope must be 'research-only' or 'real-world'")
+    if ("manuscript" in paths or "results" in paths) and claim_scope not in {"research-only", "real-world"}:
+        raise ValueError("manuscript or results requires claim_scope 'research-only' or 'real-world'")
+    if claim_scope == "real-world" and "real_world_audit" not in paths:
+        raise ValueError("real-world claim_scope requires real_world_audit")
     checks: list[dict] = []
     python = sys.executable
 
@@ -121,6 +130,14 @@ def check(root: Path, config_path: Path, scripts: Path) -> dict:
             python, str(scripts / "check_structural_audit.py"), str(paths["structural_audit"]),
             "--root", str(root), "--require-pass", "--json",
         ]))
+    if "real_world_audit" in paths:
+        command = [
+            python, str(scripts / "check_real_world_audit.py"), str(paths["real_world_audit"]),
+            "--root", str(root), "--json",
+        ]
+        if claim_scope == "real-world":
+            command.insert(-1, "--require-applicable")
+        checks.append(run(command))
     if "latex_main" in paths:
         with tempfile.TemporaryDirectory(prefix="research-latex-") as directory:
             build = Path(directory) / "build"
