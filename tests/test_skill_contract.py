@@ -35,6 +35,11 @@ class SkillContractTests(unittest.TestCase):
         for phrase in ["No mathematical ink", "align", "multline", "zero-overfull gate", "inside the margins"]:
             self.assertIn(phrase, latex)
 
+    def test_latex_gate_requires_academic_black_typography(self):
+        latex = (ROOT / "references/latex_validation.md").read_text(encoding="utf-8")
+        for phrase in ["Typography, hyperlinks, and ink color", "pure black body text", "hidelinks", "colorlinks=false"]:
+            self.assertIn(phrase, latex)
+
     def test_readme_documents_architecture(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("# Invisible Hands for Economists", readme)

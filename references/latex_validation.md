@@ -4,6 +4,23 @@ Read this reference whenever a manuscript deliverable includes `.tex` or a PDF b
 
 Preserve the project's document class, build system, engine, bibliography tool, fonts, and journal or university template. Do not install TeX, rewrite the preamble, or switch engines merely to silence an error without authorization. Prefer splitting or redesigning a wide table, calibrated columns, `tabularx`, `longtable`, or a landscape float; use `\resizebox` only as a last resort because it can make text unreadable.
 
+## Typography, hyperlinks, and ink color
+
+Academic publication standards require formal pure black body text. Do not configure `hyperref` with colored link text (`colorlinks=true` with colored fonts such as `darkblue` or `blue`), as dense in-text citations (`\citep`, `\citet`), internal cross-references (`\ref`, `\eqref`), and table of contents entries will turn paragraphs visibly blue.
+
+Instead, always load `hyperref` with `[hidelinks]` and configure:
+
+```latex
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+    hidelinks,
+    colorlinks=false,
+    pdfborder={0 0 0}
+}
+```
+
+This preserves full interactive PDF hyperlinks, section jumping, and metadata without introducing colored link boxes or non-black citation text.
+
 ## Long equations
 
 No mathematical ink or equation number may cross the text block or enter either margin. Convert an overlong inline expression to display math. For display equations, break at meaningful relations or additive operators with `align`, `aligned`, `split`, or `multline`; indent continuation lines and preserve the intended equation numbering with `\notag` only where appropriate. When automatic delimiter sizing prevents a safe break, use explicit `\bigl`/`\bigr`-style delimiters around the relevant line segments.
