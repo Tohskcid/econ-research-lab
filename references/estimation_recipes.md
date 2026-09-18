@@ -170,10 +170,10 @@ When unobserved shocks are geographically or serially dependent, standard cluste
 
 ---
 
-## 5. Double Machine Learning (Chernozhukov et al. 2018)
+## 5. Double Machine Learning & Spatial Network DML
 
-Use Neyman orthogonal scores and honest sample splitting ($K$-fold cross-fitting) when adjusting for high-dimensional confounders.
-
+### Standard Double Machine Learning (Chernozhukov et al. 2018)
+Use Neyman orthogonal scores and honest sample splitting ($K$-fold cross-fitting) when adjusting for high-dimensional confounders to eliminate $N^{-1/4}$ regularization bias:
 - **Python (`DoubleML`)**:
   ```python
   import doubleml as dml
@@ -185,6 +185,19 @@ Use Neyman orthogonal scores and honest sample splitting ($K$-fold cross-fitting
   dml_plr.fit()
   print(dml_plr.summary)
   ```
+
+### Spatial Network Double Machine Learning (Spatial DML)
+Use when treatment spillovers or endogenous peer outcomes propagate across complex, non-Euclidean networks (e.g., electrical power grids, supply-chain topologies, financial interbank graphs):
+1. **Micro-to-Macro Structural Model (Spatial Durbin Model)**:
+   $$\mathbf{Y}_t = \rho_0 \mathbf{W} \mathbf{Y}_t + \beta_0 \mathbf{T}_t + \gamma_0 \mathbf{W} \mathbf{T}_t + f(\mathbf{X}_t) + \boldsymbol{\varepsilon}_t$$
+2. **Lee (2003) Best Spatial Instrument via Non-parametric Projection**:
+   The spatial lag $\mathbf{W}\mathbf{Y}$ is mechanically endogenous. The semiparametrically efficient instrument is $\mathbf{H}^* = \mathbb{E}[\mathbf{W}\mathbf{Y} \mid \mathbf{T}, \mathbf{X}] = \mathbf{W}(\mathbf{I} - \rho_0 \mathbf{W})^{-1}[\beta_0 \mathbf{T} + \gamma_0 \mathbf{W}\mathbf{T} + f(\mathbf{X})]$. DML first-stage cross-fitted learners non-parametrically approximate $\mathbf{H}^*$, bypassing ad-hoc polynomial truncations ($W^2X, W^3X$) and eliminating weak instrument traps.
+3. **Jenish & Prucha (2012) Spatial Near-Epoch Dependence (NED) Asymptotic Inference**:
+   Because network inversions $(\mathbf{I} - \rho_0 \mathbf{W})^{-1} = \sum_{k=0}^\infty \rho_0^k \mathbf{W}^k$ induce long-range spatial dependence, classical i.i.d. CLT fails. When $|\rho_0| < 1$ and $\sup_N \|\mathbf{W}\|_\infty \le 1$:
+   - The $m$-step graph neighborhood truncation error satisfies $\| \psi_{it} - \mathbb{E}[\psi_{it} \mid \mathcal{F}_i(m)] \|_2 \le C \frac{|\rho_0|^{m+1}}{1 - |\rho_0|} = \mathcal{O}(|\rho_0|^m)$, proving geometric NED decay.
+   - Bernstein small-block/large-block decomposition yields asymptotic independence across large blocks.
+   - Absolute summability $\sum_{m=0}^\infty m^2 |\rho_0|^m < \infty$ guarantees that the spatial Conley-HAC covariance matrix $\boldsymbol{\Omega}_0$ is positive definite and nonsingular:
+     $$\sqrt{N}(\hat{\boldsymbol{\theta}}_{\text{SDML}} - \boldsymbol{\theta}_0) \xrightarrow{d} \mathcal{N}\Big(\mathbf{0}, \, \mathbf{J}_0^{-1} \boldsymbol{\Omega}_0 \mathbf{J}_0^{-1}\Big)$$
 
 ---
 
