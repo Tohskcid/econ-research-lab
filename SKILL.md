@@ -9,7 +9,7 @@ description: >
 license: MIT
 metadata:
   author: Tohskcid
-  version: "2.16.0"
+  version: "2.17.0"
   compatibility: Requires Python 3.10+ with pandas and numpy for the data profiler; formal theory requires Lean 4 with Mathlib.
 ---
 
@@ -43,9 +43,10 @@ Load these only when triggered:
 - starting a new research question: [topic_survey.md](references/topic_survey.md); classify the nearest work and contribution before method selection
 - material aggregation: [data_granularity_guide.md](references/data_granularity_guide.md)
 - selecting or reviewing an empirical design or estimator: [method_router.md](references/method_router.md); route from estimand and assignment mechanism before data shape or software
-- implementing an estimator or writing empirical code: [estimation_recipes.md](references/estimation_recipes.md); use modern heterogeneity-robust or bias-corrected syntax across Stata, R, and Python with publication-ready output
+- implementing an estimator or writing empirical code: [estimation_recipes.md](references/estimation_recipes.md); use modern heterogeneity-robust (CS, SA, BJS), SDiD, Bartik, or bias-corrected syntax across Stata, R, and Python with publication-ready output
 - designing falsifications, placebos, or competing mechanisms: [falsification_battery.md](references/falsification_battery.md); formulate alternative channels before interpreting estimates as causal
-- cleaning, merging, or auditing standard financial/economic databases: [database_cleaning_recipes.md](references/database_cleaning_recipes.md); apply institutional cleaning rules for WRDS (CRSP/Compustat), TEJ, CSMAR, CFPS, Census/IPUMS, FRED, and PWT
+- cleaning, merging, or auditing standard financial/economic databases: [database_cleaning_recipes.md](references/database_cleaning_recipes.md); apply institutional cleaning rules for WRDS (CRSP/Compustat), TEJ, CSMAR, CFPS, Census/IPUMS, FRED, PWT, EIA, EPA CEMS/eGRID, ISO/RTO LMP, and PatentsView
+- extracting or annotating text data with LLMs: [text_as_data.md](references/text_as_data.md); require pinned model snapshots, zero temperature, inter-coder reliability (Cohen's kappa >= 0.70), and gold-standard sample audit
 - research PDFs: [pdf_ingestion.md](references/pdf_ingestion.md)
 - creating multi-file outputs or archiving cited papers: [project_layout.md](references/project_layout.md); classify artifacts by purpose and account for every bibliography entry
 - data discovery, acquisition, or proxy data: [data_acquisition.md](references/data_acquisition.md); require tool-acquired, hash-bound provenance before quantitative results and disclose reproducible proxies as feasibility evidence only

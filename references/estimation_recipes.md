@@ -53,6 +53,32 @@ Never use classic Two-Way Fixed Effects (TWFE) with staggered adoption without v
 - **Stata**: `did_imputation outcome id year first_treat_year, autosample horizons(0/5) pretrends(5)`
 - **R (`didimputation`)**: `did_imputation(data = df, yname = "outcome", gname = "first_treat_year", tname = "year", idname = "id", horizons = 0:5, pretrends = TRUE)`
 
+### Synthetic Difference-in-Differences (Arkhangelsky et al. 2021)
+Use when pre-treatment trends are non-parallel or donor units require optimal weighting without restrictive convexity traps. SDiD estimates unit weights $\hat{\omega}_i$ (with $L_2$ regularization $\zeta$) and time weights $\hat{\lambda}_t$ to eliminate pre-treatment level and trend differences:
+$$\hat{\tau}^{sdid} = \left(\bar{Y}_{tr}^{post} - \sum_{i \in co} \hat{\omega}_i \bar{Y}_i^{post}\right) - \left(\sum_{t \in pre} \hat{\lambda}_t Y_{tr, t} - \sum_{i \in co} \sum_{t \in pre} \hat{\omega}_i \hat{\lambda}_t Y_{it}\right)$$
+
+- **Stata (`sdid`)**:
+  ```stata
+  * Install: ssc install sdid, replace
+  sdid outcome id year treatment, vce(bootstrap) reps(200) seed(42) graph g1on
+  graph export "output/figures/sdid_trends.png", as(png) replace
+  ```
+- **R (`synthdid`)**:
+  ```r
+  library(synthdid)
+  setup <- panel.matrices(df, unit = "id", time = "year", outcome = "outcome", treatment = "treatment")
+  tau_hat <- synthdid_estimate(setup$Y, setup$N0, setup$T0)
+  se_placebo <- sqrt(vcov(tau_hat, method = "placebo"))
+  synthdid_plot(tau_hat)
+  ```
+- **Python (`synthdid`)**:
+  ```python
+  import synthdid as sdid
+  # Estimate regularized unit and time weights with placebo standard errors
+  res = sdid.SynthDID(df, unit='id', time='year', outcome='outcome', treatment='treatment').fit()
+  print(res.summary())
+  ```
+
 ---
 
 ## 2. Regression Discontinuity Designs (RDD)
@@ -83,8 +109,9 @@ Never report polynomial orders greater than 2 without explicit justification. Al
 
 ---
 
-## 3. Instrumental Variables (IV) & Weak Identification
+## 3. Instrumental Variables (IV) & Shift-Share (Bartik) Designs
 
+### Standard IV & Weak Identification
 A first-stage $F > 10$ is insufficient under non-homoskedastic errors or multiple instruments. Report Montiel Olea & Pflueger (2013) effective $F$-statistic and Anderson-Rubin confidence sets.
 
 - **Stata**:
@@ -104,6 +131,26 @@ A first-stage $F > 10$ is insufficient under non-homoskedastic errors or multipl
   # Report Wald test of first stage and Anderson-Rubin bounds
   fitstat(iv_model, type = c("ivf", "wh", "sargan"))
   ```
+
+### Shift-Share / Bartik Instruments
+Distinguish between **share-exogeneity** (Goldsmith-Pinkham, Sorkin, & Swift 2020) and **shock-exogeneity** (Borusyak, Hull, & Jaravel 2022):
+- **Rotemberg Weights (Share-Exogeneity)**: Determine which specific shares drive the IV estimate. Inspect balance on pre-determined covariates for high-weight shares:
+  $$\hat{\alpha}_k = \frac{g_k Z' M_X z_k}{Z' M_X Z}, \quad \sum_k \hat{\alpha}_k = 1$$
+  - **Stata**:
+    ```stata
+    * Install: ssc install rotemberg_weights
+    rotemberg_weights (treatment = instrument), shares(share_1-share_K) controls(controls)
+    ```
+  - **R (`RotembergWeights`)**:
+    ```r
+    library(RotembergWeights)
+    rw <- rotemberg_weights(y = "outcome", x = "treatment", z = "instrument", shares = share_names, data = df)
+    print(rw$top_shares)
+    ```
+- **Shock-Level Regressions (Shock-Exogeneity & Adão et al. 2019 SEs)**:
+  Aggregate individual or regional observations to shock/industry level to avoid artificial precision from geographic clustering:
+  - **Stata**: `ssaggregate outcome treatment [aw=weight], n(id) shares(share_prefix) shocks(shock_var) controls(controls)`
+  - **R (`didimputation` or `fixest`)**: Run weighted shock-level equivalent regressions with cluster-robust standard errors at the shock cluster level.
 
 ---
 

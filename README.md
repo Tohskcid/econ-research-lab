@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Skill: econ-research-lab](https://img.shields.io/badge/Skill-econ--research--lab-2ea44f.svg)](SKILL.md)
-[![Version](https://img.shields.io/badge/Version-2.16.0-orange.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/Version-2.17.0-orange.svg)](SKILL.md)
 [![Theory Proof: Lean 4](https://img.shields.io/badge/Theory%20Proof-Lean%204%20Kernel-purple.svg)](references/lean_harness.md)
 [![Replication: AEA Standard](https://img.shields.io/badge/Replication-AEA%20Standard-success.svg)](references/replication_audit.md)
 [![Architecture: PI DAG](https://img.shields.io/badge/Architecture-PI%20DAG%20%2B%20Referees-blueviolet.svg)](references/team_protocol.md)
@@ -34,8 +34,9 @@ Unlike generic prompt catalogs, **Invisible Hands for Economists** enforces dete
 |---|---|---|---|
 | **Data Provenance Gate** | SHA-256 Hashes & Public/Enclave Check | Estimation is hard-blocked until data source, schema, license, and acquisition scripts match hashes. | [`data_acquisition.md`](references/data_acquisition.md) |
 | **Methodology Router** | Identification Design Screen | Routes from the estimand and institutional assignment mechanism—never from significance or data shape. | [`method_router.md`](references/method_router.md) |
-| **Database Wrangling** | Institutional Cleaning Conventions | Enforces standard rules for WRDS (CRSP/Compustat CCM), TEJ, CSMAR, CFPS, Census (IPUMS), FRED, and PWT. | [`database_cleaning_recipes.md`](references/database_cleaning_recipes.md) |
-| **Modern Estimation** | Stata / R / Python Recipes | Prescribes heterogeneity-robust DiD (`csdid`, `sunab`, `did_imputation`), bias-corrected RDD (`rdrobust`), and effective weak-IV tests. | [`estimation_recipes.md`](references/estimation_recipes.md) |
+| **Database Wrangling** | Institutional Cleaning Conventions | Enforces standard rules for WRDS (CRSP/Compustat CCM), TEJ, CSMAR, CFPS, Census (IPUMS), FRED, PWT, EIA, EPA, and Patents. | [`database_cleaning_recipes.md`](references/database_cleaning_recipes.md) |
+| **Modern Estimation** | Stata / R / Python Recipes | Prescribes heterogeneity-robust DiD (`csdid`, `sunab`, `did_imputation`), SDiD (`synthdid`), Bartik, bias-corrected RDD, and effective weak-IV tests. | [`estimation_recipes.md`](references/estimation_recipes.md) |
+| **Text-as-Data Audit** | LLM Pinning & Reliability Standards | Enforces snapshot-pinned models, zero temperature, prompt hash freezes, and Cohen's $\kappa \ge 0.70$ on human gold samples. | [`text_as_data.md`](references/text_as_data.md) |
 | **Falsification Battery** | Anti-Confirmation-Bias Refutations | Formulates 3+ competing mechanisms; tests temporal placebos, permutation swaps, density discontinuities, and Oster bounds. | [`falsification_battery.md`](references/falsification_battery.md) |
 | **Formal Theory Proof** | Lean 4 + Mathlib Kernel Verification | Mathematical theorems are marked `formally proved` only when verified by the locked Lean 4 kernel with axiom allowlists. | [`lean_harness.md`](references/lean_harness.md) |
 | **Structural Solver** | Fixed Moments & Solver Contraction | Monitors contraction mapping tolerances, holdout sample validation, and numerical stability bounds. | [`structural.md`](references/structural.md) |
@@ -119,6 +120,7 @@ flowchart TD
 | **Lean 4 Verification** | [`references/lean_harness.md`](references/lean_harness.md) | Formal mathematical verification using Lean 4 + Mathlib |
 | **Structural Mode** | [`references/structural.md`](references/structural.md) | Dynamic discrete choice, BLP random coefficients, and solvers |
 | **Real-World Relevance** | [`references/real_world_relevance.md`](references/real_world_relevance.md) | Decision applicability, transportability, feasibility, and monitoring |
+| **Text-as-Data** | [`references/text_as_data.md`](references/text_as_data.md) | LLM annotation, prompt determinism, inter-coder reliability ($\kappa \ge 0.70$) |
 | **Replication Audit** | [`references/replication_audit.md`](references/replication_audit.md) | AEA Data & Code Availability replication package checklist |
 | **Adversarial Referees** | [`references/adversarial_referees.md`](references/adversarial_referees.md) | 3-Archetype economics referee stress tests and report generator |
 | **Manuscript Workflow** | [`references/manuscript.md`](references/manuscript.md) | Evidence-driven scale, section packets, and logic reviews |
@@ -195,6 +197,7 @@ git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
 | `check_design_audit.py` | Enforce diagnostics selected for the declared empirical design |
 | `check_structural_audit.py` | Enforce convergence, identification, holdout, and counterfactual diagnostics |
 | `check_real_world_audit.py` | Block real-world recommendations without applicability evidence |
+| `check_text_audit.py` | Validate LLM text-as-data annotation, inter-coder reliability, zero temperature, and prompt hashes |
 | `check_research_package.py` | Run applicable manifest, manuscript, result, empirical/structural audit, and LaTeX gates for CI |
 | `check_latex.py` | Compile safely, inspect logs, render every page, and bind visual review to the PDF hash |
 | `check_logic_review.py` | Bind a central-claim referee report to manuscript and manifest hashes |

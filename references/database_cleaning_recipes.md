@@ -120,7 +120,61 @@ Never choose real GDP variables arbitrarily; PWT provides distinct series for di
 
 ---
 
-## 6. Audit & Checksum Protocol
+## 6. Energy, Electricity Grid, & Environmental Economics
+
+### A. US Energy Information Administration (EIA-860 & EIA-923)
+- **Generator-Level Linkage (EIA-860)**:
+  - Unit key: `Utility ID` + `Plant Code` (ORISPL code) + `Generator ID`.
+  - Distinguish **Nameplate Capacity** (design capacity in MW) from **Net Summer / Net Winter Capacity** (actual deliverable capacity accounting for ambient temperature and cooling derating).
+  - Filter `Operating Status`: Operating (`OP`), Standby (`SB`), Retired (`RE`), or Planned (`PL`).
+  - Prime Mover Codes: Combined Cycle (`CC`, `CA`, `CT`), Gas Turbine (`GT`), Steam Turbine (`ST`), Photovoltaic (`PV`), Wind (`WT`), Nuclear (`ST`).
+- **Generation & Fuel Consumption (EIA-923)**:
+  - File schedules: Schedule 1 (generation & fuel by plant/prime mover) vs. Schedule 2 (fuel receipts and costs).
+  - Flow vs. stock: Net Generation (`Netgen`) is in **MWh**; Fuel Heat Input is in **MMBtu**.
+  - Heat Rate Calculation: $\text{Heat Rate (Btu/kWh)} = \frac{\text{Fuel Consumed (MMBtu)} \times 1,000,000}{\text{Net Generation (kWh)}}$. Flag implausible outliers ($< 6,000$ or $> 25,000$ Btu/kWh for thermal units).
+
+### B. EPA Continuous Emission Monitoring System (CEMS) & eGRID
+- **Hourly Smokestack Emissions (CEMS / CAMPD)**:
+  - Hourly observations at `ORISPL` + `Unit ID` level for facilities $\ge 25$ MW.
+  - Reportable pollutants: $SO_2$ (lbs), $NO_x$ (lbs), $CO_2$ (short tons, $1 \text{ short ton} = 2,000 \text{ lbs}$).
+  - Merge to EIA: `ORISPL` in CEMS equals `Plant Code` in EIA, but `Unit ID` (boiler/stack) does not always map 1:1 to EIA `Generator ID`. Use the EPA-EIA Crosswalk (e.g., published by EPA/NREL) when aggregating to generator level.
+- **Emissions & Grid Mix (eGRID)**:
+  - Level of aggregation: Balancing Authority Area (BAA) and eGRID Subregion (e.g., `CAMX`, `ERCT`, `RFCW`, `SRMW`).
+  - Distinguish total output emission rate from **non-baseload emission rate** (marginal emission factor approximation for displaced load).
+
+### C. Wholesale Electricity Markets & Locational Marginal Pricing (LMP)
+- **ISO / RTO Nodal Prices (PJM, ERCOT, CAISO, NYISO, MISO, ISO-NE, SPP)**:
+  - LMP Decomposition:
+    $$\text{LMP}_{n, t} = \text{LMP}_{energy, t} + \text{LMP}_{congestion, n, t} + \text{LMP}_{loss, n, t}$$
+  - Negative LMP Conventions: Negative prices occur during periods of high non-dispatchable renewable supply (wind/solar) or minimum generation constraints. Never take log of raw LMP; use level prices, hyperbolic sine transformation ($\text{asinh}$), or truncate with explicit indicator flags.
+  - Timezone & Clock Change (DST) Alignment:
+    - RTO timestamps are reported in Eastern Standard Time (EST / UTC-5) or prevailing local clock time.
+    - Spring transition day has **23 hours** (missing hour 2:00–3:00 AM); Autumn transition day has **25 hours** (duplicate hour 1:00–2:00 AM marked with suffix `A`/`B` or duplicate timestamp). Standardize all time indices to UTC or fixed standard time (e.g., EST) before panel estimation.
+
+---
+
+## 7. Patent & Innovation Economics (USPTO PatentsView / Google Patents / NBER)
+
+### A. Assignee Entity Disambiguation
+- Raw assignee names in patent databases suffer from spelling variants, corporate entity suffixes (`Inc`, `Corp`, `LLC`), and foreign language transliterations.
+- Use disambiguated identifiers (`assignee_id` in PatentsView; GVKEY/PERMNO crosswalk via Kogan et al. 2017 or Arora et al. 2021).
+- Account for corporate mergers and acquisitions (M&A): patents granted to a subsidiary belong to the parent firm's corporate portfolio at the time of invention.
+
+### B. Truncation Bias & Grant Lags
+- **Application Year vs. Grant Year**:
+  - Always measure innovation timing by **application/filing year** (when the invention was actually conceived), not grant year.
+  - Grant delay: A patent takes 2 to 5 years from application to grant. In the most recent 3–4 years of any patent dataset, applications that were eventually granted will be systematically missing (truncation bias).
+  - Truncation Adjustment: Drop the last 3–4 years of the panel or apply Hall, Jaffe, and Trajtenberg (2001) citation-lag weight adjustments:
+    $$\text{Adjusted Citations}_{i, t} = \frac{\text{Observed Citations}_{i, t}}{\hat{P}(\text{citation received within } T-t \text{ years})}$$
+
+### C. Technology Classification & Fractional Attribution
+- Cooperative Patent Classification (CPC) / International Patent Classification (IPC).
+- Patents frequently span multiple 4-digit or 6-digit technology classes.
+- When aggregating patents to industry/technology level, apply **fractional weighting** ($1/K$ weight if patent lists $K$ subclasses) to avoid double-counting innovative output.
+
+---
+
+## 8. Audit & Checksum Protocol
 
 When preparing cleaned datasets from these sources:
 1. Preserve the raw downloaded files in `data/raw/` with zero modifications.

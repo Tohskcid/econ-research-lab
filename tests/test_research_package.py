@@ -131,6 +131,19 @@ class ResearchPackageTests(unittest.TestCase):
             self.assertIn("check_real_world_audit.py", command[1])
             self.assertIn("--require-applicable", command)
 
+    def test_text_audit_is_run_as_a_hard_gate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "research").mkdir()
+            (root / "research/text-audit.json").write_text("{}", encoding="utf-8")
+            config = root / "research/package.json"
+            config.write_text(json.dumps({"text_audit": "research/text-audit.json"}), encoding="utf-8")
+            with patch.object(MODULE, "run", return_value={"passed": True}) as run:
+                MODULE.check(root, config, ROOT / "scripts")
+            command = run.call_args.args[0]
+            self.assertIn("check_text_audit.py", command[1])
+            self.assertIn("--require-pass", command)
+
     def test_coverage_cannot_run_without_manuscript_and_manifest(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

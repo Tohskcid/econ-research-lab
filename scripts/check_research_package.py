@@ -12,7 +12,7 @@ from pathlib import Path, PurePosixPath
 PATH_FIELDS = {
     "topic_survey", "data_provenance", "manifest", "manuscript", "bibliography",
     "literature_archive", "coverage", "results", "design_audit", "structural_audit", "logic_review",
-    "real_world_audit", "latex_main", "latex_visual_review",
+    "real_world_audit", "text_audit", "latex_main", "latex_visual_review",
 }
 METADATA_FIELDS = {"claim_scope"}
 ALLOWED = PATH_FIELDS | METADATA_FIELDS
@@ -138,6 +138,11 @@ def check(root: Path, config_path: Path, scripts: Path) -> dict:
         if claim_scope == "real-world":
             command.insert(-1, "--require-applicable")
         checks.append(run(command))
+    if "text_audit" in paths:
+        checks.append(run([
+            python, str(scripts / "check_text_audit.py"), str(paths["text_audit"]),
+            "--root", str(root), "--require-pass", "--json",
+        ]))
     if "latex_main" in paths:
         with tempfile.TemporaryDirectory(prefix="research-latex-") as directory:
             build = Path(directory) / "build"

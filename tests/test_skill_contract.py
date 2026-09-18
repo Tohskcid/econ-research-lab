@@ -22,8 +22,8 @@ class SkillContractTests(unittest.TestCase):
 
     def test_version_is_consistent(self):
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn('version = "2.16.0"', pyproject)
-        self.assertIn('version: "2.16.0"', self.text)
+        self.assertIn('version = "2.17.0"', pyproject)
+        self.assertIn('version: "2.17.0"', self.text)
 
     def test_theory_requires_auditable_complete_proofs(self):
         theory = (ROOT / "references/theory.md").read_text(encoding="utf-8")
@@ -107,6 +107,15 @@ class SkillContractTests(unittest.TestCase):
             "claim_scope", "research-only", "real-world", "target decision",
             "decision-sensitivity", "implementation-feasibility", "monitoring-plan",
             "check_real_world_audit.py",
+        ]:
+            self.assertIn(phrase, reference)
+
+    def test_text_audit_gate_is_documented(self):
+        reference = (ROOT / "references/text_as_data.md").read_text(encoding="utf-8")
+        self.assertIn("extracting or annotating text data with LLMs", self.body)
+        for phrase in [
+            "Deterministic Reproducibility Contract", "temperature = 0.0",
+            "Inter-Coder Reliability", "cohen_kappa", "check_text_audit.py",
         ]:
             self.assertIn(phrase, reference)
 
