@@ -1,0 +1,18 @@
+{
+  "name": "invisible-hands",
+  "owner": {
+    "name": "Tohskcid"
+  },
+  "description": "Auditable economics research plugins maintained by Tohskcid.",
+  "plugins": [
+    {
+      "name": "invisible-hands-for-economists",
+      "source": {
+        "source": "github",
+        "repo": "Tohskcid/invisible-hands-for-economists",
+        "ref": "main"
+      },
+      "description": "An auditable economics research workflow for empirical, theoretical, and structural work."
+    }
+  ]
+}

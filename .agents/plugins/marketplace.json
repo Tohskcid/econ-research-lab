@@ -1,0 +1,21 @@
+{
+  "name": "invisible-hands",
+  "interface": {
+    "displayName": "Invisible Hands for Economists"
+  },
+  "plugins": [
+    {
+      "name": "invisible-hands-for-economists",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/Tohskcid/invisible-hands-for-economists.git",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Research"
+    }
+  ]
+}

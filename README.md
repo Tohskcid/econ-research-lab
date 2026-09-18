@@ -8,6 +8,7 @@
 [![Theory Proof: Lean 4](https://img.shields.io/badge/Theory%20Proof-Lean%204%20Kernel-purple.svg)](references/lean_harness.md)
 [![Replication: AEA Standard](https://img.shields.io/badge/Replication-AEA%20Standard-success.svg)](references/replication_audit.md)
 [![Architecture: PI DAG](https://img.shields.io/badge/Architecture-PI%20DAG%20%2B%20Referees-blueviolet.svg)](references/team_protocol.md)
+[![Self-Improvement: Dream-RSI](https://img.shields.io/badge/Self--Improvement-Dream--RSI%20Engine-00c853.svg)](references/dream_rsi.md)
 
 <br/>
 
@@ -42,6 +43,7 @@ Unlike generic prompt catalogs, **Invisible Hands for Economists** enforces dete
 | **Structural Solver** | Fixed Moments & Solver Contraction | Monitors contraction mapping tolerances, holdout sample validation, and numerical stability bounds. | [`structural.md`](references/structural.md) |
 | **Replication Audit** | AEA Data & Code Availability Policy | Verifies zero machine-specific absolute paths, deterministic seeds, raw data immutability, and single master script (`run_all.sh`). | [`replication_audit.md`](references/replication_audit.md) |
 | **Adversarial Peer Review** | 3-Archetype Economics Referees | Pre-delivery multi-agent review simulating the Identification Policeman, Theory/Mechanism Critic, and Data Hygiene Nitpicker. | [`adversarial_referees.md`](references/adversarial_referees.md) |
+| **Dream-RSI Discovery Simulator** | Exact Replay Simulator & Meta-Policy | Discovery history DAG is treated as an exact simulator, evaluating exploration/pruning policies at zero compute cost before online deployment. | [`dream_rsi.md`](references/dream_rsi.md) |
 
 ---
 
@@ -124,60 +126,87 @@ flowchart TD
 | **Replication Audit** | [`references/replication_audit.md`](references/replication_audit.md) | AEA Data & Code Availability replication package checklist |
 | **Adversarial Referees** | [`references/adversarial_referees.md`](references/adversarial_referees.md) | 3-Archetype economics referee stress tests and report generator |
 | **Manuscript Workflow** | [`references/manuscript.md`](references/manuscript.md) | Evidence-driven scale, section packets, and logic reviews |
+| **Dream-RSI Discovery** | [`references/dream_rsi.md`](references/dream_rsi.md) | Exact discovery tree replay simulator and offline policy dreaming |
+
+---
+
+## 🌌 Dream-RSI: Recursive Self-Improvement through Evolving Worlds
+
+Based on *Dream-RSI: Recursive Self-Improvement through Evolving Worlds* (Google DeepMind / UMD / UVA 2026; [dream-rsi.com](https://www.dream-rsi.com/)), the lab converts accumulated research history into an **exact replay simulator**:
+- **History as an Exact Simulator**: Every econometric specification trial, first-stage diagnostic, and proof branch is persisted into `research/discovery_tree.jsonl`.
+- **Zero-Compute Offline Dreaming**: Candidate exploration and pruning policies are evaluated by replaying historical discovery trees at zero execution cost, screening thousands of specification curve configurations in milliseconds.
+- **Evolving World Pool**: Each completed research run adds another world to the simulator pool, transferring evolved meta-policies and adversarial referee memories to accelerate future research projects.
+
+Run the Dream-RSI offline simulator:
+```bash
+# Audit historical discovery tree integrity
+python3 scripts/dream_replay_simulator.py --tree research/discovery_tree.jsonl --audit
+
+# Dream offline specification curve across history at zero execution cost
+python3 scripts/dream_replay_simulator.py --tree research/discovery_tree.jsonl --dream
+```
 
 ---
 
 ## 📦 Install
 
-Choose project scope when a repository should share the skill, or global scope when it should be available in every workspace. Install only one scope per client to avoid duplicate discovery.
+The same release is packaged for Codex, Claude Code, and Google Antigravity. The plugin manifests are thin adapters around one shared `econ-research-lab` skill.
 
 ### Codex
 
-[Codex loads](https://developers.openai.com/codex/skills) project skills from `.agents/skills` and personal skills from `$HOME/.agents/skills`.
+[Codex plugins](https://developers.openai.com/zh-Hant/plugins/build/plugins) can be installed from this repository's marketplace:
 
 ```bash
-# Project scope — run from the target repository root
-mkdir -p .agents/skills
-git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
-  .agents/skills/econ-research-lab
+codex plugin marketplace add Tohskcid/invisible-hands-for-economists --ref main
+codex plugin add invisible-hands-for-economists@invisible-hands
 
-# Global scope — use instead of project scope
-mkdir -p "$HOME/.agents/skills"
-git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
-  "$HOME/.agents/skills/econ-research-lab"
+# Refresh the marketplace and installed plugin later
+codex plugin marketplace upgrade invisible-hands
+codex plugin add invisible-hands-for-economists@invisible-hands
 ```
 
 ### Claude Code
 
-[Claude Code loads](https://code.claude.com/docs/en/skills) project skills from `.claude/skills` and personal skills from `~/.claude/skills`.
+[Claude Code plugins](https://code.claude.com/docs/en/plugin-marketplaces) use the compatible marketplace in the same repository:
 
 ```bash
-# Project scope — run from the target repository root
-mkdir -p .claude/skills
-git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
-  .claude/skills/econ-research-lab
+claude plugin marketplace add Tohskcid/invisible-hands-for-economists
+claude plugin install invisible-hands-for-economists@invisible-hands
 
-# Global scope — use instead of project scope
-mkdir -p "$HOME/.claude/skills"
-git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
-  "$HOME/.claude/skills/econ-research-lab"
+# Refresh the marketplace and installed plugin later
+claude plugin marketplace update invisible-hands
+claude plugin update invisible-hands-for-economists@invisible-hands
 ```
 
 ### Google Antigravity
 
-[Antigravity loads](https://antigravity.google/docs/skills) workspace skills from `.agents/skills` and global skills from `~/.gemini/config/skills`.
+[Antigravity CLI](https://codelabs.developers.google.com/sdd-agy-cli) can import the shared Agent Skill directly from GitHub:
 
 ```bash
-# Workspace scope — run from the target workspace root
-mkdir -p .agents/skills
-git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
-  .agents/skills/econ-research-lab
+agy plugin install https://github.com/Tohskcid/invisible-hands-for-economists
+agy plugin list
+```
 
-# Global scope — use instead of workspace scope
-mkdir -p "$HOME/.gemini/config/skills"
+Direct `git clone` skill installs remain supported for existing users. Pull with `git pull --ff-only` to update those installations.
+
+<details>
+<summary>Direct skill installation paths</summary>
+
+```bash
+# Codex global skill
+git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
+  "$HOME/.agents/skills/econ-research-lab"
+
+# Claude Code global skill
+git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
+  "$HOME/.claude/skills/econ-research-lab"
+
+# Antigravity global skill
 git clone https://github.com/Tohskcid/invisible-hands-for-economists.git \
   "$HOME/.gemini/config/skills/econ-research-lab"
 ```
+
+</details>
 
 ---
 

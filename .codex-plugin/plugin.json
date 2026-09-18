@@ -1,0 +1,36 @@
+{
+  "name": "invisible-hands-for-economists",
+  "version": "2.16.0",
+  "description": "An auditable economics research workflow for empirical, theoretical, and structural work.",
+  "author": {
+    "name": "Tohskcid",
+    "url": "https://github.com/Tohskcid"
+  },
+  "homepage": "https://github.com/Tohskcid/invisible-hands-for-economists",
+  "repository": "https://github.com/Tohskcid/invisible-hands-for-economists",
+  "license": "MIT",
+  "keywords": [
+    "economics",
+    "research",
+    "econometrics",
+    "causal-inference"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Invisible Hands for Economists",
+    "shortDescription": "Run auditable economics research workflows.",
+    "longDescription": "Design, execute, audit, and communicate empirical, theoretical, and structural economics research with evidence and reproducibility gates.",
+    "developerName": "Tohskcid",
+    "category": "Research",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/Tohskcid/invisible-hands-for-economists",
+    "defaultPrompt": [
+      "Audit my economics research design.",
+      "Plan a reproducible empirical study.",
+      "Stress-test this paper before submission."
+    ]
+  }
+}
